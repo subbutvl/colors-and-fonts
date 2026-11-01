@@ -6,6 +6,7 @@ import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { PalettesPage } from "./pages/PalettesPage";
 import { PickerHome } from "./pages/PickerHome";
+import { ScalesPage } from "./pages/ScalesPage";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
 import { DEFAULT_SECTION, findSection } from "./sections";
@@ -24,6 +25,8 @@ function Page({ id }: { id: string }) {
       return <ConverterPage section={section} />;
     case "palettes":
       return <PalettesPage section={section} />;
+    case "scales":
+      return <ScalesPage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
