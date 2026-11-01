@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "toolbar",
+  "description": "Floating picker toolbar: drag, events, and its own commands",
+  "windows": [
+    "toolbar"
+  ],
+  "permissions": [
+    "core:event:default",
+    "core:window:allow-start-dragging"
+  ]
+}

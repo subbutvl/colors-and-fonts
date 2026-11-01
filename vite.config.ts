@@ -2,11 +2,27 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 // @ts-expect-error type error without @types/node package
 import process from "node:process";
+// @ts-expect-error type error without @types/node package
+import { resolve } from "node:path";
+// @ts-expect-error type error without @types/node package
+import { fileURLToPath } from "node:url";
+
+const root = fileURLToPath(new URL(".", import.meta.url));
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
   plugins: [react()],
+
+  // Two pages: the main window and the floating toolbar window.
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(root, "index.html"),
+        toolbar: resolve(root, "toolbar.html"),
+      },
+    },
+  },
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //

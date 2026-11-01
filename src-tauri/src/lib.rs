@@ -2,9 +2,12 @@
 //!
 //! A single main window that hides to the system tray on close, a tray icon
 //! with a menu, single-instance enforcement so a second launch just brings the
-//! existing window forward, SQLite storage and launch-at-startup.
+//! existing window forward, SQLite storage, launch-at-startup, global
+//! shortcuts and the floating picker toolbar.
 
 mod db;
+mod shortcuts;
+mod toolbar;
 mod tray;
 
 use tauri::{Emitter, Manager, WindowEvent};
@@ -63,7 +66,26 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec![HIDDEN_ARG]),
         ))
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                // Position and size only; visibility is ours to decide at launch.
+                .with_state_flags(
+                    tauri_plugin_window_state::StateFlags::POSITION
+                        | tauri_plugin_window_state::StateFlags::SIZE
+                        | tauri_plugin_window_state::StateFlags::MAXIMIZED,
+                )
+                .build(),
+        )
+        .plugin(shortcuts::plugin())
+        .invoke_handler(tauri::generate_handler![
+            shortcuts::shortcut_status,
+            toolbar::hide_toolbar,
+            toolbar::toggle_toolbar,
+            toolbar::open_main_window,
+        ])
         .setup(|app| {
+            toolbar::create(app.handle())?;
+            shortcuts::register_all(app.handle());
             tray::create(app.handle())?;
             // The window starts hidden (see tauri.conf.json) so a login launch
             // never flashes it; show it unless we were started with --hidden.
@@ -73,9 +95,10 @@ pub fn run() {
             Ok(())
         })
         .on_window_event(|window, event| {
-            // Closing the main window hides it to the tray; Quit lives in the tray menu.
+            // Closing the main window hides it to the tray (Quit lives in the
+            // tray menu); closing the toolbar (e.g. Alt+F4) just hides it.
             if let WindowEvent::CloseRequested { api, .. } = event
-                && window.label() == MAIN_WINDOW
+                && (window.label() == MAIN_WINDOW || window.label() == toolbar::TOOLBAR_WINDOW)
             {
                 api.prevent_close();
                 let _ = window.hide();
