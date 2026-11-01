@@ -1,6 +1,7 @@
 // Renders the Huetype app icon (1024 x 1024 PNG) with Playwright, matching
 // the sidebar brand mark: a rounded square with the brand conic gradient and
 // a white loupe ring around a dark sample dot.
+// Needs a Chromium for Playwright: run `npx playwright install chromium` once.
 // `npm run icon` writes src-tauri/icons/app-icon.png, then runs `tauri icon`
 // on it and removes the mobile sizes we do not ship.
 const { execSync } = require("node:child_process");
