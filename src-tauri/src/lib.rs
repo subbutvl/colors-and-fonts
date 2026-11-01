@@ -90,6 +90,7 @@ pub fn run() {
             picker::overlay_ready,
             picker::overlay_pick,
             picker::overlay_finish,
+            picker::grab_screen,
             shortcuts::shortcut_status,
             shortcuts::set_shortcut,
             toolbar::hide_toolbar,
