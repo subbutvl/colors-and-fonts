@@ -5,6 +5,8 @@ import { isTauri } from "../lib/env";
 import { onPick, startPick } from "../lib/picker";
 import type { Section } from "../sections";
 import { PageHead } from "../components/PageHead";
+import { StarButton } from "../components/StarButton";
+import { useStarred } from "../useStarred";
 
 const EXAMPLES = ["#5B6CFF", "rgb(242, 201, 76)", "hsl(160 63% 33%)", "oklch(70% 0.25 30)", "rebeccapurple"];
 const LAST_KEY = "huetype.converter.last";
@@ -20,6 +22,7 @@ export function ConverterPage({ section }: { section: Section }) {
   });
   const [copied, setCopied] = useState<string | null>(null);
   const [recent, setRecent] = useState<string[]>([]);
+  const { isStarred, toggle } = useStarred();
 
   const color = useMemo(() => parseColor(input), [input]);
   const result = useMemo(() => (color ? convert(color) : null), [color]);
@@ -84,6 +87,7 @@ export function ConverterPage({ section }: { section: Section }) {
                 Pick from screen
               </button>
             )}
+            {result && <StarButton on={isStarred(result.hex)} onClick={() => toggle(result.hex)} />}
           </div>
           <span id="conv-help" className={color ? "help" : "help error"}>
             {color

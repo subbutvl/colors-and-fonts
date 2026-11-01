@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { getShortcutStatus, prettyShortcut, type ShortcutAction, type ShortcutStatus } from "../lib/shortcuts";
 import { onPickerError, startPick } from "../lib/picker";
 import { clearHistory, onHistoryChanged, recentPicks, type HistoryPick } from "../lib/history";
+import { StarButton } from "../components/StarButton";
+import { useStarred } from "../useStarred";
 import { copyText, FORMAT_LABELS, formatColor, getCopyFormat, nearestName, onCopyFormat, type ColorFormat } from "../lib/colors";
 
 const FALLBACK: Record<ShortcutAction, string> = {
@@ -28,6 +30,7 @@ export function PickerHome() {
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [copied, setCopied] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { isStarred, toggle } = useStarred();
 
   const reload = useCallback(() => {
     recentPicks(SHOWN)
@@ -110,7 +113,7 @@ export function PickerHome() {
         ) : (
           <ul className="picks-list">
             {picks.map((p) => (
-              <li key={p.id}>
+              <li key={p.id} className="pick-item">
                 <button
                   type="button"
                   className="pick-chip"
@@ -123,6 +126,7 @@ export function PickerHome() {
                     {nearestName(p.hex).name} · {when(p.pickedAt)}
                   </small>
                 </button>
+                <StarButton on={isStarred(p.hex)} onClick={() => toggle(p.hex)} />
               </li>
             ))}
           </ul>

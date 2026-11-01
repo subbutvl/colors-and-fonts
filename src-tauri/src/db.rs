@@ -45,6 +45,17 @@ pub fn migrations() -> Vec<Migration> {
               );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 4,
+            description: "create saved_colors table (starred colors)",
+            sql: "CREATE TABLE IF NOT EXISTS saved_colors (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                hex        TEXT NOT NULL UNIQUE,
+                note       TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

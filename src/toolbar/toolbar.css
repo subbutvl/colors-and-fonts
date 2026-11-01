@@ -32,6 +32,8 @@ button { font: inherit; color: inherit; }
 .pop-name { font: 600 15px "Cascadia Mono", Consolas, monospace; }
 .pop-close { display: grid; place-items: center; width: 26px; height: 26px; padding: 0; border: 0; border-radius: 50%; background: rgba(23, 24, 28, 0.75); color: #e6e7ec; cursor: pointer; }
 .pop-close svg { width: 13px; height: 13px; }
+.pop-head-tools { display: flex; gap: 6px; }
+.pop-star.on { color: #ffd34d; }
 .pop-formats { margin: 0; padding: 6px 6px 2px; list-style: none; }
 .pop-formats li { display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 2px 0 6px; border-radius: 6px; }
 .pop-formats li:hover { background: #22242a; }
