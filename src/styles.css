@@ -193,3 +193,35 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ct-sugg code { font: 13px var(--mono); }
 .ct-sugg small { color: var(--muted); }
 .conv-line .link-btn + .link-btn { margin-left: -4px; }
+
+/* Palettes */
+.primary-btn { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 0; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-weight: 600; cursor: pointer; }
+.primary-btn kbd { padding: 0 5px; border-radius: 4px; background: color-mix(in srgb, var(--accent-ink) 18%, transparent); font: 11px var(--mono); }
+.inline-field { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.inline-field select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.stepper button { width: 32px; height: 32px; border: 0; background: none; font-size: 16px; cursor: pointer; }
+.stepper button:disabled { opacity: .35; cursor: default; }
+.stepper span { min-width: 72px; text-align: center; font-size: 13px; }
+.pal-strip { display: flex; height: 340px; margin: 0; padding: 0; list-style: none; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); }
+.pal-col { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 2px; padding: 16px 6px; }
+.pal-hex { padding: 2px 6px; border: 0; border-radius: 6px; background: none; color: inherit; font: 600 15px var(--mono); cursor: pointer; }
+.pal-hex:hover { background: color-mix(in srgb, currentColor 14%, transparent); }
+.pal-name { font-size: 12px; opacity: .8; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pal-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 10px; opacity: .55; transition: opacity .12s; }
+.pal-col:hover .pal-tools, .pal-tools:focus-within { opacity: 1; }
+.pal-tools button, .pal-edit { padding: 2px 7px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); border-radius: 6px; background: none; color: inherit; font-size: 11.5px; cursor: pointer; }
+.pal-tools button:disabled { opacity: .35; cursor: default; }
+.pal-tools button.on { background: color-mix(in srgb, currentColor 22%, transparent); font-weight: 600; }
+.pal-move { display: inline-flex; gap: 4px; }
+.pal-edit { position: relative; overflow: hidden; }
+.pal-edit input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.pal-edit:focus-within { outline: 2px solid currentColor; outline-offset: 1px; }
+.pal-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; }
+.pal-actions .text-input { width: 220px; }
+.saved-pals { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.saved-pal { display: grid; gap: 6px; }
+.saved-strip { display: flex; height: 44px; padding: 0; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; cursor: pointer; }
+.saved-strip span { flex: 1; }
+.saved-meta { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.saved-meta strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

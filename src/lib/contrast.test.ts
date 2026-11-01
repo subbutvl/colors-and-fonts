@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { apcaLc, apcaUse, passes, suggest, TARGETS, wcag } from "./contrast";
+import { apcaLc, apcaUse, flatten, passes, suggest, TARGETS, wcag } from "./contrast";
 
 describe("wcag", () => {
   it("black on white is 21:1", () => {
@@ -56,5 +56,13 @@ describe("suggest", () => {
     const body = TARGETS.find((t) => t.kind === "apca" && t.lc === 75)!;
     const s = suggest("#888888", "#FFFFFF", body)[0];
     expect(Math.abs(apcaLc(s.side === "text" ? s.hex : "#888888", s.side === "text" ? "#FFFFFF" : s.hex))).toBeGreaterThanOrEqual(75);
+  });
+});
+
+describe("flatten", () => {
+  it("composites translucent colors before measuring", () => {
+    expect(flatten("rgb(0 0 0 / 0.5)", "#FFFFFF")).toBe("#808080");
+    expect(flatten("#5B6CFF", "#000000")).toBe("#5B6CFF");
+    expect(wcag(flatten("rgb(0 0 0 / 0.5)", "#FFFFFF"), "#FFFFFF").ratio).toBeLessThan(4);
   });
 });

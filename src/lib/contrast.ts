@@ -1,9 +1,22 @@
-import { clampChroma, formatHex, oklch, rgb, wcagContrast, type Oklch } from "culori";
+import { clampChroma, formatHex, oklch, rgb, wcagContrast, type Color, type Oklch } from "culori";
 
 /**
  * Text/background contrast: WCAG 2.2 ratio and APCA (the candidate method
  * for WCAG 3), plus "nearest passing color" suggestions.
  */
+
+/**
+ * `top` composited over the opaque `bottom` in sRGB, the way browsers draw a
+ * translucent color. Contrast is only defined between opaque colors.
+ */
+export function flatten(top: Color | string, bottom: Color | string): string {
+  const t = rgb(top);
+  const b = rgb(bottom);
+  if (!t || !b) return "#000000";
+  const a = t.alpha ?? 1;
+  const mix = (x: number, y: number) => x * a + y * (1 - a);
+  return formatHex({ mode: "rgb", r: mix(t.r, b.r), g: mix(t.g, b.g), b: mix(t.b, b.b) }).toUpperCase();
+}
 
 /* WCAG 2.2 */
 

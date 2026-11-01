@@ -16,7 +16,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 1.5 Contrast (3): WCAG 2.2 + APCA, suggest nearest passing color; Picker home with recent picks
 
 ## Phase 2: Color tools
-- [ ] 2.1 Palettes (1): generate, lock, harmony modes, save
+- [x] 2.1 Palettes (1): generate, lock, harmony modes, save
 - [ ] 2.2 Scales (2): OKLCH 50 to 950
 - [ ] 2.3 Color pairing (6)
 - [ ] 2.4 Color blindness (5): simulations and situational cases

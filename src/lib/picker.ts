@@ -4,6 +4,7 @@ import { isTauri } from "./env";
 
 /** Must match the constants in src-tauri/src/picker.rs. */
 export const PICKED_EVENT = "huetype://picked";
+export const PICKER_FINISHED_EVENT = "huetype://picker-finished";
 export const PICKER_ERROR_EVENT = "huetype://picker-error";
 export const OVERLAY_OPEN_EVENT = "huetype://overlay-open";
 /** Bytes before the RGBA pixels in an `overlay_frame` response. */
@@ -58,6 +59,18 @@ export function onPickerError(handler: (message: string) => void): () => void {
     // Already shown here; don't show it again on the next mount.
     invoke("take_picker_error").catch(() => {});
   }).then((fn) => (cancelled ? fn() : (unlisten = fn)));
+  return () => {
+    cancelled = true;
+    unlisten?.();
+  };
+}
+
+/** A pick session ended (picked or cancelled). Returns an unsubscribe function. */
+export function onPickerFinished(handler: () => void): () => void {
+  if (!isTauri()) return () => {};
+  let unlisten: (() => void) | undefined;
+  let cancelled = false;
+  listen(PICKER_FINISHED_EVENT, () => handler()).then((fn) => (cancelled ? fn() : (unlisten = fn)));
   return () => {
     cancelled = true;
     unlisten?.();
