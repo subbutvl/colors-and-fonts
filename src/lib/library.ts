@@ -1,6 +1,7 @@
 import { emit, listen } from "@tauri-apps/api/event";
 import { getDb } from "./db";
 import { isTauri } from "./env";
+import { listMyDesignSystems } from "./designSystems";
 import { gradientCss } from "./gradient";
 import { listGradients } from "./gradients";
 import { listPalettes } from "./palettes";
@@ -162,7 +163,13 @@ export async function setFontNote(family: string, note: string): Promise<void> {
 
 /** The whole library as JSON, for backup or for use elsewhere. */
 export async function exportLibrary(): Promise<string> {
-  const [colors, palettes, fonts, gradients] = await Promise.all([listStarred(), listPalettes(), listStarredFonts(), listGradients()]);
+  const [colors, palettes, fonts, gradients, designSystems] = await Promise.all([
+    listStarred(),
+    listPalettes(),
+    listStarredFonts(),
+    listGradients(),
+    listMyDesignSystems(),
+  ]);
   return JSON.stringify(
     {
       app: "Huetype",
@@ -171,6 +178,7 @@ export async function exportLibrary(): Promise<string> {
       palettes: palettes.map((p) => ({ name: p.name, colors: p.colors, saved: p.createdAt })),
       fonts: fonts.map((f) => ({ family: f.family, note: f.note || undefined, saved: f.createdAt })),
       gradients: gradients.map((g) => ({ name: g.name, css: gradientCss(g.gradient), gradient: g.gradient, saved: g.createdAt })),
+      designSystems: designSystems.map(({ id: _id, createdAt, updatedAt, ...d }) => ({ ...d, saved: createdAt, updated: updatedAt })),
     },
     null,
     2,

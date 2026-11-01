@@ -16,9 +16,12 @@ import { SavedPage } from "./pages/SavedPage";
 import { ImagePalettePage } from "./pages/ImagePalettePage";
 import { PairingPage } from "./pages/PairingPage";
 import { PalettesPage } from "./pages/PalettesPage";
+import { MyDesignSystemsPage } from "./pages/MyDesignSystemsPage";
 import { PantonePage } from "./pages/PantonePage";
 import { PickerHome } from "./pages/PickerHome";
 import { ScalesPage } from "./pages/ScalesPage";
+import { CuratedDesignSystemsPage } from "./pages/CuratedDesignSystemsPage";
+import { DesignSystemsHubPage } from "./pages/DesignSystemsHubPage";
 import { GradientsPage } from "./pages/GradientsPage";
 import { GuessPage } from "./pages/GuessPage";
 import { Placeholder } from "./pages/Placeholder";
@@ -66,6 +69,12 @@ function Page({ id }: { id: string }) {
       return <CuratedColorsPage section={section} />;
     case "brand-colors":
       return <BrandColorsPage section={section} />;
+    case "design-systems":
+      return <DesignSystemsHubPage section={section} />;
+    case "curated-design-systems":
+      return <CuratedDesignSystemsPage section={section} />;
+    case "my-design-systems":
+      return <MyDesignSystemsPage section={section} />;
     case "guess-the-color":
       return <GuessPage section={section} />;
     case "gradients":
