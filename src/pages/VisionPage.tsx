@@ -72,12 +72,16 @@ export function VisionPage({ section }: { section: Section }) {
     () =>
       splitColors(input).map((text) => {
         const c = parseColor(text);
-        return { text, hex: c ? convert(c).hex : null };
+        const conv = c ? convert(c) : null;
+        // A translucent color's look depends on what is behind it, so it
+        // cannot be judged on its own: ask for the opaque color instead.
+        return { text, hex: conv && conv.alpha >= 1 ? conv.hex : null, translucent: !!conv && conv.alpha < 1 };
       }),
     [input],
   );
   const colors = parsed.flatMap((p) => (p.hex ? [p.hex] : [])).slice(0, MAX);
-  const bad = parsed.filter((p) => !p.hex).map((p) => p.text);
+  const bad = parsed.filter((p) => !p.hex && !p.translucent).map((p) => p.text);
+  const translucent = parsed.filter((p) => p.translucent).map((p) => p.text);
 
   useEffect(() => {
     try {
@@ -109,7 +113,7 @@ export function VisionPage({ section }: { section: Section }) {
             spellCheck={false}
             autoComplete="off"
             onChange={(e) => setInput(e.target.value)}
-            aria-invalid={bad.length > 0 || colors.length < 2}
+            aria-invalid={bad.length > 0 || translucent.length > 0 || colors.length < 2}
           />
           <input
             type="color"
@@ -137,6 +141,12 @@ export function VisionPage({ section }: { section: Section }) {
           ))}
         </div>
         {bad.length > 0 && <span className="help error">Not colors I can read: {bad.join(", ")}</span>}
+        {translucent.length > 0 && (
+          <span className="help error">
+            Left out because they are translucent, so how they look depends on what is behind them: {translucent.join(", ")}. Enter the color as it
+            appears on screen (or pick it).
+          </span>
+        )}
         {colors.length < 2 && <span className="help error">Add at least two colors to compare.</span>}
         {parsed.filter((p) => p.hex).length > MAX && <span className="help">Only the first {MAX} colors are checked.</span>}
       </div>
