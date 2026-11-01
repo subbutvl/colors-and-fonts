@@ -39,6 +39,6 @@ Each step is one PR. Tick a step when its PR is merged.
 
 ## Phase 5: Release
 - [x] 5.1 App icon and branding (icon set from `scripts/app-icon.cjs`, sidebar mark, favicon, installer metadata)
-- [ ] 5.2 Windows installer (NSIS/MSI) built and attached to a GitHub release by a workflow on version tags
+- [x] 5.2 Windows installer (NSIS/MSI) built and attached to a GitHub release by a workflow on version tags (`docs/RELEASING.md`)
 - [ ] 5.3 Auto-updater (tauri-plugin-updater, signed update manifest on GitHub releases)
 - [ ] 5.4 Code signing: unsigned for now (decided 2026-11-01); revisit Azure Trusted Signing or an OV certificate later

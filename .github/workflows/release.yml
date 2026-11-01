@@ -1,0 +1,61 @@
+name: Release
+
+# Push a tag like v0.2.0 to build the Windows installers (NSIS .exe and MSI)
+# and attach them to a draft GitHub release. Run it by hand (Actions tab,
+# "Run workflow") to build the installers as a workflow artifact only.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Check the tag matches the app version
+        if: github.event_name == 'push'
+        env:
+          TAG: ${{ github.ref_name }}
+        shell: bash
+        run: node scripts/version.mjs check "$TAG"
+      - run: npm test
+
+      - name: Build installers and draft the release
+        if: github.event_name == 'push'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Huetype ${{ github.ref_name }}
+          releaseBody: |
+            Windows 10 and 11. Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users).
+
+            The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
+          releaseDraft: true
+          prerelease: false
+
+      - name: Build installers
+        if: github.event_name != 'push'
+        run: npx tauri build
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'push'
+        with:
+          name: huetype-installers
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error

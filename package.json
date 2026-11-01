@@ -12,7 +12,8 @@
     "test": "vitest run",
     "fonts:catalog": "node scripts/font-catalog.mjs",
     "fonts:index": "node scripts/font-index.mjs",
-    "icon": "node scripts/app-icon.cjs"
+    "icon": "node scripts/app-icon.cjs",
+    "release:version": "node scripts/version.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

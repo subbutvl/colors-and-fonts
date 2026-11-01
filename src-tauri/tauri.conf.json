@@ -43,6 +43,14 @@
     "longDescription": "Huetype picks colors and identifies fonts from anywhere on screen, with color, font and design-system reference tools.",
     "publisher": "Subbu",
     "copyright": "Copyright 2026 Subbu",
-    "category": "DeveloperTool"
+    "category": "DeveloperTool",
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
   }
 }
