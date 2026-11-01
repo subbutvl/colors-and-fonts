@@ -25,6 +25,7 @@ pub const RECENT_MAX: usize = 8;
 struct TrayItems {
     toolbar: MenuItem<tauri::Wry>,
     pick: MenuItem<tauri::Wry>,
+    font: MenuItem<tauri::Wry>,
     recent: Submenu<tauri::Wry>,
 }
 
@@ -79,6 +80,13 @@ fn pick_text(app: &AppHandle) -> String {
     )
 }
 
+fn font_text(app: &AppHandle) -> String {
+    format!(
+        "Identify font\t{}",
+        shortcuts::pretty(&shortcuts::current(app, Action::IdentifyFont))
+    )
+}
+
 fn toolbar_text(app: &AppHandle) -> String {
     format!(
         "Show or hide toolbar\t{}",
@@ -91,6 +99,7 @@ pub fn refresh_labels(app: &AppHandle) {
     if let Some(items) = app.try_state::<TrayItems>() {
         let _ = items.toolbar.set_text(toolbar_text(app));
         let _ = items.pick.set_text(pick_text(app));
+        let _ = items.font.set_text(font_text(app));
     }
 }
 
@@ -98,14 +107,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, OPEN, "Open Huetype", true, None::<&str>)?;
     let toolbar = MenuItem::with_id(app, TOOLBAR, toolbar_text(app), true, None::<&str>)?;
     let pick = MenuItem::with_id(app, PICK_COLOR, pick_text(app), true, None::<&str>)?;
-    // Enabled in Phase 3 (font identify).
-    let font = MenuItem::with_id(
-        app,
-        IDENTIFY_FONT,
-        "Identify font (coming soon)",
-        false,
-        None::<&str>,
-    )?;
+    let font = MenuItem::with_id(app, IDENTIFY_FONT, font_text(app), true, None::<&str>)?;
     let recent =
         Submenu::with_id_and_items(app, RECENT, "Recent colors", true, &[&empty_recent(app)?])?;
     let settings = MenuItem::with_id(app, SETTINGS, "Settings…", true, None::<&str>)?;
@@ -134,6 +136,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
             OPEN => crate::show_main_window(app),
             TOOLBAR => crate::toolbar::toggle(app),
             PICK_COLOR => crate::picker::start(app),
+            IDENTIFY_FONT => crate::picker::start_font(app),
             SETTINGS => crate::open_section(app, "settings"),
             QUIT => app.exit(0),
             id => {
@@ -159,6 +162,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     app.manage(TrayItems {
         toolbar: toolbar.clone(),
         pick: pick.clone(),
+        font: font.clone(),
         recent: recent.clone(),
     });
     builder.build(app)?;

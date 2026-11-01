@@ -7,6 +7,7 @@
 
 mod capture;
 mod db;
+mod fontid;
 mod picker;
 mod shortcuts;
 mod toolbar;
@@ -91,6 +92,11 @@ pub fn run() {
             picker::overlay_pick,
             picker::overlay_finish,
             picker::grab_screen,
+            picker::start_font_pick,
+            picker::overlay_mode,
+            picker::overlay_font_region,
+            picker::font_capture,
+            picker::font_capture_image,
             shortcuts::shortcut_status,
             shortcuts::set_shortcut,
             toolbar::hide_toolbar,

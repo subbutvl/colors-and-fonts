@@ -9,6 +9,7 @@ import { FontListingPage } from "./pages/FontListingPage";
 import { TopFontsPage } from "./pages/TopFontsPage";
 import { CuratedFontsPage } from "./pages/CuratedFontsPage";
 import { FontPairingPage } from "./pages/FontPairingPage";
+import { IdentifyFontPage } from "./pages/IdentifyFontPage";
 import { SavedPage } from "./pages/SavedPage";
 import { ImagePalettePage } from "./pages/ImagePalettePage";
 import { PairingPage } from "./pages/PairingPage";
@@ -50,6 +51,8 @@ function Page({ id }: { id: string }) {
       return <CuratedFontsPage section={section} />;
     case "font-pairing":
       return <FontPairingPage section={section} />;
+    case "identify":
+      return <IdentifyFontPage section={section} />;
     case "saved":
       return <SavedPage section={section} />;
     case "image-palette":

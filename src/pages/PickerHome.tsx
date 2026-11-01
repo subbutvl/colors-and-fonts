@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getShortcutStatus, prettyShortcut, type ShortcutAction, type ShortcutStatus } from "../lib/shortcuts";
 import { onPickerError, startPick } from "../lib/picker";
+import { startFontPick } from "../lib/fontIdentify";
 import { clearHistory, onHistoryChanged, recentPicks, type HistoryPick } from "../lib/history";
 import { StarButton } from "../components/StarButton";
 import { useStarred } from "../useStarred";
@@ -59,6 +60,10 @@ export function PickerHome() {
     setError(null);
     startPick().catch((e) => setError(e instanceof Error ? e.message : String(e)));
   };
+  const identify = () => {
+    setError(null);
+    startFontPick().catch((e) => setError(e instanceof Error ? e.message : String(e)));
+  };
   const copy = (hex: string) => {
     const text = formatColor(hex, format);
     copyText(text)
@@ -83,7 +88,7 @@ export function PickerHome() {
           <span>From any app or screen</span>
           <kbd>{keys("pick_color")}</kbd>
         </button>
-        <button type="button" className="big-action" disabled>
+        <button type="button" className="big-action" onClick={identify}>
           <strong>Identify font</strong>
           <span>Drag around text</span>
           <kbd>{keys("identify_font")}</kbd>

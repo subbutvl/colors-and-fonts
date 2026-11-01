@@ -27,7 +27,7 @@ Each step is one PR. Tick a step when its PR is merged.
 ## Phase 3: Fonts
 - [x] 3.1 Google Fonts catalog (bundled snapshot, optional API-key refresh cached in SQLite); Font listing (15) with filters, live previews, copy CSS; starred fonts in Saved
 - [x] 3.2 Top fonts (16), Curated fonts (18), Font pairing (17): curated top list or live popularity and trending (API key, weekly refresh), five collections, 30 curated pairs plus contrast rules
-- [ ] 3.3 Font identify capture: region select on overlay, Windows OCR (Windows.Media.Ocr), UI Automation exact-name lookup
+- [x] 3.3 Font identify capture: region select on overlay, Windows OCR (Windows.Media.Ocr), UI Automation exact-name lookup
 - [ ] 3.4 Font matching index (pre-rendered Google Fonts features) and results card with confidence labels
 
 ## Phase 4: Content

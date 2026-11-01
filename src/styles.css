@@ -415,3 +415,15 @@ ol.font-grid { counter-reset: none; }
 .pair-tile strong { font-size: 24px; line-height: 1.15; }
 .pair-tile span { color: var(--muted); font-size: 13.5px; line-height: 1.45; }
 @media (max-width: 1000px) { .pair-layout { grid-template-columns: 1fr; } }
+
+/* Identify font */
+.id-result { display: grid; gap: 8px; }
+.id-crop { position: relative; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+.id-crop canvas { display: block; }
+.id-word { position: absolute; border: 1px solid color-mix(in srgb, var(--accent) 80%, transparent); background: color-mix(in srgb, var(--accent) 10%, transparent); border-radius: 2px; pointer-events: none; }
+.id-text { display: flex; align-items: flex-start; gap: 12px; }
+.id-text blockquote { flex: 1; margin: 0; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--bg); white-space: pre-wrap; font-size: 15px; }
+.id-exact p { margin: 0 0 8px; }
+.id-google { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.id-sample { font-size: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.id-actions { display: flex; align-items: center; gap: 12px; flex: none; }

@@ -49,6 +49,12 @@ function demoFrame(): Frame {
   return { image, x: 0, y: 0 };
 }
 
+/** "color" picks colors; "font" selects a box of text for font identify. */
+type Mode = "color" | "font";
+
+/** Smallest text box worth reading (frame pixels), as in fontid::MIN_REGION. */
+const MIN_REGION = 6;
+
 const finish = () => {
   if (isTauri()) invoke("overlay_finish").catch(console.error);
 };
@@ -66,12 +72,17 @@ export function Overlay() {
   /** Shift+drag rectangle corners, frame pixels. */
   const [drag, setDrag] = useState<{ from: Point; to: Point } | null>(null);
   const [picked, setPicked] = useState<{ hex: string; count: number } | null>(null);
+  const [mode, setMode] = useState<Mode>("color");
+  /** Font mode: the box has been sent and is being read. */
+  const [reading, setReading] = useState(false);
 
   const load = useCallback(async () => {
     setPos(null);
     setDrag(null);
     setPicked(null);
+    setReading(false);
     try {
+      setMode(isTauri() ? await invoke<Mode>("overlay_mode") : new URLSearchParams(location.search).get("mode") === "font" ? "font" : "color");
       const next = isTauri() ? parseFrame(await invoke<ArrayBuffer>("overlay_frame")) : demoFrame();
       const c = canvas.current;
       if (c) {
@@ -139,7 +150,7 @@ export function Overlay() {
         finish();
         return;
       }
-      if (!frame) return;
+      if (!frame || mode === "font") return;
       const step = e.shiftKey ? 10 : 1;
       const delta: Record<string, Point> = {
         ArrowLeft: { x: -step, y: 0 },
@@ -163,12 +174,12 @@ export function Overlay() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [frame, pos, pick]);
+  }, [frame, pos, pick, mode]);
 
   // Redraw the loupe whenever the point moves.
   useEffect(() => {
     const c = loupe.current;
-    if (!c || !frame || !pos) return;
+    if (!c || !frame || !pos || mode === "font") return;
     const dpr = devicePixelRatio;
     c.width = LOUPE_SIZE * dpr;
     c.height = LOUPE_SIZE * dpr;
@@ -202,14 +213,14 @@ export function Overlay() {
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 1.5;
     ctx.strokeRect(c0 - 1, c0 - 1, LOUPE_ZOOM + 2, LOUPE_ZOOM + 2);
-  }, [frame, pos]);
+  }, [frame, pos, mode]);
 
   const onMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
     const p = toFrame(e);
-    if (!p) return;
+    if (!p || reading) return;
     setPos(p);
-    if (e.shiftKey) setDrag({ from: p, to: p });
+    if (mode === "font" || e.shiftKey) setDrag({ from: p, to: p });
     else pick(p);
   };
   const onMouseMove = (e: React.MouseEvent) => {
@@ -221,6 +232,27 @@ export function Overlay() {
   const onMouseUp = (e: React.MouseEvent) => {
     if (!drag) return;
     const p = toFrame(e) ?? drag.to;
+    if (mode === "font") {
+      const region = {
+        x: Math.min(drag.from.x, p.x),
+        y: Math.min(drag.from.y, p.y),
+        width: Math.abs(p.x - drag.from.x) + 1,
+        height: Math.abs(p.y - drag.from.y) + 1,
+      };
+      if (region.width < MIN_REGION || region.height < MIN_REGION) {
+        setDrag(null);
+        return;
+      }
+      setDrag({ from: drag.from, to: p });
+      setReading(true);
+      if (isTauri())
+        invoke("overlay_font_region", { region }).catch((err) => {
+          console.error("font region", err);
+          setReading(false);
+          setDrag(null);
+        });
+      return;
+    }
     pick(drag.from, p);
     setDrag(null);
   };
@@ -239,7 +271,7 @@ export function Overlay() {
 
   return (
     <div
-      className="overlay"
+      className={`overlay${mode === "font" ? " font-mode" : ""}`}
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
@@ -253,7 +285,7 @@ export function Overlay() {
 
       {drag && (
         <div
-          className="drag-rect"
+          className={mode === "font" ? "drag-rect text-rect" : "drag-rect"}
           style={{
             left: Math.min(drag.from.x, drag.to.x) * cssPerPx,
             top: Math.min(drag.from.y, drag.to.y) * cssPerPx,
@@ -263,7 +295,7 @@ export function Overlay() {
         />
       )}
 
-      {pos && (
+      {pos && mode === "color" && (
         <>
           <div className="marker" style={{ left: px, top: py }} />
           <div className="loupe" style={{ left, top }} aria-hidden="true">
@@ -283,7 +315,18 @@ export function Overlay() {
         </>
       )}
 
-      <div className="hint" role="status">
+      {mode === "font" && (
+        <div className="hint" role="status">
+          {reading ? (
+            "Reading text…"
+          ) : (
+            <>
+              Drag a box around one line of text <span className="sep" /> Bigger text matches better <span className="sep" /> <kbd>Esc</kbd> cancel
+            </>
+          )}
+        </div>
+      )}
+      <div className="hint" role="status" hidden={mode === "font"}>
         {picked ? (
           <>
             <span className="chip" style={{ background: picked.hex }} />
