@@ -1,6 +1,7 @@
 import bundled from "../data/google-fonts.json";
 import { getDb } from "./db";
 import { isTauri } from "./env";
+import { getRawSettings } from "./settings";
 
 /**
  * The Google Fonts catalog. A snapshot ships with the app
@@ -31,6 +32,8 @@ export interface FontFamily {
   modified: string;
   /** 1 = most popular. Only in catalogs refreshed from the API. */
   rank?: number;
+  /** 1 = trending most. Only in catalogs refreshed from the API. */
+  trend?: number;
 }
 
 export interface Catalog {
@@ -152,9 +155,8 @@ export async function getCatalog(): Promise<Catalog> {
   return bundledCatalog();
 }
 
-/** Fetch the catalog from the Google Fonts Developer API and cache it. */
-export async function refreshCatalog(apiKey: string): Promise<Catalog> {
-  const url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&capability=VF&key=${encodeURIComponent(apiKey.trim())}`;
+async function fetchList(apiKey: string, sort: "popularity" | "trending"): Promise<ApiItem[]> {
+  const url = `https://www.googleapis.com/webfonts/v1/webfonts?sort=${sort}&capability=VF&key=${encodeURIComponent(apiKey.trim())}`;
   const res = await fetch(url);
   if (!res.ok) {
     let reason = `${res.status} ${res.statusText}`;
@@ -169,8 +171,15 @@ export async function refreshCatalog(apiKey: string): Promise<Catalog> {
   const body = (await res.json()) as { items?: ApiItem[] };
   const items = (body.items ?? []).filter((i) => !isIconFont(i.family));
   if (items.length < 100) throw new Error("The API answered with an unexpectedly short list.");
+  return items;
+}
+
+/** Fetch the catalog (popularity and trending order) from the Developer API and cache it. */
+export async function refreshCatalog(apiKey: string): Promise<Catalog> {
+  const [popular, trending] = await Promise.all([fetchList(apiKey, "popularity"), fetchList(apiKey, "trending")]);
+  const trend = new Map(trending.map((item, i) => [item.family, i + 1]));
   const catalog: Catalog = {
-    families: items.map((item, i) => fromApi(item, i + 1)),
+    families: popular.map((item, i) => ({ ...fromApi(item, i + 1), trend: trend.get(item.family) })),
     origin: "api",
     updated: new Date().toISOString().slice(0, 10),
   };
@@ -182,6 +191,32 @@ export async function refreshCatalog(apiKey: string): Promise<Catalog> {
     );
   }
   return catalog;
+}
+
+/** Days after which a cached API catalog is refreshed in the background. */
+export const REFRESH_DAYS = 7;
+
+export function isStale(catalog: Catalog, now = new Date()): boolean {
+  if (catalog.origin !== "api") return false;
+  const age = now.getTime() - new Date(`${catalog.updated}T00:00:00Z`).getTime();
+  return !(age < REFRESH_DAYS * 86_400_000);
+}
+
+/**
+ * Weekly refresh: when a key is saved and the cached copy is older than
+ * REFRESH_DAYS, fetch a new one. Quiet on failure (offline keeps the cache).
+ */
+export async function refreshIfStale(): Promise<void> {
+  if (!isTauri()) return;
+  const key = (await getRawSettings(API_KEY_SETTING))[API_KEY_SETTING];
+  if (!key) return;
+  const current = await getCatalog();
+  if (current.origin === "api" && !isStale(current)) return;
+  try {
+    await refreshCatalog(key);
+  } catch (e) {
+    console.warn("font catalog refresh", e);
+  }
 }
 
 /** Drop the cached API copy and go back to the bundled snapshot. */

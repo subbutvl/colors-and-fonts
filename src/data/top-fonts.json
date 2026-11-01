@@ -1,0 +1,14 @@
+{
+  "note": "Curated list of the most used Google Fonts families, in rough order of use on the web (Google Fonts public analytics, 2025). Used when no API key is set; with a key the live popularity order replaces it.",
+  "asOf": "2025",
+  "families": [
+    "Roboto", "Open Sans", "Noto Sans JP", "Montserrat", "Inter", "Poppins", "Lato", "Roboto Condensed", "Oswald",
+    "Noto Sans", "Raleway", "Nunito Sans", "Roboto Mono", "Nunito", "Rubik", "Ubuntu", "Playfair Display", "Roboto Slab", "Merriweather",
+    "Noto Sans KR", "Work Sans", "PT Sans", "Kanit", "Lora", "DM Sans", "Fira Sans", "Mulish", "Quicksand", "Barlow",
+    "Noto Serif", "Manrope", "Inconsolata", "IBM Plex Sans", "Titillium Web", "Heebo", "Karla", "Libre Baskerville", "Josefin Sans", "Bebas Neue",
+    "Hind Siliguri", "Source Sans 3", "PT Serif", "Noto Sans TC", "Arimo", "Dosis", "Libre Franklin", "Cabin", "EB Garamond", "Anton",
+    "Bitter", "Archivo", "Outfit", "Plus Jakarta Sans", "Jost", "Space Grotesk", "Barlow Condensed", "Oxygen", "Cairo", "Dancing Script",
+    "Fira Code", "Source Code Pro", "Abel", "Crimson Text", "Exo 2", "Prompt", "Hind", "Assistant", "Pacifico", "Cormorant Garamond",
+    "Lexend", "Red Hat Display", "Figtree", "Sora", "Urbanist", "Comfortaa", "Archivo Black", "Teko", "Signika", "Varela Round"
+  ]
+}

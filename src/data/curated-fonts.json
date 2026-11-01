@@ -1,0 +1,99 @@
+{
+  "collections": [
+    {
+      "id": "ui",
+      "title": "UI and product",
+      "blurb": "Neutral sans serifs with clear numbers and many weights, made for screens, small sizes and dense interfaces.",
+      "fonts": [
+        { "family": "Inter", "why": "Designed for screens; tall x-height, tabular figures, variable weight." },
+        { "family": "Roboto", "why": "Android's system face; familiar and dependable at every size." },
+        { "family": "IBM Plex Sans", "why": "Engineered feel with a human touch; a full family with Mono and Serif." },
+        { "family": "DM Sans", "why": "Low contrast and geometric; friendly in dashboards." },
+        { "family": "Manrope", "why": "Modern geometric grotesque that stays legible when small." },
+        { "family": "Figtree", "why": "Clean and friendly, with good spacing for interfaces." },
+        { "family": "Plus Jakarta Sans", "why": "Crisp shapes with a little personality for product marketing." },
+        { "family": "Source Sans 3", "why": "Adobe's first open UI face; calm and readable." },
+        { "family": "Nunito Sans", "why": "Soft terminals; approachable without looking rounded." },
+        { "family": "Public Sans", "why": "Strong and neutral, from the U.S. Web Design System." },
+        { "family": "Atkinson Hyperlegible", "why": "Made for low-vision readers; letters are hard to confuse." },
+        { "family": "Lexend", "why": "Wide spacing designed to reduce reading strain." }
+      ]
+    },
+    {
+      "id": "editorial",
+      "title": "Editorial and long reading",
+      "blurb": "Text faces for articles, books and documentation: even color, comfortable rhythm, good italics.",
+      "fonts": [
+        { "family": "Merriweather", "why": "Sturdy serif made for reading on screens." },
+        { "family": "Lora", "why": "Brushed curves with moderate contrast; warm body text." },
+        { "family": "Source Serif 4", "why": "Optical sizes from captions to display." },
+        { "family": "Literata", "why": "Google Play Books' reading face; variable optical size." },
+        { "family": "Crimson Pro", "why": "Classic book typography with a range of weights." },
+        { "family": "EB Garamond", "why": "Faithful Garamond revival for a literary feel." },
+        { "family": "Libre Baskerville", "why": "Baskerville tuned for body text on the web." },
+        { "family": "Newsreader", "why": "Built for news reading with optical sizes." },
+        { "family": "Spectral", "why": "Elegant screen-first serif for long documents." },
+        { "family": "PT Serif", "why": "Pairs with PT Sans; wide language support." },
+        { "family": "Noto Serif", "why": "Covers almost every script for multilingual text." },
+        { "family": "Charis SIL", "why": "Highly legible serif with extensive Latin coverage." }
+      ]
+    },
+    {
+      "id": "display",
+      "title": "Display and headlines",
+      "blurb": "Faces with a strong voice for titles, posters and hero sections. Use large and sparingly.",
+      "fonts": [
+        { "family": "Playfair Display", "why": "High-contrast transitional serif; classic magazine headlines." },
+        { "family": "Bebas Neue", "why": "Tall condensed caps for bold, compact titles." },
+        { "family": "Anton", "why": "Heavy condensed grotesque for impact." },
+        { "family": "Abril Fatface", "why": "Didone fat face for fashion and editorial titles." },
+        { "family": "DM Serif Display", "why": "Crisp high-contrast serif for elegant headings." },
+        { "family": "Fraunces", "why": "Soft, wonky old-style serif with variable axes." },
+        { "family": "Syne", "why": "Experimental grotesque that widens as it gets bolder." },
+        { "family": "Unbounded", "why": "Rounded, wide display sans with a playful tech feel." },
+        { "family": "Archivo Black", "why": "Dense grotesque for confident statements." },
+        { "family": "Righteous", "why": "Retro geometric display letters." },
+        { "family": "Bricolage Grotesque", "why": "Characterful grotesque with optical sizes." },
+        { "family": "Instrument Serif", "why": "Condensed modern serif popular in product sites." }
+      ]
+    },
+    {
+      "id": "code",
+      "title": "Code and data",
+      "blurb": "Monospaced faces for editors, terminals, code samples and tables of numbers.",
+      "fonts": [
+        { "family": "JetBrains Mono", "why": "Tall x-height and code ligatures; made for IDEs." },
+        { "family": "Fira Code", "why": "Fira Mono with programming ligatures." },
+        { "family": "Source Code Pro", "why": "Adobe's clean monospace companion to Source Sans." },
+        { "family": "IBM Plex Mono", "why": "Distinctive yet calm; pairs with Plex Sans." },
+        { "family": "Roboto Mono", "why": "Monospace sibling of Roboto." },
+        { "family": "Inconsolata", "why": "Humanist monospace that reads well in print and on screen." },
+        { "family": "Space Mono", "why": "Retro-futuristic monospace for headings and code." },
+        { "family": "Red Hat Mono", "why": "Friendly monospace from the Red Hat family." },
+        { "family": "Ubuntu Mono", "why": "Ubuntu's terminal face." },
+        { "family": "DM Mono", "why": "Low-contrast monospace that matches DM Sans." },
+        { "family": "Martian Mono", "why": "Wide, technical monospace with many weights." },
+        { "family": "Geist Mono", "why": "Vercel's monospace companion to Geist." }
+      ]
+    },
+    {
+      "id": "branding",
+      "title": "Branding and identity",
+      "blurb": "Faces with a recognizable character that can carry a logo, a campaign or a whole brand.",
+      "fonts": [
+        { "family": "Montserrat", "why": "Urban geometric sans inspired by old Buenos Aires signs." },
+        { "family": "Poppins", "why": "Pure geometric shapes with broad language support." },
+        { "family": "Space Grotesk", "why": "Quirky grotesque derived from Space Mono." },
+        { "family": "Outfit", "why": "Clean geometric sans for modern tech brands." },
+        { "family": "Sora", "why": "Futuristic geometric sans with a distinctive voice." },
+        { "family": "Josefin Sans", "why": "Elegant vintage geometric with tall caps." },
+        { "family": "Raleway", "why": "Thin-to-heavy elegant sans with stylish alternates." },
+        { "family": "Comfortaa", "why": "Rounded geometric letters for friendly brands." },
+        { "family": "Cormorant Garamond", "why": "Refined display Garamond for luxury and craft." },
+        { "family": "Pacifico", "why": "Surf-style script for casual, fun brands." },
+        { "family": "Dancing Script", "why": "Lively script for invitations and boutique brands." },
+        { "family": "Urbanist", "why": "Low-contrast geometric sans with a modern edge." }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,9 @@ import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { CssGeneratorPage } from "./pages/CssGeneratorPage";
 import { FontListingPage } from "./pages/FontListingPage";
+import { TopFontsPage } from "./pages/TopFontsPage";
+import { CuratedFontsPage } from "./pages/CuratedFontsPage";
+import { FontPairingPage } from "./pages/FontPairingPage";
 import { SavedPage } from "./pages/SavedPage";
 import { ImagePalettePage } from "./pages/ImagePalettePage";
 import { PairingPage } from "./pages/PairingPage";
@@ -41,6 +44,12 @@ function Page({ id }: { id: string }) {
       return <CssGeneratorPage section={section} />;
     case "font-listing":
       return <FontListingPage section={section} />;
+    case "top-fonts":
+      return <TopFontsPage section={section} />;
+    case "curated-fonts":
+      return <CuratedFontsPage section={section} />;
+    case "font-pairing":
+      return <FontPairingPage section={section} />;
     case "saved":
       return <SavedPage section={section} />;
     case "image-palette":
@@ -62,6 +71,8 @@ export default function App() {
   // Pages that show shortcuts wait for this through getShortcutStatus().
   useEffect(() => {
     void applySavedShortcuts();
+    // Weekly font catalog refresh when an API key is saved (Settings → Fonts).
+    void import("./lib/fonts").then((m) => m.refreshIfStale());
   }, []);
   return (
     <SettingsProvider>
