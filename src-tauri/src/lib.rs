@@ -59,6 +59,7 @@ pub fn run() {
             show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations(db::DB_URL, db::migrations())
@@ -94,6 +95,9 @@ pub fn run() {
             toolbar::hide_toolbar,
             toolbar::toggle_toolbar,
             toolbar::open_main_window,
+            toolbar::toolbar_popover,
+            toolbar::open_history,
+            tray::set_recent_picks,
         ])
         .setup(|app| {
             toolbar::create(app.handle())?;

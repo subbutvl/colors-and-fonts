@@ -119,3 +119,5 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .pick-chip .mono { color: var(--ink); }
 .pick-chip small { color: var(--muted); font-size: 11px; }
 .pick-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+.picks-tools { display: flex; align-items: baseline; gap: 14px; }
+.pick-chip small { max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

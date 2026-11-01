@@ -3,8 +3,11 @@
 //! It is a helper surface, not an app window: no taskbar entry, and closing it
 //! just hides it. Its position is remembered by tauri-plugin-window-state.
 
+use std::sync::atomic::{AtomicBool, Ordering};
+
 use tauri::{
-    AppHandle, Emitter, Manager, PhysicalPosition, WebviewUrl, WebviewWindow, WebviewWindowBuilder,
+    AppHandle, Emitter, LogicalSize, Manager, PhysicalPosition, WebviewUrl, WebviewWindow,
+    WebviewWindowBuilder,
 };
 
 use crate::shortcuts::Action;
@@ -14,6 +17,16 @@ pub const TOOLBAR_WINDOW: &str = "toolbar";
 /// Logical size of the toolbar pill plus room for its drop shadow.
 pub const WIDTH: f64 = 420.0;
 pub const HEIGHT: f64 = 72.0;
+
+/// Extra logical height while a swatch popover is open. The window grows
+/// upwards so the pill stays where the user put it.
+pub const POPOVER_HEIGHT: f64 = 252.0;
+
+/// Sent to the toolbar page when Rust closes the popover (e.g. on hide).
+pub const POPOVER_CLOSED_EVENT: &str = "huetype://toolbar-popover-closed";
+
+/// Whether the window is currently grown for the popover.
+static POPOVER_OPEN: AtomicBool = AtomicBool::new(false);
 
 /// Event sent to the toolbar when a pick/identify shortcut fires (payload: action).
 pub const ACTION_EVENT: &str = "huetype://toolbar-action";
@@ -35,6 +48,9 @@ pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
             .focused(false)
             .visible(false)
             .build()?;
+    // Window-state may have saved a grown size (app quit with a popover
+    // open); the toolbar is always this size when it starts.
+    let _ = window.set_size(LogicalSize::new(WIDTH, HEIGHT));
 
     // First run: bottom centre of the primary monitor. A saved position from
     // window-state is restored over this on later runs.
@@ -64,14 +80,45 @@ pub fn show(app: &AppHandle) {
 
 pub fn hide(app: &AppHandle) {
     if let Some(w) = window(app) {
+        if set_popover(&w, false) {
+            let _ = w.emit_to(TOOLBAR_WINDOW, POPOVER_CLOSED_EVENT, ());
+        }
         let _ = w.hide();
     }
+}
+
+/// Grow (or shrink back) the window for the swatch popover, keeping the
+/// pill's on-screen position. Returns whether anything changed.
+fn set_popover(w: &WebviewWindow, open: bool) -> bool {
+    if POPOVER_OPEN.swap(open, Ordering::SeqCst) == open {
+        return false;
+    }
+    let scale = w.scale_factor().unwrap_or(1.0);
+    let delta = (POPOVER_HEIGHT * scale).round() as i32;
+    let pos = w.outer_position().ok();
+    let height = if open {
+        HEIGHT + POPOVER_HEIGHT
+    } else {
+        HEIGHT
+    };
+    // Move then grow, or shrink then move, so the pill never jumps.
+    if !open {
+        let _ = w.set_size(LogicalSize::new(WIDTH, height));
+    }
+    if let Some(pos) = pos {
+        let y = if open { pos.y - delta } else { pos.y + delta };
+        let _ = w.set_position(PhysicalPosition::new(pos.x, y));
+    }
+    if open {
+        let _ = w.set_size(LogicalSize::new(WIDTH, height));
+    }
+    true
 }
 
 pub fn toggle(app: &AppHandle) {
     if let Some(w) = window(app) {
         if w.is_visible().unwrap_or(false) {
-            let _ = w.hide();
+            hide(app);
         } else {
             show(app);
         }
@@ -100,6 +147,19 @@ pub fn hide_toolbar(app: AppHandle) {
 #[tauri::command]
 pub fn toggle_toolbar(app: AppHandle) {
     toggle(&app);
+}
+
+#[tauri::command]
+pub fn toolbar_popover(app: AppHandle, open: bool) {
+    if let Some(w) = window(&app) {
+        set_popover(&w, open);
+    }
+}
+
+/// The toolbar's history button: recent picks live on Picker home.
+#[tauri::command]
+pub fn open_history(app: AppHandle) {
+    crate::open_section(&app, "picker");
 }
 
 #[tauri::command]

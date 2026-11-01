@@ -27,6 +27,7 @@ image = { version = "0.25.10", default-features = false }
 
 [target.'cfg(any(target_os = "windows", target_os = "macos", target_os = "linux"))'.dependencies]
 tauri-plugin-autostart = "2.7.0"
+tauri-plugin-clipboard-manager = "2"
 tauri-plugin-global-shortcut = "2.4.1"
 tauri-plugin-single-instance = "2"
 tauri-plugin-window-state = "2.5.0"
