@@ -20,6 +20,7 @@ import { PantonePage } from "./pages/PantonePage";
 import { PickerHome } from "./pages/PickerHome";
 import { ScalesPage } from "./pages/ScalesPage";
 import { GradientsPage } from "./pages/GradientsPage";
+import { GuessPage } from "./pages/GuessPage";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
 import { VisionPage } from "./pages/VisionPage";
@@ -65,6 +66,8 @@ function Page({ id }: { id: string }) {
       return <CuratedColorsPage section={section} />;
     case "brand-colors":
       return <BrandColorsPage section={section} />;
+    case "guess-the-color":
+      return <GuessPage section={section} />;
     case "gradients":
       return <GradientsPage section={section} />;
     case "pantone":
