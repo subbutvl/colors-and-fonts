@@ -8,7 +8,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 0.3 Global shortcuts (Ctrl+Alt+C / F / Space) and the floating toolbar window shell: frameless, always on top, draggable, remembers position, shown/hidden from tray and shortcut
 
 ## Phase 1: Color picker
-- [ ] 1.0 Rebindable shortcuts in Settings (store in SQLite, re-register live)
+- [x] 1.0 Rebindable shortcuts in Settings (store in SQLite, re-register live)
 - [ ] 1.1 Windows screen capture (xcap) per monitor with per-monitor DPI mapping; Rust command that returns the color at a point; unit tests for sampling
 - [ ] 1.2 Capture overlay per monitor: frozen screenshot, loupe (11x11 at 10x), click adds, arrow nudge, Shift+drag average, Esc ends
 - [ ] 1.3 Toolbar swatches and multi-pick, swatch popover (formats, copy, nearest name, contrast), format toggle, pick history in SQLite, tray "Recent"

@@ -79,13 +79,14 @@ pub fn run() {
         .plugin(shortcuts::plugin())
         .invoke_handler(tauri::generate_handler![
             shortcuts::shortcut_status,
+            shortcuts::set_shortcut,
             toolbar::hide_toolbar,
             toolbar::toggle_toolbar,
             toolbar::open_main_window,
         ])
         .setup(|app| {
             toolbar::create(app.handle())?;
-            shortcuts::register_all(app.handle());
+            shortcuts::register_defaults(app.handle());
             tray::create(app.handle())?;
             // The window starts hidden (see tauri.conf.json) so a login launch
             // never flashes it; show it unless we were started with --hidden.

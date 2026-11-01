@@ -101,5 +101,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .switch:disabled { opacity: .5; cursor: not-allowed; }
 .switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .switch, .switch::after { transition: none; } }
-.shortcut { flex: none; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font: 12px var(--mono); }
+.shortcut { flex: none; min-width: 120px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); font: 12px var(--mono); cursor: pointer; }
+.shortcut:hover:not(:disabled) { border-color: var(--accent); }
+.shortcut.recording { border-color: var(--accent); color: var(--accent); }
+.shortcut-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+.link-btn { padding: 0; border: 0; background: none; color: var(--accent); font-size: 13px; cursor: pointer; }
+.setting-row .field-error { color: #d93b41; }
 .shortcut.off { color: var(--muted); text-decoration: line-through; }

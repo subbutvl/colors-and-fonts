@@ -54,7 +54,7 @@ export function Toolbar() {
           type="button"
           className={`tb-btn${flash === "pick_color" ? " flash" : ""}`}
           disabled
-          title="Pick color, Ctrl+Alt+C (coming in Phase 1)"
+          title="Pick color (coming in Phase 1)"
           aria-label="Pick color"
         >
           <DropperIcon />
@@ -63,7 +63,7 @@ export function Toolbar() {
           type="button"
           className={`tb-btn${flash === "identify_font" ? " flash" : ""}`}
           disabled
-          title="Identify font, Ctrl+Alt+F (coming in Phase 3)"
+          title="Identify font (coming in Phase 3)"
           aria-label="Identify font"
         >
           <FontIcon />
@@ -76,7 +76,7 @@ export function Toolbar() {
         <button type="button" className="tb-btn" title="Open Huetype" aria-label="Open Huetype" onClick={() => call("open_main_window")}>
           <AppIcon />
         </button>
-        <button type="button" className="tb-btn" title="Hide toolbar, Ctrl+Alt+Space" aria-label="Hide toolbar" onClick={() => call("hide_toolbar")}>
+        <button type="button" className="tb-btn" title="Hide toolbar" aria-label="Hide toolbar" onClick={() => call("hide_toolbar")}>
           <CloseIcon />
         </button>
       </div>
