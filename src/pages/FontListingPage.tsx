@@ -1,36 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageHead } from "../components/PageHead";
-import { StarButton } from "../components/StarButton";
+import { DEFAULT_TEXT, FontCard } from "../components/FontCard";
+import { requestPairing } from "../lib/fontSets";
 import { copyText } from "../lib/colors";
 import {
   CATEGORIES,
-  cssUrl,
-  fallbackFor,
   filterFonts,
-  fontFamilyCss,
-  getCatalog,
-  googleFontsPage,
-  importRule,
-  linkTag,
-  loadPreviewFont,
-  previewWeight,
   sortFonts,
-  styleCount,
   subsetLabel,
   subsetsByUse,
   WEIGHT_NAMES,
-  type Catalog,
   type FontCategory,
-  type FontFamily,
   type FontSort,
 } from "../lib/fonts";
-import { openExternal } from "../lib/open";
 import type { Section } from "../sections";
+import { useFontCatalog } from "../useFontCatalog";
 import { useStarredFonts } from "../useStarredFonts";
 
 const PAGE = 48;
 const STORE_KEY = "huetype.fonts.listing";
-const DEFAULT_TEXT = "The quick brown fox jumps over the lazy dog";
 const WEIGHTS = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
 interface Prefs {
@@ -55,102 +43,15 @@ function loadPrefs(): Prefs {
   }
 }
 
-/** One family: name, facts, a live preview and copy actions. */
-function FontCard({
-  font,
-  text,
-  size,
-  weight,
-  starred,
-  onStar,
-  onCopy,
-}: {
-  font: FontFamily;
-  text: string;
-  size: number;
-  weight: number;
-  starred: boolean;
-  onStar: () => void;
-  onCopy: (text: string, what: string) => void;
-}) {
-  const ref = useRef<HTMLLIElement>(null);
-  const [visible, setVisible] = useState(false);
-  const w = previewWeight(font, weight);
-
-  // Fetch the font only once its card scrolls near the viewport.
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || visible) return;
-    const io = new IntersectionObserver((entries) => entries.some((e) => e.isIntersecting) && setVisible(true), { rootMargin: "400px" });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [visible]);
-
-  useEffect(() => {
-    if (visible) loadPreviewFont(font, w);
-  }, [visible, font, w]);
-
-  const wght = font.axes.find((a) => a.tag === "wght");
-  const otherAxes = font.axes.filter((a) => a.tag !== "wght" && a.tag !== "ital").map((a) => a.tag);
-
-  return (
-    <li ref={ref} className="font-card">
-      <div className="font-card-head">
-        <strong>{font.family}</strong>
-        <StarButton on={starred} onClick={onStar} />
-      </div>
-      <div className="font-card-meta">
-        <span>{CATEGORIES.find((c) => c.id === font.category)?.label}</span>
-        <span>
-          {styleCount(font)} {styleCount(font) === 1 ? "style" : "styles"}
-        </span>
-        {wght && (
-          <span className="badge" title={`Variable weight ${wght.min} to ${wght.max}${otherAxes.length ? `; also ${otherAxes.join(", ")}` : ""}`}>
-            Variable{otherAxes.length ? ` +${otherAxes.length}` : ""}
-          </span>
-        )}
-        {font.rank && <span title="Popularity on Google Fonts">#{font.rank}</span>}
-      </div>
-      <p
-        className="font-preview"
-        style={{ fontFamily: visible ? `"${font.family}", ${fallbackFor(font.category)}` : undefined, fontSize: size, fontWeight: w }}
-        lang="en"
-      >
-        {text || DEFAULT_TEXT}
-      </p>
-      <div className="font-card-actions">
-        <button type="button" className="link-btn" onClick={() => onCopy(fontFamilyCss(font), `font-family for ${font.family}`)}>
-          Copy CSS
-        </button>
-        <button type="button" className="link-btn" onClick={() => onCopy(linkTag(font), `<link> tags for ${font.family}`)}>
-          Copy &lt;link&gt;
-        </button>
-        <button type="button" className="link-btn" onClick={() => onCopy(importRule(font), `@import for ${font.family}`)}>
-          Copy @import
-        </button>
-        <button type="button" className="link-btn" onClick={() => void openExternal(googleFontsPage(font))} title={cssUrl(font)}>
-          Google Fonts ↗
-        </button>
-      </div>
-    </li>
-  );
-}
-
 /** Font listing (15): every Google Fonts family with live previews. */
 export function FontListingPage({ section }: { section: Section }) {
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const { catalog, error } = useFontCatalog();
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs);
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(PAGE);
   const [status, setStatus] = useState<string | null>(null);
   const { isStarred, toggle } = useStarredFonts();
   const more = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    getCatalog()
-      .then(setCatalog)
-      .catch((e) => setStatus(`Could not load the font catalog: ${e}`));
-  }, []);
 
   useEffect(() => {
     try {
@@ -288,7 +189,8 @@ export function FontListingPage({ section }: { section: Section }) {
       </div>
 
       <p className="help" role="status">
-        {status ??
+        {error ??
+          status ??
           (catalog
             ? `${results.length.toLocaleString()} of ${catalog.families.length.toLocaleString()} families. ${
                 catalog.origin === "api" ? `Catalog refreshed from Google Fonts on ${catalog.updated}.` : `Built-in catalog (Google Fonts as of ${catalog.updated}); add an API key in Settings to refresh it and sort by popularity.`
@@ -324,6 +226,7 @@ export function FontListingPage({ section }: { section: Section }) {
             starred={isStarred(f.family)}
             onStar={() => toggle(f.family)}
             onCopy={copy}
+            onPair={() => requestPairing(f.family)}
           />
         ))}
       </ul>
