@@ -5,6 +5,7 @@ import { ColorNamesPage } from "./pages/ColorNamesPage";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { CssGeneratorPage } from "./pages/CssGeneratorPage";
+import { FontListingPage } from "./pages/FontListingPage";
 import { SavedPage } from "./pages/SavedPage";
 import { ImagePalettePage } from "./pages/ImagePalettePage";
 import { PairingPage } from "./pages/PairingPage";
@@ -38,6 +39,8 @@ function Page({ id }: { id: string }) {
       return <VisionPage section={section} />;
     case "css-generator":
       return <CssGeneratorPage section={section} />;
+    case "font-listing":
+      return <FontListingPage section={section} />;
     case "saved":
       return <SavedPage section={section} />;
     case "image-palette":

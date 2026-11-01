@@ -25,7 +25,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 2.7 Saved library: star colors (recent picks, toolbar popover, Converter), Saved page with colors, notes and palettes, JSON export
 
 ## Phase 3: Fonts
-- [ ] 3.1 Google Fonts catalog fetch and offline cache; Font listing (15)
+- [x] 3.1 Google Fonts catalog (bundled snapshot, optional API-key refresh cached in SQLite); Font listing (15) with filters, live previews, copy CSS; starred fonts in Saved
 - [ ] 3.2 Top fonts (16), Curated fonts (18), Font pairing (17)
 - [ ] 3.3 Font identify capture: region select on overlay, Windows OCR (Windows.Media.Ocr), UI Automation exact-name lookup
 - [ ] 3.4 Font matching index (pre-rendered Google Fonts features) and results card with confidence labels

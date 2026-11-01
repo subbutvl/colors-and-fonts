@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
+import { FontCatalogSetting } from "../components/FontCatalogSetting";
 import { ShortcutRow } from "../components/ShortcutRow";
 import { ThemeSwitch } from "../components/ThemeSwitch";
 import { getShortcutStatus, type ShortcutStatus } from "../lib/shortcuts";
@@ -96,6 +97,11 @@ export function SettingsPage() {
             />
           ))
         )}
+      </section>
+
+      <section className="settings-group" aria-labelledby="set-fonts">
+        <h2 id="set-fonts">Fonts</h2>
+        <FontCatalogSetting />
       </section>
 
       <section className="settings-group" aria-labelledby="set-about">
