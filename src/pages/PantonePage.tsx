@@ -96,6 +96,25 @@ export function PantonePage({ section }: { section: Section }) {
       .then(() => setStatus(`Copied ${what}`))
       .catch((e) => setStatus(`Copy failed: ${e}`));
 
+  // Listbox keys: one tab stop; arrows, Home and End move the selection.
+  const onStripKey = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const first = COTY_YEARS[0].year;
+    const next =
+      e.key === "ArrowLeft" || e.key === "ArrowUp"
+        ? Math.max(first, year - 1)
+        : e.key === "ArrowRight" || e.key === "ArrowDown"
+          ? Math.min(LAST_YEAR, year + 1)
+          : e.key === "Home"
+            ? first
+            : e.key === "End"
+              ? LAST_YEAR
+              : null;
+    if (next === null) return;
+    e.preventDefault();
+    setYear(next);
+    e.currentTarget.querySelector<HTMLElement>(`[data-year="${next}"]`)?.focus();
+  };
+
   const pick = (y: number) => {
     setYear(y);
     document.querySelector("main")?.scrollTo({ top: 0, behavior: "smooth" });
@@ -105,13 +124,15 @@ export function PantonePage({ section }: { section: Section }) {
     <div className="page">
       <PageHead section={section} />
 
-      <div className="coty-strip" role="listbox" aria-label="Years">
+      <div className="coty-strip" role="listbox" aria-label="Years" aria-orientation="horizontal" onKeyDown={onStripKey}>
         {COTY_YEARS.map((y) => (
           <button
             key={y.year}
             type="button"
             role="option"
             aria-selected={y.year === year}
+            tabIndex={y.year === year ? 0 : -1}
+            data-year={y.year}
             className={`coty-strip-year${y.year === year ? " on" : ""}`}
             onClick={() => setYear(y.year)}
             title={`${y.year}: ${y.colors.map((c) => c.name).join(" and ")}`}
