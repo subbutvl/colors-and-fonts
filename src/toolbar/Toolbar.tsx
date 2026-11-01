@@ -31,6 +31,8 @@ export function Toolbar() {
   const [swatches, setSwatches] = useState<string[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [format, setFormat] = useState<ColorFormat>("hex");
+  /** The popover opens below the pill when the toolbar is near the screen top. */
+  const [below, setBelow] = useState(false);
 
   const reload = useCallback(() => {
     // Browser preview (no app): sample swatches so the layout can be checked.
@@ -74,7 +76,10 @@ export function Toolbar() {
   // The window grows upwards while the popover is open (see toolbar.rs).
   const showPopover = useCallback((index: number | null) => {
     setOpen(index);
-    call("toolbar_popover", { open: index !== null });
+    if (!isTauri()) return;
+    invoke<boolean>("toolbar_popover", { open: index !== null })
+      .then(setBelow)
+      .catch((e) => console.error("toolbar_popover", e));
   }, []);
 
   // A new pick moves the swatches, so close the popover. So do Esc and
@@ -95,11 +100,19 @@ export function Toolbar() {
     if (open === null) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && showPopover(null);
     const onBlur = () => showPopover(null);
+    // Clicks on other toolbar controls stay in this page (no blur), so
+    // close on any press outside the popover and the swatches too.
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Element | null;
+      if (!t?.closest(".popover, .swatch")) showPopover(null);
+    };
     window.addEventListener("keydown", onKey);
     window.addEventListener("blur", onBlur);
+    window.addEventListener("pointerdown", onDown);
     return () => {
       window.removeEventListener("keydown", onKey);
       window.removeEventListener("blur", onBlur);
+      window.removeEventListener("pointerdown", onDown);
     };
   }, [open, showPopover]);
 
@@ -110,7 +123,7 @@ export function Toolbar() {
   };
 
   return (
-    <div className="stage">
+    <div className={`stage${open !== null && below ? " below" : ""}`}>
       {open !== null && swatches[open] && <Popover hex={swatches[open]} onClose={() => showPopover(null)} />}
       <div className="toolbar" role="toolbar" aria-label="Huetype picker toolbar">
         <span className="handle" data-tauri-drag-region title="Drag to move" />

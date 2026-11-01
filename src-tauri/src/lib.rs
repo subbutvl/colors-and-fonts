@@ -115,9 +115,14 @@ pub fn run() {
             // tray menu); closing the toolbar (e.g. Alt+F4) just hides it.
             if let WindowEvent::CloseRequested { api, .. } = event {
                 let label = window.label();
-                if label == MAIN_WINDOW || label == toolbar::TOOLBAR_WINDOW {
+                if label == MAIN_WINDOW {
                     api.prevent_close();
                     let _ = window.hide();
+                } else if label == toolbar::TOOLBAR_WINDOW {
+                    // Alt+F4: hide through the helper so an open popover is
+                    // closed and the window shrinks back.
+                    api.prevent_close();
+                    toolbar::hide(window.app_handle());
                 } else if picker::is_overlay(label) {
                     // Alt+F4 on a picker overlay ends the session.
                     api.prevent_close();

@@ -27,6 +27,8 @@ pub const POPOVER_CLOSED_EVENT: &str = "huetype://toolbar-popover-closed";
 
 /// Whether the window is currently grown for the popover.
 static POPOVER_OPEN: AtomicBool = AtomicBool::new(false);
+/// Whether the open popover grew the window downward (no room above).
+static POPOVER_BELOW: AtomicBool = AtomicBool::new(false);
 
 /// Event sent to the toolbar when a pick/identify shortcut fires (payload: action).
 pub const ACTION_EVENT: &str = "huetype://toolbar-action";
@@ -96,6 +98,21 @@ fn set_popover(w: &WebviewWindow, open: bool) -> bool {
     let scale = w.scale_factor().unwrap_or(1.0);
     let delta = (POPOVER_HEIGHT * scale).round() as i32;
     let pos = w.outer_position().ok();
+    let below = if open {
+        // Near the top of the monitor there is no room above: grow downward
+        // instead, and the page puts the popover under the pill.
+        let top = w
+            .current_monitor()
+            .ok()
+            .flatten()
+            .map(|m| m.position().y)
+            .unwrap_or(i32::MIN);
+        let below = pos.is_some_and(|p| p.y - delta < top);
+        POPOVER_BELOW.store(below, Ordering::SeqCst);
+        below
+    } else {
+        POPOVER_BELOW.load(Ordering::SeqCst)
+    };
     let height = if open {
         HEIGHT + POPOVER_HEIGHT
     } else {
@@ -105,7 +122,7 @@ fn set_popover(w: &WebviewWindow, open: bool) -> bool {
     if !open {
         let _ = w.set_size(LogicalSize::new(WIDTH, height));
     }
-    if let Some(pos) = pos {
+    if !below && let Some(pos) = pos {
         let y = if open { pos.y - delta } else { pos.y + delta };
         let _ = w.set_position(PhysicalPosition::new(pos.x, y));
     }
@@ -149,11 +166,14 @@ pub fn toggle_toolbar(app: AppHandle) {
     toggle(&app);
 }
 
+/// Open or close the swatch popover. Returns true when it opens below the
+/// pill (toolbar near the top of the screen).
 #[tauri::command]
-pub fn toolbar_popover(app: AppHandle, open: bool) {
+pub fn toolbar_popover(app: AppHandle, open: bool) -> bool {
     if let Some(w) = window(&app) {
         set_popover(&w, open);
     }
+    open && POPOVER_BELOW.load(Ordering::SeqCst)
 }
 
 /// The toolbar's history button: recent picks live on Picker home.

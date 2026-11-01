@@ -10,6 +10,7 @@ button { font: inherit; color: inherit; }
 .handle:active { cursor: grabbing; }
 .swatches { display: flex; gap: 6px; }
 .divider { width: 1px; height: 22px; margin: 0 3px; background: #33363f; }
+.stage.below { flex-direction: column-reverse; justify-content: flex-end; padding: 6px 0 0; }
 .tb-btn { display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: #2a2c33; color: #d7d9e0; cursor: pointer; }
 .tb-btn svg { width: 15px; height: 15px; }
 .tb-btn:hover:not(:disabled) { background: #363944; }
