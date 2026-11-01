@@ -101,3 +101,10 @@ describe("curated gradients", async () => {
     expect(gradientCss(spectrum.gradient)).toMatch(/^conic-gradient\(from 0deg at 50% 50% in oklch, #EF4444 0%/);
   });
 });
+
+describe("addStop keeps the other stop objects", () => {
+  it("so the page can find the new one", () => {
+    const next = addStop(bw);
+    expect(next.stops.findIndex((s) => !bw.stops.includes(s))).toBe(1);
+  });
+});

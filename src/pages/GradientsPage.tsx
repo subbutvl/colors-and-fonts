@@ -49,6 +49,11 @@ function initialGradient(): { gradient: Gradient; name: string } {
   return { gradient: DEFAULT_GRADIENT, name: "" };
 }
 
+/** Index of the stop `addStop` inserted: the only stop object not in the old list. */
+function addedIndex(before: Gradient, after: Gradient): number {
+  return after.stops.findIndex((s) => !before.stops.includes(s));
+}
+
 /** The bar under the preview: stops as handles you can drag, click to add. */
 function StopsBar({
   gradient,
@@ -96,8 +101,7 @@ function StopsBar({
       onPointerDown={(e) => {
         if (e.target !== bar.current || gradient.stops.length >= MAX_STOPS) return;
         const next = addStop(gradient, posFrom(e.clientX));
-        const pos = posFrom(e.clientX);
-        onChange(next, next.stops.findIndex((s) => s.pos === pos));
+        onChange(next, addedIndex(gradient, next));
       }}
       title="Click the bar to add a stop"
     >
@@ -369,7 +373,10 @@ export function GradientsPage({ section }: { section: Section }) {
           <div className="picks-head">
             <h2 id="grad-stops-h">Stops</h2>
             <span className="grad-tools">
-              <button type="button" className="link-btn" onClick={() => change(addStop(gradient), gradient.stops.length)} disabled={gradient.stops.length >= MAX_STOPS}>
+              <button type="button" className="link-btn" onClick={() => {
+                  const next = addStop(gradient);
+                  change(next, addedIndex(gradient, next));
+                }} disabled={gradient.stops.length >= MAX_STOPS}>
                 Add
               </button>
               <button type="button" className="link-btn" onClick={() => change(reverse(gradient))}>
