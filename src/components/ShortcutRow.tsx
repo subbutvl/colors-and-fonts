@@ -61,6 +61,12 @@ export function ShortcutRow({ status, onChange }: Props) {
               ? "Works from any app."
               : "Not available: another app is using these keys. Choose a different combination."}
         </span>
+        {status.saved_failed && !error && (
+          <span className="field-error" role="status">
+            Your shortcut {prettyShortcut(status.saved_failed.accelerator)} couldn't be set up this time, so the
+            default is in use. {status.saved_failed.error}
+          </span>
+        )}
         {error && (
           <span className="field-error" role="alert">
             {error}

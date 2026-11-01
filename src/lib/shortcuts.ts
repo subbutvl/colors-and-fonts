@@ -17,6 +17,8 @@ export interface ShortcutStatus {
   default_accelerator: string;
   registered: boolean;
   error: string | null;
+  /** Set when the user's saved shortcut could not be re-applied at startup (the default is in use). */
+  saved_failed?: { accelerator: string; error: string };
 }
 
 export const SHORTCUT_NAMES: Record<ShortcutAction, string> = {
@@ -54,30 +56,48 @@ export function acceleratorFromEvent(e: KeyboardEvent | React.KeyboardEvent): st
   return parts.join("+");
 }
 
+/** Saved shortcuts that could not be re-applied this session, by action. */
+const skipped: Partial<Record<ShortcutAction, { accelerator: string; error: string }>> = {};
+let applying: Promise<void> | null = null;
+
+/**
+ * Re-register the user's saved shortcuts (Rust starts with the defaults).
+ * Runs once per window; later calls return the same promise, so anything that
+ * reads the status can wait for it.
+ */
+export function applySavedShortcuts(): Promise<void> {
+  if (!isTauri()) return Promise.resolve();
+  if (!applying) {
+    applying = (async () => {
+      const saved = await getRawSettings(KEY_PREFIX);
+      for (const [key, accelerator] of Object.entries(saved)) {
+        const action = key.slice(KEY_PREFIX.length) as ShortcutAction;
+        if (!(action in SHORTCUT_NAMES)) continue;
+        try {
+          await invoke("set_shortcut", { action, accelerator });
+          delete skipped[action];
+        } catch (e) {
+          // The default stays active; the saved choice is kept so it is retried next launch.
+          skipped[action] = { accelerator, error: String(e) };
+        }
+      }
+    })().catch((e) => console.warn("Could not read saved shortcuts:", e));
+  }
+  return applying;
+}
+
+/** Current bindings, after saved shortcuts have been applied. */
 export async function getShortcutStatus(): Promise<ShortcutStatus[] | null> {
   if (!isTauri()) return null;
-  return invoke<ShortcutStatus[]>("shortcut_status");
+  await applySavedShortcuts();
+  const statuses = await invoke<ShortcutStatus[]>("shortcut_status");
+  return statuses.map((st) => (skipped[st.action] ? { ...st, saved_failed: skipped[st.action] } : st));
 }
 
 /** Rebind and remember. Throws a readable message if the keys can't be used. */
 export async function setShortcut(action: ShortcutAction, accelerator: string): Promise<ShortcutStatus> {
   const status = await invoke<ShortcutStatus>("set_shortcut", { action, accelerator });
   await setRawSetting(KEY_PREFIX + action, status.accelerator === status.default_accelerator ? null : accelerator);
+  delete skipped[action];
   return status;
-}
-
-/** Called once by the main window: re-register the user's saved shortcuts. */
-export async function applySavedShortcuts(): Promise<void> {
-  if (!isTauri()) return;
-  const saved = await getRawSettings(KEY_PREFIX);
-  for (const [key, accelerator] of Object.entries(saved)) {
-    const action = key.slice(KEY_PREFIX.length) as ShortcutAction;
-    if (!(action in SHORTCUT_NAMES)) continue;
-    try {
-      await invoke("set_shortcut", { action, accelerator });
-    } catch (e) {
-      // Keep the default; Settings shows the current state.
-      console.warn(`Saved shortcut for ${action} not applied:`, e);
-    }
-  }
 }

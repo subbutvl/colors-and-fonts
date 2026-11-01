@@ -24,8 +24,9 @@ export default function App() {
   const [active, navigate] = useHashRoute();
 
   // Re-register the user's saved shortcuts (Rust starts with the defaults).
+  // Pages that show shortcuts wait for this through getShortcutStatus().
   useEffect(() => {
-    applySavedShortcuts().catch((e) => console.warn("Could not apply saved shortcuts:", e));
+    void applySavedShortcuts();
   }, []);
   return (
     <SettingsProvider>
