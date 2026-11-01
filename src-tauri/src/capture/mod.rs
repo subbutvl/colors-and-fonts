@@ -129,6 +129,19 @@ pub fn capture_all(source: &impl ScreenSource) -> Result<Vec<Frame>, String> {
         .collect()
 }
 
+/// The whole monitor under the virtual-desktop point (`x`, `y`).
+pub fn capture_monitor_at(source: &impl ScreenSource, x: i32, y: i32) -> Result<Frame, String> {
+    let monitor = source.monitor_at(x, y)?;
+    let full = Region {
+        x: 0,
+        y: 0,
+        width: monitor.width,
+        height: monitor.height,
+    };
+    let image = source.capture(&monitor, full)?;
+    Ok(Frame { monitor, image })
+}
+
 /// [`ScreenSource`] backed by the `xcap` crate (GDI on Windows).
 pub struct XcapSource;
 
@@ -317,6 +330,15 @@ mod tests {
         assert_eq!(frames.len(), 2);
         assert_eq!(frames[1].monitor.name, "Left");
         assert_eq!(frames[1].image.dimensions(), (2880, 1620));
+    }
+
+    #[test]
+    fn capture_monitor_at_picks_the_monitor_under_the_point() {
+        let src = fake();
+        let frame = capture_monitor_at(&src, -100, 0).unwrap();
+        assert_eq!(frame.monitor.name, "Left");
+        assert_eq!(frame.image.dimensions(), (2880, 1620));
+        assert!(capture_monitor_at(&src, 9000, 0).is_err());
     }
 
     #[test]

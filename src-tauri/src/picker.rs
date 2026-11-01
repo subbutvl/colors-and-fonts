@@ -303,6 +303,38 @@ pub fn overlay_ready(app: AppHandle, window: WebviewWindow, state: State<'_, Pic
     }
 }
 
+/// Screenshot of the monitor the main window is on, taken with our own
+/// windows hidden (Image palette's "Grab screen"). Binary, see [`encode_frame`].
+#[tauri::command]
+pub async fn grab_screen(app: AppHandle) -> Result<tauri::ipc::Response, String> {
+    let main = app
+        .get_webview_window(MAIN_WINDOW)
+        .ok_or_else(|| "No main window".to_string())?;
+    let pos = main.outer_position().map_err(|e| e.to_string())?;
+    let size = main.outer_size().map_err(|e| e.to_string())?;
+    let (cx, cy) = (
+        pos.x + (size.width / 2) as i32,
+        pos.y + (size.height / 2) as i32,
+    );
+    let restore_toolbar = is_visible(&app, toolbar::TOOLBAR_WINDOW);
+    let _ = main.hide();
+    if restore_toolbar {
+        toolbar::hide(&app);
+    }
+    let result = tauri::async_runtime::spawn_blocking(move || {
+        std::thread::sleep(HIDE_SETTLE);
+        capture::capture_monitor_at(&XcapSource, cx, cy)
+    })
+    .await
+    .map_err(|e| e.to_string())
+    .and_then(|r| r);
+    crate::show_main_window(&app);
+    if restore_toolbar {
+        toolbar::show(&app);
+    }
+    result.map(|frame| tauri::ipc::Response::new(encode_frame(&frame)))
+}
+
 #[tauri::command]
 pub fn overlay_pick(app: AppHandle, pick: Pick) {
     let _ = app.emit(PICKED_EVENT, pick);
