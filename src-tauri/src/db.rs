@@ -83,6 +83,24 @@ pub fn migrations() -> Vec<Migration> {
               );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 7,
+            description: "create design_systems table (my design systems)",
+            sql: "CREATE TABLE IF NOT EXISTS design_systems (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                name        TEXT NOT NULL,
+                description TEXT NOT NULL DEFAULT '',
+                links       TEXT NOT NULL DEFAULT '[]',
+                tags        TEXT NOT NULL DEFAULT '[]',
+                notes       TEXT NOT NULL DEFAULT '',
+                colors      TEXT NOT NULL DEFAULT '[]',
+                fonts       TEXT NOT NULL DEFAULT '[]',
+                source      TEXT NOT NULL DEFAULT '',
+                created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+                updated_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

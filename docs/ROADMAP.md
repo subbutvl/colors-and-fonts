@@ -35,7 +35,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 4.2 Curated colors (7) and Brand colors (8)
 - [x] 4.3 Gradients (9): curated set and editor
 - [x] 4.4 Guess the color game (12)
-- [ ] 4.5 Design systems hub, curated list and my design systems CRUD (19 to 21)
+- [x] 4.5 Design systems hub, curated list and my design systems CRUD (19 to 21)
 
 ## Phase 5: Release
 - [ ] 5.1 App icon and branding, Windows installer (NSIS/MSI), auto-updater, code signing
