@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { applySavedShortcuts } from "./lib/shortcuts";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
+import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { PickerHome } from "./pages/PickerHome";
 import { Placeholder } from "./pages/Placeholder";
@@ -16,6 +17,8 @@ function Page({ id }: { id: string }) {
   switch (section.id) {
     case "picker":
       return <PickerHome />;
+    case "contrast":
+      return <ContrastPage section={section} />;
     case "converter":
       return <ConverterPage section={section} />;
     case "html-color-names":

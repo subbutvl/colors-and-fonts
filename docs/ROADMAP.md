@@ -13,7 +13,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 1.2 Capture overlay per monitor: frozen screenshot, loupe (11x11 at 10x), click adds, arrow nudge, Shift+drag average, Esc ends
 - [x] 1.3 Toolbar swatches and multi-pick, swatch popover (formats, copy, nearest name, contrast), format toggle, pick history in SQLite, tray "Recent"
 - [x] 1.4 Color engine (culori) + Converter (14) + HTML color names (13)
-- [ ] 1.5 Contrast (3): WCAG 2.2 + APCA, suggest nearest passing color; Picker home with recent picks
+- [x] 1.5 Contrast (3): WCAG 2.2 + APCA, suggest nearest passing color; Picker home with recent picks
 
 ## Phase 2: Color tools
 - [ ] 2.1 Palettes (1): generate, lock, harmony modes, save
