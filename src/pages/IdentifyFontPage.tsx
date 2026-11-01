@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { FontCard } from "../components/FontCard";
 import { PageHead } from "../components/PageHead";
 import { StarButton } from "../components/StarButton";
 import { copyText } from "../lib/colors";
 import { captureNotes, fontCaptureImage, lastFontCapture, onFontCaptured, startFontPick, type FontCapture } from "../lib/fontIdentify";
-import { fallbackFor, fontFamilyCss, loadPreviewFont } from "../lib/fonts";
-import { byFamily, requestPairing } from "../lib/fontSets";
+import { fallbackFor, fontFamilyCss, loadPreviewFont, type FontFamily } from "../lib/fonts";
+import { CONFIDENCE_LABELS, identify, loadFontIndex, MIN_LETTERS, type Identified } from "../lib/fontMatch";
+import { byFamily, knownAlternatives, MATCH_PREFER, requestPairing, sameLetterFamilies } from "../lib/fontSets";
 import { isTauri } from "../lib/env";
 import { getShortcutStatus, prettyShortcut } from "../lib/shortcuts";
 import type { Section } from "../sections";
@@ -33,6 +35,129 @@ function CaptureView({ capture, image }: { capture: FontCapture; image: ImageDat
         l.words.map((w, wi) => (
           <span key={`${li}-${wi}`} className="id-word" style={{ left: w.x * k, top: w.y * k, width: w.width * k, height: w.height * k }} title={w.text} />
         )),
+      )}
+    </div>
+  );
+}
+
+const TONES = { likely: "pass", possible: "plain", alternative: "muted" } as const;
+
+/** Notes on how far to trust the letter matching. */
+function matchNotes(r: Identified): string[] {
+  const notes: string[] = [];
+  const { skippedWords, lowContrast } = r.measured;
+  if (r.letterCount < MIN_LETTERS) {
+    notes.push(
+      r.letterCount
+        ? `Only ${r.letterCount} different ${r.letterCount === 1 ? "letter" : "letters"} could be measured, so treat these as rough alternatives. A few words of plain text work best.`
+        : "No letters could be measured. Capture a few words of plain text, with a little space around them.",
+    );
+  }
+  if (skippedWords) notes.push(`${skippedWords} ${skippedWords === 1 ? "word was" : "words were"} skipped because the letters touch or did not match the text read.`);
+  if (lowContrast) notes.push(`${lowContrast} ${lowContrast === 1 ? "word was" : "words were"} skipped because the text is too close to its background color.`);
+  return notes;
+}
+
+/** Bold matched, and the families with the very same Latin letters. */
+function matchNote(family: string, weight: number): string | undefined {
+  const same = sameLetterFamilies(family);
+  const parts = [
+    weight >= 600 ? "Matched its bold style." : "",
+    same.length ? `Same Latin letters as ${same.slice(0, 3).join(", ")}${same.length > 3 ? ` and ${same.length - 3} more` : ""}.` : "",
+  ].filter(Boolean);
+  return parts.length ? parts.join(" ") : undefined;
+}
+
+/** Ranked Google Fonts for the captured letters, plus our known stand-ins for a reported font. */
+function MatchResults({
+  capture,
+  image,
+  families,
+  sample,
+  onCopy,
+}: {
+  capture: FontCapture;
+  image: ImageData;
+  families: Map<string, FontFamily>;
+  sample: string;
+  onCopy: (value: string, what: string) => void;
+}) {
+  const [result, setResult] = useState<Identified | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { isStarred, toggle } = useStarredFonts();
+  const known = capture.exact ? knownAlternatives(capture.exact.name) : null;
+
+  useEffect(() => {
+    let live = true;
+    setResult(null);
+    setError(null);
+    const words = capture.ocr?.lines.flatMap((l) => l.words) ?? [];
+    loadFontIndex()
+      .then((index) => live && setResult(identify(index, image, words, { prefer: MATCH_PREFER })))
+      .catch((e) => live && setError(e instanceof Error ? e.message : String(e)));
+    return () => {
+      live = false;
+    };
+  }, [capture, image]);
+
+  const card = (font: FontFamily, weight: number, tag: { label: string; tone: "pass" | "plain" | "muted"; title?: string }, note?: string) => (
+    <FontCard
+      key={font.family}
+      font={font}
+      text={sample}
+      size={28}
+      weight={weight}
+      starred={isStarred(font.family)}
+      onStar={() => toggle(font.family)}
+      onCopy={onCopy}
+      onPair={() => requestPairing(font.family)}
+      tag={tag}
+      note={note}
+    />
+  );
+
+  const knownFonts = known?.alternatives.flatMap((n) => families.get(n) ?? []) ?? [];
+  const shown = new Set(knownFonts.map((f) => f.family));
+  const matched = (result?.matches ?? []).filter((m) => families.has(m.family) && !shown.has(m.family)).slice(0, 5);
+
+  return (
+    <div className="id-matches">
+      {knownFonts.length > 0 && (
+        <>
+          <p className="help">{known!.why}</p>
+          <ul className="font-grid">{knownFonts.map((f) => card(f, 400, { label: "Known alternative", tone: "pass" }))}</ul>
+          <h3 className="vision-h">Closest by letter shapes</h3>
+        </>
+      )}
+      {error && <p className="alert">Font matching is unavailable: {error}</p>}
+      {!result && !error && <p className="help">Comparing letters…</p>}
+      {result && (
+        <>
+          <p className="help">
+            Compared {result.letterCount} different {result.letterCount === 1 ? "letter" : "letters"} with {result.indexSize.toLocaleString()} Google Fonts families
+            (regular, and bold for popular families). Italic and decorated text match roughly.
+          </p>
+          {matchNotes(result).map((n) => (
+            <p key={n} className="alert">
+              {n}
+            </p>
+          ))}
+          {matched.length > 0 && (
+            <ul className="font-grid">
+              {matched.map((m) =>
+                card(
+                  families.get(m.family)!,
+                  m.weight,
+                  // The app named a non-Google font: these can only be alternatives.
+                  capture.exact
+                    ? { label: CONFIDENCE_LABELS.alternative, tone: "plain", title: `Distance ${m.distance.toFixed(3)} over ${m.letters} letters` }
+                    : { label: CONFIDENCE_LABELS[m.confidence], tone: TONES[m.confidence], title: `Distance ${m.distance.toFixed(3)} over ${m.letters} letters` },
+                  matchNote(m.family, m.weight),
+                ),
+              )}
+            </ul>
+          )}
+        </>
       )}
     </div>
   );
@@ -74,13 +199,16 @@ export function IdentifyFontPage({ section }: { section: Section }) {
       .then(() => setStatus(`Copied ${what}`))
       .catch((e) => setStatus(`Copy failed: ${e}`));
 
+  const families = useMemo(() => (catalog ? byFamily(catalog.families) : null), [catalog]);
   const exact = capture?.exact ?? null;
-  const google = exact && catalog ? byFamily(catalog.families).get(exact.name) : undefined;
+  const google = exact && families ? families.get(exact.name) : undefined;
   useEffect(() => {
     if (google) loadPreviewFont(google, 400);
   }, [google]);
   const notes = capture ? captureNotes(capture) : [];
   const text = capture?.ocr?.text.trim() ?? "";
+  const sample = (capture?.ocr?.lines[0]?.text ?? "").slice(0, 60);
+
 
   return (
     <div className="page">
@@ -130,36 +258,46 @@ export function IdentifyFontPage({ section }: { section: Section }) {
 
           <section className="settings-group">
             <h2>Font</h2>
-            {exact ? (
+            {exact && google ? (
               <div className="id-exact">
                 <p>
                   The app reports this text is set in <strong>{exact.name}</strong>
                   {exact.size ? ` at ${Math.round(exact.size * 10) / 10} pt` : ""}. This is the exact font, not a guess.
                 </p>
-                {google ? (
-                  <div className="id-google">
-                    <span className="id-sample" style={{ fontFamily: `"${google.family}", ${fallbackFor(google.category)}` }}>
-                      {text.split("\n")[0] || google.family}
-                    </span>
-                    <span className="id-actions">
-                      <button type="button" className="link-btn" onClick={() => copy(fontFamilyCss(google), `font-family for ${google.family}`)}>
-                        Copy CSS
-                      </button>
-                      <button type="button" className="link-btn" onClick={() => requestPairing(google.family)}>
-                        Pairings
-                      </button>
-                      <StarButton on={isStarred(google.family)} onClick={() => toggle(google.family)} />
-                    </span>
-                  </div>
-                ) : (
-                  <p className="help">{exact.name} is not a Google Font. Closest Google Fonts alternatives arrive with font matching in the next update.</p>
-                )}
+                <div className="id-google">
+                  <span className="id-sample" style={{ fontFamily: `"${google.family}", ${fallbackFor(google.category)}` }}>
+                    {sample || google.family}
+                  </span>
+                  <span className="id-actions">
+                    <button type="button" className="link-btn" onClick={() => copy(fontFamilyCss(google), `font-family for ${google.family}`)}>
+                      Copy CSS
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => requestPairing(google.family)}>
+                      Pairings
+                    </button>
+                    <StarButton on={isStarred(google.family)} onClick={() => toggle(google.family)} />
+                  </span>
+                </div>
               </div>
             ) : (
-              <p className="help">
-                This app does not report its fonts (common in browsers, images and many modern apps). Matching the captured letters against Google Fonts
-                arrives in the next update.
-              </p>
+              <>
+                <p>
+                  {exact ? (
+                    <>
+                      The app reports this text is set in <strong>{exact.name}</strong>
+                      {exact.size ? ` at ${Math.round(exact.size * 10) / 10} pt` : ""}, which is not a Google Font. These are the closest Google Fonts
+                      alternatives.
+                    </>
+                  ) : (
+                    "This app does not report its fonts, so Huetype compared the captured letters with Google Fonts. These are the closest matches; the exact font may not be a Google Font."
+                  )}
+                </p>
+                {image && families ? (
+                  <MatchResults capture={capture} image={image} families={families} sample={sample} onCopy={copy} />
+                ) : (
+                  <p className="help">Loading…</p>
+                )}
+              </>
             )}
           </section>
         </>

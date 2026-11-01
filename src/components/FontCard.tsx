@@ -29,6 +29,7 @@ export function FontCard({
   note,
   rankLabel,
   onPair,
+  tag,
 }: {
   font: FontFamily;
   text: string;
@@ -43,6 +44,8 @@ export function FontCard({
   rankLabel?: string;
   /** Adds a "Pairings" action. */
   onPair?: () => void;
+  /** A label after the name, e.g. how sure a font match is. */
+  tag?: { label: string; tone: "pass" | "plain" | "muted"; title?: string };
 }) {
   const ref = useRef<HTMLLIElement>(null);
   const [visible, setVisible] = useState(false);
@@ -70,6 +73,11 @@ export function FontCard({
         <strong>
           {rankLabel && <span className="font-rank">{rankLabel}</span>}
           {font.family}
+          {tag && (
+            <span className={`badge font-tag ${tag.tone}`} title={tag.title}>
+              {tag.label}
+            </span>
+          )}
         </strong>
         <StarButton on={starred} onClick={onStar} />
       </div>

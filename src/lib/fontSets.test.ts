@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { bundledCatalog, isStale, type Catalog } from "./fonts";
-import { BODY_FONTS, COLLECTIONS, PAIRS, pairCss, suggestBodies, TOP_FALLBACK, topFonts, trendingFonts } from "./fontSets";
+import { BODY_FONTS, COLLECTIONS, KNOWN_ALTERNATIVES, knownAlternatives, PAIRS, pairCss, suggestBodies, TOP_FALLBACK, topFonts, trendingFonts } from "./fontSets";
 
 const catalog = bundledCatalog();
 const names = new Set(catalog.families.map((f) => f.family));
@@ -13,6 +13,7 @@ describe("curated data", () => {
       ...COLLECTIONS.flatMap((c) => c.fonts.map((f) => f.family)),
       ...PAIRS.flatMap((p) => [p.heading, p.body]),
       ...BODY_FONTS,
+      ...KNOWN_ALTERNATIVES.flatMap((k) => k.alternatives),
     ];
     expect(all.filter((n) => !names.has(n))).toEqual([]);
   });
@@ -26,6 +27,18 @@ describe("curated data", () => {
   it("covers the collections the spec names", () => {
     expect(COLLECTIONS.map((c) => c.id)).toEqual(["ui", "editorial", "display", "code", "branding"]);
     expect(COLLECTIONS.find((c) => c.id === "code")!.fonts.every((f) => get(f.family).category === "monospace")).toBe(true);
+  });
+});
+
+describe("known alternatives", () => {
+  it("finds a system font regardless of case", () => {
+    expect(knownAlternatives(" arial ")?.alternatives[0]).toBe("Arimo");
+    expect(knownAlternatives("Segoe UI")?.alternatives).toContain("Open Sans");
+    expect(knownAlternatives("Some Font")).toBeNull();
+  });
+
+  it("never lists a Google Font as needing an alternative", () => {
+    expect(KNOWN_ALTERNATIVES.filter((k) => names.has(k.name))).toEqual([]);
   });
 });
 
