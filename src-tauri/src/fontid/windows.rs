@@ -19,10 +19,30 @@ use windows::core::HSTRING;
 
 use super::{ExactFont, FontProbe, Line, OcrText, TextReader, Word};
 
+/// Joins this thread to the COM/WinRT multithreaded apartment for its
+/// lifetime. Captures run on short-lived worker threads that are not
+/// initialized, and WinRT and UIA objects must be created on one that is.
+struct Mta(bool);
+
+impl Mta {
+    fn enter() -> Self {
+        Mta(unsafe { CoInitializeEx(None, COINIT_MULTITHREADED) }.is_ok())
+    }
+}
+
+impl Drop for Mta {
+    fn drop(&mut self) {
+        if self.0 {
+            unsafe { CoUninitialize() };
+        }
+    }
+}
+
 pub struct WindowsOcr;
 
 impl TextReader for WindowsOcr {
     fn read(&self, image: &RgbaImage) -> Result<OcrText, String> {
+        let _mta = Mta::enter();
         read(image).map_err(|e| format!("Windows text recognition failed: {}", e.message()))
     }
 }
@@ -81,13 +101,8 @@ pub struct UiAutomation;
 
 impl FontProbe for UiAutomation {
     fn font_at(&self, x: i32, y: i32) -> Option<ExactFont> {
-        // COM for this thread only; the probe runs on a short-lived worker.
-        let init = unsafe { CoInitializeEx(None, COINIT_MULTITHREADED) };
-        let found = probe(x, y).ok().flatten();
-        if init.is_ok() {
-            unsafe { CoUninitialize() };
-        }
-        found
+        let _mta = Mta::enter();
+        probe(x, y).ok().flatten()
     }
 }
 
