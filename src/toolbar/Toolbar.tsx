@@ -8,15 +8,10 @@ import { onPick } from "../lib/picker";
 import { AppIcon, CloseIcon, DropperIcon, FontIcon, HistoryIcon, PlusIcon } from "./icons";
 import { Popover } from "./Popover";
 
-/** Must match `ACTION_EVENT` in src-tauri/src/toolbar.rs. */
-const ACTION_EVENT = "huetype://toolbar-action";
 /** Must match `POPOVER_CLOSED_EVENT` in src-tauri/src/toolbar.rs. */
 const POPOVER_CLOSED_EVENT = "huetype://toolbar-popover-closed";
 /** Swatch slots on the pill. */
 const SLOTS = 3;
-
-/** Only identify_font flashes now: pick_color opens the picker instead. */
-type Action = "pick_color" | "identify_font";
 
 const call = (cmd: string, args?: Record<string, unknown>) => {
   if (isTauri()) invoke(cmd, args).catch((e) => console.error(cmd, e));
@@ -27,7 +22,6 @@ const call = (cmd: string, args?: Record<string, unknown>) => {
  * swatches (click for details), pick, copy format, history, open and hide.
  */
 export function Toolbar() {
-  const [flash, setFlash] = useState<Action | null>(null);
   const [swatches, setSwatches] = useState<string[]>([]);
   const [open, setOpen] = useState<number | null>(null);
   const [format, setFormat] = useState<ColorFormat>("hex");
@@ -55,23 +49,6 @@ export function Toolbar() {
     };
   }, [reload]);
 
-  // Font identify shows the toolbar and briefly highlights its button.
-  useEffect(() => {
-    if (!isTauri()) return;
-    let unlisten: (() => void) | undefined;
-    let cancelled = false;
-    let timer: number | undefined;
-    listen<Action>(ACTION_EVENT, (e) => {
-      setFlash(e.payload);
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => setFlash(null), 1600);
-    }).then((fn) => (cancelled ? fn() : (unlisten = fn)));
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-      unlisten?.();
-    };
-  }, []);
 
   // The window grows upwards while the popover is open (see toolbar.rs).
   const showPopover = useCallback((index: number | null) => {
@@ -158,13 +135,7 @@ export function Toolbar() {
         <button type="button" className="tb-btn" title="Pick color" aria-label="Pick color" onClick={() => call("start_pick")}>
           <DropperIcon />
         </button>
-        <button
-          type="button"
-          className={`tb-btn${flash === "identify_font" ? " flash" : ""}`}
-          disabled
-          title="Identify font (coming in Phase 3)"
-          aria-label="Identify font"
-        >
+        <button type="button" className="tb-btn" title="Identify font" aria-label="Identify font" onClick={() => call("start_font_pick")}>
           <FontIcon />
         </button>
         <button type="button" className="tb-btn" title="Pick history" aria-label="Pick history" onClick={() => call("open_history")}>
@@ -187,11 +158,6 @@ export function Toolbar() {
           <CloseIcon />
         </button>
       </div>
-      {flash === "identify_font" && (
-        <p className="hint" role="status">
-          Font identify arrives in Phase 3
-        </p>
-      )}
     </div>
   );
 }

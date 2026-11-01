@@ -17,6 +17,7 @@ export interface Section {
 
 export const SECTIONS: Section[] = [
   { id: "picker", title: "Picker", group: "Picker", phase: 1, blurb: "Start a color pick or font identify, and reuse recent picks." },
+  { id: "identify", title: "Identify font", group: "Picker", phase: 3, blurb: "Drag a box around text anywhere on screen to read it and find its font." },
   { id: "saved", title: "Saved", group: "Picker", phase: 2, blurb: "Everything you starred: colors, palettes, gradients and fonts." },
 
   { id: "palettes", num: 1, title: "Palettes", group: "Colors", phase: 2, blurb: "Generate palettes, lock colors you like, save and export." },

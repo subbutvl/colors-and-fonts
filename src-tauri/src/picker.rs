@@ -7,6 +7,11 @@
 //! (overlay.html) pulls its frame with `overlay_frame`, draws it, and calls
 //! `overlay_ready`, which shows the window. Picks go out as `PICKED_EVENT` to
 //! every window.
+//!
+//! The same session serves font identify ([`Mode::Font`]): the overlay lets
+//! the user drag a box around text and sends it with `overlay_font_region`;
+//! we crop it from the frozen frame, close the overlays and hand the crop to
+//! [`crate::fontid`].
 
 use std::sync::Mutex;
 use std::time::Duration;
@@ -18,6 +23,7 @@ use tauri::{
 };
 
 use crate::capture::{self, Frame, MonitorInfo, XcapSource};
+use crate::fontid::{self, FontProbe, Rect};
 use crate::{MAIN_WINDOW, toolbar};
 
 /// Overlay windows are `overlay-<monitor index>`.
@@ -37,6 +43,18 @@ pub const ERROR_EVENT: &str = "huetype://picker-error";
 /// Alt+F4 or a failed start), so pages waiting for a pick can stop waiting.
 pub const FINISHED_EVENT: &str = "huetype://picker-finished";
 
+/// Broadcast when a font capture has been read (payload: [`fontid::FontCapture`]).
+pub const FONT_CAPTURED_EVENT: &str = "huetype://font-captured";
+
+/// What a session is for.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Mode {
+    #[default]
+    Color,
+    Font,
+}
+
 /// Time for Windows to repaint after we hide our own windows, so they are
 /// not in the frozen frame.
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
@@ -48,12 +66,15 @@ pub const FRAME_HEADER: usize = 20;
 #[derive(Default)]
 struct Session {
     active: bool,
+    mode: Mode,
     /// Frame per overlay window label.
     frames: Vec<(String, Frame)>,
     restore_toolbar: bool,
     restore_main: bool,
     /// Why the last session failed to open, until Picker home reads it.
     last_error: Option<String>,
+    /// The last font capture and its pixels, until the main window reads them.
+    font_capture: Option<(fontid::FontCapture, image::RgbaImage)>,
 }
 
 /// Managed state for the picker session.
@@ -101,6 +122,15 @@ pub fn encode_frame(frame: &Frame) -> Vec<u8> {
 /// Start a pick session (shortcut, tray, toolbar or Picker home). Does
 /// nothing if one is already open.
 pub fn start(app: &AppHandle) {
+    start_mode(app, Mode::Color);
+}
+
+/// Start a font identify session: same frozen screen, drag a box around text.
+pub fn start_font(app: &AppHandle) {
+    start_mode(app, Mode::Font);
+}
+
+fn start_mode(app: &AppHandle, mode: Mode) {
     let state = app.state::<Picker>();
     {
         let mut s = state.0.lock().unwrap();
@@ -108,6 +138,7 @@ pub fn start(app: &AppHandle) {
             return;
         }
         s.active = true;
+        s.mode = mode;
         s.last_error = None;
         s.restore_toolbar = is_visible(app, toolbar::TOOLBAR_WINDOW);
         s.restore_main = is_visible(app, MAIN_WINDOW);
@@ -211,13 +242,14 @@ fn place(w: &WebviewWindow, m: &MonitorInfo) {
     let _ = w.set_size(PhysicalSize::new(m.width, m.height));
 }
 
-/// Hide the overlays, free the frames and bring back what we hid.
-pub fn finish(app: &AppHandle) {
-    let (restore_toolbar, restore_main) = {
+/// Hide the overlays and free the frames. Returns what to bring back
+/// (toolbar, main window), or None if no session was open.
+fn close(app: &AppHandle) -> Option<(bool, bool)> {
+    let restore = {
         let state = app.state::<Picker>();
         let mut s = state.0.lock().unwrap();
         if !s.active {
-            return;
+            return None;
         }
         s.active = false;
         s.frames.clear();
@@ -228,6 +260,14 @@ pub fn finish(app: &AppHandle) {
             let _ = w.hide();
         }
     }
+    Some(restore)
+}
+
+/// Hide the overlays, free the frames and bring back what we hid.
+pub fn finish(app: &AppHandle) {
+    let Some((restore_toolbar, restore_main)) = close(app) else {
+        return;
+    };
     if restore_toolbar {
         toolbar::show(app);
     }
@@ -343,6 +383,116 @@ pub fn overlay_pick(app: AppHandle, pick: Pick) {
 #[tauri::command]
 pub fn overlay_finish(app: AppHandle) {
     finish(&app);
+}
+
+#[tauri::command]
+pub fn start_font_pick(app: AppHandle) {
+    start_font(&app);
+}
+
+/// What the overlay should do: pick colors or select text.
+#[tauri::command]
+pub fn overlay_mode(state: State<'_, Picker>) -> Mode {
+    state.0.lock().unwrap().mode
+}
+
+/// The overlay's text selection (its own frame pixels): crop it, close the
+/// session, then read it off the UI thread and show the result.
+#[tauri::command]
+pub fn overlay_font_region(
+    app: AppHandle,
+    window: WebviewWindow,
+    state: State<'_, Picker>,
+    region: Rect,
+) -> Result<(), String> {
+    let (crop, monitor) = {
+        let s = state.0.lock().unwrap();
+        let (_, frame) = s
+            .frames
+            .iter()
+            .find(|(label, _)| label == window.label())
+            .ok_or_else(|| "No picker session".to_string())?;
+        let rect = fontid::clamp_rect(region, frame.image.width(), frame.image.height())
+            .filter(|r| r.width >= fontid::MIN_REGION && r.height >= fontid::MIN_REGION)
+            .ok_or_else(|| "Select a larger area".to_string())?;
+        let crop = fontid::crop(&frame.image, rect).ok_or_else(|| "Empty selection".to_string())?;
+        (
+            (crop, rect),
+            frame.monitor.clone(),
+        )
+    };
+    let Some((restore_toolbar, _)) = close(&app) else {
+        return Ok(());
+    };
+    std::thread::spawn(move || {
+        let ((image, rect), m) = (crop, monitor);
+        let started = std::time::Instant::now();
+        // The overlays must be gone before asking the app under the
+        // selection for its font, or UI Automation would find our window.
+        std::thread::sleep(HIDE_SETTLE);
+        let (sx, sy) = (m.x + rect.x, m.y + rect.y);
+        let exact = fontid::font_probe().font_at(
+            sx + (rect.width / 2) as i32,
+            sy + (rect.height / 2) as i32,
+        );
+        let (ocr, ocr_error) = match fontid::read_text(&fontid::text_reader(), &image) {
+            Ok(t) => (Some(t), None),
+            Err(e) => (None, Some(e)),
+        };
+        let capture = fontid::FontCapture {
+            x: sx,
+            y: sy,
+            width: rect.width,
+            height: rect.height,
+            text_height: ocr.as_ref().and_then(fontid::median_word_height),
+            ocr,
+            ocr_error,
+            exact,
+            elapsed_ms: started.elapsed().as_secs_f64() * 1000.0,
+        };
+        app.state::<Picker>().0.lock().unwrap().font_capture = Some((capture.clone(), image));
+        if restore_toolbar {
+            toolbar::show(&app);
+        }
+        crate::open_section(&app, "identify");
+        let _ = app.emit(FONT_CAPTURED_EVENT, capture);
+        let _ = app.emit(FINISHED_EVENT, ());
+    });
+    Ok(())
+}
+
+/// The last font capture (JSON), if any.
+#[tauri::command]
+pub fn font_capture(state: State<'_, Picker>) -> Option<fontid::FontCapture> {
+    state
+        .0
+        .lock()
+        .unwrap()
+        .font_capture
+        .as_ref()
+        .map(|(c, _)| c.clone())
+}
+
+/// Pixels of the last font capture (binary, same layout as [`encode_frame`]).
+#[tauri::command]
+pub fn font_capture_image(state: State<'_, Picker>) -> Result<tauri::ipc::Response, String> {
+    let s = state.0.lock().unwrap();
+    let (c, image) = s
+        .font_capture
+        .as_ref()
+        .ok_or_else(|| "No font capture yet".to_string())?;
+    let frame = Frame {
+        monitor: MonitorInfo {
+            name: String::new(),
+            x: c.x,
+            y: c.y,
+            width: image.width(),
+            height: image.height(),
+            scale_factor: 1.0,
+        },
+        image: image.clone(),
+    };
+    Ok(tauri::ipc::Response::new(encode_frame(&frame)))
 }
 
 #[cfg(test)]

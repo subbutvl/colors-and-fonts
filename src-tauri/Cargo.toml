@@ -34,6 +34,22 @@ tauri-plugin-window-state = "2.5.0"
 # Screen capture. Default features off: GDI capture on Windows, no video.
 xcap = { version = "0.9.8", default-features = false }
 
+# Font identify: Windows.Media.Ocr and UI Automation (same version xcap uses).
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62.2", features = [
+  "Foundation",
+  "Foundation_Collections",
+  "Globalization",
+  "Graphics_Imaging",
+  "Media_Ocr",
+  "Storage_Streams",
+  "Win32_Foundation",
+  "Win32_System_Com",
+  "Win32_System_Ole",
+  "Win32_System_Variant",
+  "Win32_UI_Accessibility",
+] }
+
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]

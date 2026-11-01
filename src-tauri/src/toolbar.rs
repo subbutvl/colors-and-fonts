@@ -30,9 +30,6 @@ static POPOVER_OPEN: AtomicBool = AtomicBool::new(false);
 /// Whether the open popover grew the window downward (no room above).
 static POPOVER_BELOW: AtomicBool = AtomicBool::new(false);
 
-/// Event sent to the toolbar when a pick/identify shortcut fires (payload: action).
-pub const ACTION_EVENT: &str = "huetype://toolbar-action";
-
 pub fn create(app: &AppHandle) -> tauri::Result<WebviewWindow> {
     let window =
         WebviewWindowBuilder::new(app, TOOLBAR_WINDOW, WebviewUrl::App("toolbar.html".into()))
@@ -147,12 +144,7 @@ pub fn handle_action(app: &AppHandle, action: Action) {
     match action {
         Action::ToggleToolbar => toggle(app),
         Action::PickColor => crate::picker::start(app),
-        // Font identify arrives in Phase 3; for now show the toolbar and let
-        // it highlight the matching button.
-        Action::IdentifyFont => {
-            show(app);
-            let _ = app.emit_to(TOOLBAR_WINDOW, ACTION_EVENT, action);
-        }
+        Action::IdentifyFont => crate::picker::start_font(app),
     }
 }
 
