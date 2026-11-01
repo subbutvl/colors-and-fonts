@@ -87,7 +87,12 @@ export function CssGeneratorPage({ section }: { section: Section }) {
     const c = parseColor(r.input);
     return c ? convert(c).hex : null;
   });
-  const colors: BrandColor[] = rows.flatMap((r, i) => (parsed[i] ? [{ name: r.name.trim() || hueFamily(parsed[i]!), hex: parsed[i]! }] : []));
+  // Roles follow row positions (first = primary, second = accent), so while
+  // any row is not a valid color nothing is generated: dropping it would
+  // shift later rows into its role.
+  const invalidRow = parsed.findIndex((h) => !h);
+  const colors: BrandColor[] =
+    invalidRow >= 0 ? [] : rows.map((r, i) => ({ name: r.name.trim() || hueFamily(parsed[i]!), hex: parsed[i]! }));
   const scales = useMemo(() => buildScales(colors, neutral), [JSON.stringify(colors), neutral]);
   const roleList = useMemo(() => roles(scales, neutral), [scales, neutral]);
   const output = useMemo(() => generateCss({ colors, neutral, format, value }), [JSON.stringify(colors), neutral, format, value]);
@@ -195,7 +200,7 @@ export function CssGeneratorPage({ section }: { section: Section }) {
             </button>
           </div>
         </div>
-        <pre className="scale-code gen-code">{output || "Add a color to generate."}</pre>
+        <pre className="scale-code gen-code">{output || (invalidRow >= 0 ? `Color ${invalidRow + 1} is not a color I can read yet. Fix it to generate.` : "Add a color to generate.")}</pre>
       </section>
 
       <p className="help" role="status">
