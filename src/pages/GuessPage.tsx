@@ -40,6 +40,8 @@ function verdict(a: Answer, answer: string): string {
 export function GuessPage({ section }: { section: Section }) {
   const date = today();
   const [mode, setMode] = useState<Mode>("daily");
+  // The date a round was dealt for: a daily round that runs past midnight still counts for that date.
+  const [roundDate, setRoundDate] = useState(date);
   const [seed, setSeed] = useState(() => dailySeed(date));
   const round = useMemo(() => makeRound(seed), [seed]);
   const [index, setIndex] = useState(0);
@@ -70,17 +72,19 @@ export function GuessPage({ section }: { section: Section }) {
     },
     { run: 0, best: 0 },
   ).best;
-  const playedToday = stats.daily[date];
+  const playedToday = stats.daily[roundDate];
 
   const start = useCallback(
     (m: Mode) => {
+      const d = today();
       setMode(m);
-      setSeed(m === "daily" ? dailySeed(date) : (Math.random() * 2 ** 32) >>> 0);
+      setRoundDate(d);
+      setSeed(m === "daily" ? dailySeed(d) : (Math.random() * 2 ** 32) >>> 0);
       setIndex(0);
       setAnswers([]);
       setStatus(null);
     },
-    [date],
+    [],
   );
 
   const choose = (pick: string) => {
@@ -92,7 +96,7 @@ export function GuessPage({ section }: { section: Section }) {
     async (all: Answer[]) => {
       const total = all.reduce((s, a) => s + a.points, 0);
       const best = all.reduce((acc, a) => (a.points === 100 ? { run: acc.run + 1, best: Math.max(acc.best, acc.run + 1) } : { run: 0, best: acc.best }), { run: 0, best: 0 }).best;
-      const next = recordRound(stats, { score: total, bestStreak: best, date: mode === "daily" ? date : undefined });
+      const next = recordRound(stats, { score: total, bestStreak: best, date: mode === "daily" ? roundDate : undefined });
       setStats(next);
       try {
         await setRawSetting(STATS_KEY, JSON.stringify(next));
@@ -100,7 +104,7 @@ export function GuessPage({ section }: { section: Section }) {
         setStatus(`Could not save your stats: ${e}`);
       }
     },
-    [stats, mode, date],
+    [stats, mode, roundDate],
   );
 
   const next = useCallback(() => {
@@ -130,7 +134,7 @@ export function GuessPage({ section }: { section: Section }) {
   });
 
   const share = () =>
-    copyText(`${shareLine(score, round.length, mode === "daily" ? date : undefined)}\n${answers.map((a) => (a.points === 100 ? "🟩" : a.points >= 60 ? "🟨" : "⬛")).join("")}`)
+    copyText(`${shareLine(score, round.length, mode === "daily" ? roundDate : undefined)}\n${answers.map((a) => (a.points === 100 ? "🟩" : a.points >= 60 ? "🟨" : "⬛")).join("")}`)
       .then(() => setStatus("Copied your result"))
       .catch((e) => setStatus(`Copy failed: ${e}`));
 
@@ -220,7 +224,7 @@ export function GuessPage({ section }: { section: Section }) {
           <section className="guess-card" aria-label="Results">
             <div className="guess-head">
               <span>
-                {mode === "daily" ? `Daily round, ${date}` : "Practice round"} · <b>{score}</b> / {round.length * 100}
+                {mode === "daily" ? `Daily round, ${roundDate}` : "Practice round"} · <b>{score}</b> / {round.length * 100}
               </span>
               <span className="guess-score">Longest run of exact answers: {bestStreakThisRound}</span>
             </div>
