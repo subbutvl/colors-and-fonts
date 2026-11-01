@@ -57,7 +57,7 @@ fn engine() -> windows::core::Result<OcrEngine> {
 fn read(image: &RgbaImage) -> windows::core::Result<OcrText> {
     // OCR wants BGRA; our frames are RGBA.
     let mut bgra = image.as_raw().clone();
-    for px in bgra.chunks_exact_mut(4) {
+    for px in bgra.as_chunks_mut::<4>().0 {
         px.swap(0, 2);
     }
     let writer = DataWriter::new()?;
