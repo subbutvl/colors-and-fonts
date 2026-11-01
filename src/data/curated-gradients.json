@@ -1,0 +1,32 @@
+{
+  "note": "Our own gradients. Colors are spread evenly unless `stops` gives positions. Missing fields use the editor defaults (linear, 135deg, OKLab).",
+  "gradients": [
+    { "name": "Morning Haze", "group": "Soft", "colors": ["#FDE2E4", "#E2ECE9", "#CDDAFD"] },
+    { "name": "Peach Cloud", "group": "Soft", "angle": 160, "colors": ["#FFECD2", "#FCB69F"] },
+    { "name": "Lilac Mist", "group": "Soft", "angle": 120, "colors": ["#E0C3FC", "#8EC5FC"] },
+    { "name": "Mint Breeze", "group": "Soft", "angle": 90, "colors": ["#D4FC79", "#96E6A1"] },
+    { "name": "Paper Glow", "group": "Soft", "type": "radial", "shape": "ellipse", "x": 30, "y": 20, "colors": ["#FFFBEB", "#FDE68A", "#FBCFE8"] },
+    { "name": "Blush", "group": "Soft", "angle": 200, "colors": ["#FFF1F2", "#FECDD3", "#FDA4AF"] },
+
+    { "name": "Ultraviolet", "group": "Vivid", "colors": ["#6366F1", "#A855F7", "#EC4899"] },
+    { "name": "Citrus Pop", "group": "Vivid", "angle": 45, "colors": ["#F59E0B", "#F97316", "#EF4444"] },
+    { "name": "Lagoon", "group": "Vivid", "angle": 110, "colors": ["#06B6D4", "#3B82F6"] },
+    { "name": "Electric Lime", "group": "Vivid", "angle": 75, "colors": ["#A3E635", "#22C55E", "#0EA5E9"] },
+    { "name": "Hot Coral", "group": "Vivid", "angle": 150, "space": "oklch", "colors": ["#FF6B6B", "#FFD93D"] },
+    { "name": "Spectrum", "group": "Vivid", "type": "conic", "angle": 0, "space": "oklch", "colors": ["#EF4444", "#EAB308", "#22C55E", "#3B82F6", "#A855F7", "#EF4444"] },
+
+    { "name": "Golden Hour", "group": "Nature", "angle": 180, "colors": ["#FFD27A", "#FF8A5B", "#B23A48"] },
+    { "name": "Deep Forest", "group": "Nature", "angle": 160, "colors": ["#A8C686", "#3E6B48", "#1B3A2B"] },
+    { "name": "Ocean Floor", "group": "Nature", "angle": 180, "colors": ["#7DD3FC", "#1E6091", "#0B2340"] },
+    { "name": "Desert Dusk", "group": "Nature", "angle": 170, "colors": ["#FCE7C8", "#F4845F", "#7A2E3A"] },
+    { "name": "Northern Lights", "group": "Nature", "angle": 200, "space": "oklch", "colors": ["#0F172A", "#0D9488", "#4ADE80", "#A78BFA"] },
+    { "name": "Moss Stone", "group": "Nature", "angle": 120, "colors": ["#D6D3C4", "#8F9779", "#4E5D33"] },
+
+    { "name": "Midnight", "group": "Dark", "angle": 160, "colors": ["#0F172A", "#1E1B4B"] },
+    { "name": "Charcoal Ember", "group": "Dark", "type": "radial", "shape": "ellipse", "x": 80, "y": 100, "stops": [{ "color": "#7C2D12", "pos": 0 }, { "color": "#1C1917", "pos": 70 }] },
+    { "name": "Nebula", "group": "Dark", "type": "radial", "x": 30, "y": 30, "colors": ["#7C3AED", "#312E81", "#0B0B1A"] },
+    { "name": "Graphite", "group": "Dark", "angle": 180, "colors": ["#3F3F46", "#18181B"] },
+    { "name": "Abyss", "group": "Dark", "angle": 135, "colors": ["#0B132B", "#1C2541", "#3A506B"] },
+    { "name": "Spotlight", "group": "Dark", "type": "conic", "angle": 200, "x": 50, "y": 0, "stops": [{ "color": "#18181B", "pos": 0 }, { "color": "#52525B", "pos": 10 }, { "color": "#18181B", "pos": 20 }, { "color": "#18181B", "pos": 100 }] }
+  ]
+}

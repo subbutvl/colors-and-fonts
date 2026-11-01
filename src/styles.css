@@ -497,3 +497,42 @@ ol.font-grid { counter-reset: none; }
 .brand-copy .mono { font-size: 11px; color: inherit; opacity: 0.8; }
 .brand-color:hover .cc-star, .brand-color:focus-within .cc-star { opacity: 1; }
 @media (max-width: 900px) { .brand-row { grid-template-columns: 1fr; } .brand-colors { flex-wrap: wrap; } }
+
+/* Gradients (9) */
+.grad-preview { position: relative; height: 260px; border-radius: 14px; border: 1px solid var(--line); background-size: cover; }
+.grad-preview.placeable { cursor: crosshair; touch-action: none; }
+.grad-center { position: absolute; width: 16px; height: 16px; margin: -8px 0 0 -8px; border: 2px solid #fff; border-radius: 50%; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45), 0 1px 4px rgba(0, 0, 0, 0.3); pointer-events: none; }
+.grad-bar { position: relative; height: 28px; margin: 14px 10px 6px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); cursor: copy; touch-action: none; }
+.grad-handle { position: absolute; top: 50%; width: 20px; height: 34px; padding: 0; transform: translate(-50%, -50%); border: 3px solid #fff; border-radius: 6px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3); cursor: grab; touch-action: none; }
+.grad-handle:active { cursor: grabbing; }
+.grad-handle.on { z-index: 1; box-shadow: 0 0 0 2px var(--accent), 0 1px 4px rgba(0, 0, 0, 0.35); }
+.grad-handle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.grad-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-top: 12px; }
+.grad-controls .font-cats { margin: 0; }
+.grad-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.grad-stops-panel, .grad-export { display: grid; gap: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.grad-export .scale-code { margin: 0; border: 1px solid var(--line); border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.grad-export .help { margin: 0; }
+.grad-stops-panel h2, .grad-export h2 { margin: 0; font-size: 15px; }
+.grad-tools { display: inline-flex; gap: 12px; }
+.grad-stop .link-btn:disabled, .grad-tools .link-btn:disabled { opacity: 0.4; cursor: default; }
+#grad-curated-h { margin: 8px 0 10px; }
+.grad-stops { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.grad-stop { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 8px; }
+.grad-stop.on { background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.grad-stop .text-input { min-width: 0; padding: 5px 8px; }
+.grad-pos { width: 64px; }
+.grad-swatch { position: relative; width: 30px; height: 30px; border-radius: 7px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15); cursor: pointer; overflow: hidden; }
+.grad-swatch input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.grad-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 12px 0 0; padding: 0; list-style: none; }
+.grad-grid.small { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.grad-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.grad-card-preview { display: block; width: 100%; height: 120px; border: 0; cursor: pointer; }
+.grad-grid.small .grad-card-preview { height: 80px; }
+.grad-card-meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; }
+.grad-card-meta > span:first-child { display: grid; min-width: 0; }
+.grad-card-meta strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.grad-card-meta small { color: var(--muted); }
+.grad-card-actions { display: inline-flex; gap: 10px; flex-shrink: 0; }
+.grad-card-actions .link-btn { padding: 0; }
+@media (max-width: 960px) { .grad-editor { grid-template-columns: 1fr; } }

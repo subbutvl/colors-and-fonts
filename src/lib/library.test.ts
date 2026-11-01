@@ -13,6 +13,8 @@ import {
   unstarColor,
   unstarFont,
 } from "./library";
+import { DEFAULT_GRADIENT, gradientCss } from "./gradient";
+import { deleteGradient, listGradients, renameGradient, requestOpenGradient, saveGradient, takeOpenGradient } from "./gradients";
 import { deletePalette, listPalettes, savePalette } from "./palettes";
 
 describe("library (in-memory outside Tauri)", () => {
@@ -72,5 +74,32 @@ describe("library (in-memory outside Tauri)", () => {
     await unstarFont("Inter");
     await unstarFont("Lora");
     expect(await listStarredFonts()).toEqual([]);
+  });
+
+  it("saves, renames and exports gradients", async () => {
+    const id = await saveGradient("  Dawn  ", { ...DEFAULT_GRADIENT, angle: 400 });
+    let list = await listGradients();
+    expect(list[0]).toEqual(expect.objectContaining({ id, name: "Dawn" }));
+    expect(list[0].gradient.angle).toBe(40);
+    await renameGradient(id, "");
+    list = await listGradients();
+    expect(list[0].name).toBe("Untitled gradient");
+    const json = JSON.parse(await exportLibrary());
+    expect(json.gradients[0]).toEqual(expect.objectContaining({ name: "Untitled gradient", css: gradientCss(list[0].gradient) }));
+    await deleteGradient(id);
+    expect(await listGradients()).toEqual([]);
+  });
+
+  it("hands a gradient to the Gradients page once", () => {
+    const store = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => store.set(k, v),
+      removeItem: (k: string) => store.delete(k),
+    });
+    requestOpenGradient({ ...DEFAULT_GRADIENT, type: "conic" }, "Wheel");
+    expect(takeOpenGradient()).toEqual(expect.objectContaining({ name: "Wheel", gradient: expect.objectContaining({ type: "conic" }) }));
+    expect(takeOpenGradient()).toBeNull();
+    vi.unstubAllGlobals();
   });
 });
