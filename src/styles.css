@@ -427,3 +427,7 @@ ol.font-grid { counter-reset: none; }
 .id-google { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
 .id-sample { font-size: 26px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .id-actions { display: flex; align-items: center; gap: 12px; flex: none; }
+.font-tag { margin-left: 8px; vertical-align: 2px; font-size: 11px; }
+.font-tag.plain { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); }
+.font-tag.muted { background: color-mix(in srgb, var(--muted) 16%, transparent); color: var(--muted); }
+.id-matches { margin-top: 4px; }

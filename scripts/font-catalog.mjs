@@ -3,23 +3,13 @@
 // Source: the Google Fonts Developer API response and variable-axes data as
 // published in the google-font-metadata npm package (MIT), so no API key is
 // needed to rebuild. Run: node scripts/font-catalog.mjs [version]
-import { execFileSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
-import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { writeFileSync } from "node:fs";
+import { loadMetadata } from "./gfm.mjs";
 
-const version = process.argv[2] ?? "latest";
-const dir = mkdtempSync(join(tmpdir(), "gfm-"));
-const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-const tgz = execFileSync(npm, ["pack", `google-font-metadata@${version}`, "--silent"], { cwd: dir, shell: process.platform === "win32" })
-  .toString()
-  .trim()
-  .split("\n")
-  .pop();
-execFileSync("tar", ["xzf", tgz], { cwd: dir });
-const pkg = JSON.parse(readFileSync(join(dir, "package", "package.json"), "utf8"));
-const api = JSON.parse(readFileSync(join(dir, "package", "data", "api-response.json"), "utf8"));
-const variable = JSON.parse(readFileSync(join(dir, "package", "data", "variable.json"), "utf8"));
+const meta = loadMetadata(process.argv[2] ?? "latest");
+const pkg = { version: meta.version };
+const api = meta.read("api-response.json");
+const variable = meta.read("variable.json");
 
 const axesByFamily = new Map(Object.values(variable).map((v) => [v.family, v.axes]));
 /** Icon fonts are not text faces: leave them out of a type catalog. */

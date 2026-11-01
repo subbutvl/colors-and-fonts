@@ -1,3 +1,5 @@
+import alternativesData from "../data/font-alternatives.json";
+import indexAliases from "../data/font-index-aliases.json";
 import curated from "../data/curated-fonts.json";
 import pairsData from "../data/font-pairs.json";
 import topData from "../data/top-fonts.json";
@@ -149,3 +151,33 @@ export function requestPairing(family: string): void {
   }
   window.location.hash = "/font-pairing";
 }
+
+// ------------------------------------------------- known alternatives
+
+export interface KnownAlternative {
+  name: string;
+  alternatives: string[];
+  why: string;
+}
+
+export const KNOWN_ALTERNATIVES: KnownAlternative[] = alternativesData.fonts;
+
+/**
+ * Our hand-picked Google Fonts stand-ins for a system or commercial font
+ * name (as UI Automation reports it), or null when we have none.
+ */
+export function knownAlternatives(name: string): KnownAlternative | null {
+  const key = name.trim().toLowerCase();
+  return KNOWN_ALTERNATIVES.find((k) => k.name.toLowerCase() === key) ?? null;
+}
+
+/**
+ * Families the font matching index left out because their Latin letters
+ * are identical to this one's (written by `npm run fonts:index`).
+ */
+export function sameLetterFamilies(family: string): string[] {
+  return (indexAliases as Record<string, string[]>)[family] ?? [];
+}
+
+/** Families the matcher favours in near-ties: our curated top list. */
+export const MATCH_PREFER = new Set(TOP_FALLBACK);
