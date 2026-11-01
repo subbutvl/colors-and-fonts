@@ -1,21 +1,33 @@
 import { Sidebar } from "./components/Sidebar";
 import { PickerHome } from "./pages/PickerHome";
 import { Placeholder } from "./pages/Placeholder";
+import { SettingsPage } from "./pages/SettingsPage";
 import { DEFAULT_SECTION, findSection } from "./sections";
+import { SettingsProvider } from "./SettingsContext";
 import { useHashRoute } from "./useHashRoute";
-import { useTheme } from "./useTheme";
+
+function Page({ id }: { id: string }) {
+  const section = findSection(id) ?? findSection(DEFAULT_SECTION)!;
+  switch (section.id) {
+    case "picker":
+      return <PickerHome />;
+    case "settings":
+      return <SettingsPage />;
+    default:
+      return <Placeholder section={section} />;
+  }
+}
 
 export default function App() {
   const [active, navigate] = useHashRoute();
-  const [theme, setTheme] = useTheme();
-  const section = findSection(active) ?? findSection(DEFAULT_SECTION)!;
-
   return (
-    <div className="app">
-      <Sidebar active={section.id} onNavigate={navigate} theme={theme} onTheme={setTheme} />
-      <main className="content">
-        {section.id === "picker" ? <PickerHome /> : <Placeholder section={section} />}
-      </main>
-    </div>
+    <SettingsProvider>
+      <div className="app">
+        <Sidebar active={active} onNavigate={navigate} />
+        <main className="content">
+          <Page id={active} />
+        </main>
+      </div>
+    </SettingsProvider>
   );
 }

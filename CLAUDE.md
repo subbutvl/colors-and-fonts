@@ -27,4 +27,12 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - `src/sections.ts`: the single list of all sections (sidebar, routing, placeholders read it).
 - `src/pages/`: one component per section as they get built. `src/components/`: shared UI.
 - `src/styles.css`: design tokens (light base, dark override) and app styles.
-- `src-tauri/src/lib.rs`: app setup, window behavior. `tray.rs`: tray icon and menu.
+- `src/lib/`: frontend services. `db.ts` (shared SQLite connection), `settings.ts` (key/value settings, localStorage fallback outside Tauri), `autostart.ts`, `env.ts` (`isTauri()`).
+- `src/SettingsContext.tsx`: settings state for the app, applies the theme.
+- `src-tauri/src/lib.rs`: app setup, window behavior, `open_section()` (tray to page navigation via the `huetype://navigate` event). `tray.rs`: tray icon and menu. `db.rs`: SQLite migrations (append-only; add a new version, never edit a released one).
+
+## Storage
+
+- One SQLite file, `huetype.db`, in the app config dir. Schema changes go in `src-tauri/src/db.rs` as a new migration.
+- Settings are key/value rows in `settings`. Launch-at-startup is not stored there: the OS autostart entry is the source of truth.
+- The main window starts hidden (`visible: false`) and is shown in `setup` unless launched with `--hidden` (the autostart entry passes it).

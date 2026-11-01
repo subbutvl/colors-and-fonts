@@ -4,7 +4,7 @@ Each step is one PR. Tick a step when its PR is merged.
 
 ## Phase 0: App shell
 - [x] 0.1 Scaffold Tauri v2 + React/TS, tray icon and menu, single main window that hides to tray, single instance, sidebar with all 21 sections as placeholders, light/dark following Windows
-- [ ] 0.2 Settings and storage: SQLite (tauri-plugin-sql) with migrations, settings page (theme, launch at startup), move theme pref out of localStorage
+- [x] 0.2 Settings and storage: SQLite (tauri-plugin-sql) with migrations, settings page (theme, launch at startup), move theme pref out of localStorage
 - [ ] 0.3 Global shortcuts (Ctrl+Shift+C / F / Space) and the floating toolbar window shell: frameless, always on top, draggable, remembers position, shown/hidden from tray and shortcut
 
 ## Phase 1: Color picker
