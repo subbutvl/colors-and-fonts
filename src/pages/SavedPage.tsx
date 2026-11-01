@@ -2,16 +2,28 @@ import { useCallback, useEffect, useState } from "react";
 import { PageHead } from "../components/PageHead";
 import { StarButton } from "../components/StarButton";
 import { copyText, FORMAT_LABELS, formatColor, getCopyFormat, nearestName, onCopyFormat, type ColorFormat } from "../lib/colors";
-import { exportLibrary, listStarred, onLibraryChanged, setColorNote, unstarColor, type StarredColor } from "../lib/library";
+import { fallbackFor, fontFamilyCss, getCatalog, loadPreviewFont, type FontFamily } from "../lib/fonts";
+import {
+  exportLibrary,
+  listStarred,
+  listStarredFonts,
+  onLibraryChanged,
+  setColorNote,
+  setFontNote,
+  unstarColor,
+  unstarFont,
+  type StarredColor,
+  type StarredFont,
+} from "../lib/library";
 import { deletePalette, listPalettes, renamePalette, requestOpenPalette, type SavedPalette } from "../lib/palettes";
 import type { Section } from "../sections";
 
 /** A note field that saves when it loses focus or on Enter. */
-function NoteField({ color }: { color: StarredColor }) {
-  const [value, setValue] = useState(color.note);
-  useEffect(() => setValue(color.note), [color.note]);
+function NoteField({ note, label, onSave }: { note: string; label: string; onSave: (note: string) => Promise<void> }) {
+  const [value, setValue] = useState(note);
+  useEffect(() => setValue(note), [note]);
   const commit = () => {
-    if (value.trim() !== color.note) setColorNote(color.hex, value).catch((e) => console.error("note", e));
+    if (value.trim() !== note) onSave(value).catch((e) => console.error("note", e));
   };
   return (
     <input
@@ -24,31 +36,63 @@ function NoteField({ color }: { color: StarredColor }) {
       onKeyDown={(e) => {
         if (e.key === "Enter") e.currentTarget.blur();
         if (e.key === "Escape") {
-          setValue(color.note);
+          setValue(note);
           e.currentTarget.blur();
         }
       }}
-      aria-label={`Note for ${color.hex}`}
+      aria-label={label}
     />
   );
 }
 
-/** Saved (Picker group): starred colors and saved palettes in one place. */
+/** A starred font, previewed in itself when the catalog knows it. */
+function SavedFontRow({ font, info, onCopy }: { font: StarredFont; info?: FontFamily; onCopy: (text: string, what: string) => void }) {
+  useEffect(() => {
+    if (info) loadPreviewFont(info, 400);
+  }, [info]);
+  return (
+    <li className="saved-font">
+      <div className="saved-font-main">
+        <span className="saved-font-name" style={{ fontFamily: info ? `"${font.family}", ${fallbackFor(info.category)}` : undefined }}>
+          {font.family}
+        </span>
+        <NoteField note={font.note} label={`Note for ${font.family}`} onSave={(n) => setFontNote(font.family, n)} />
+      </div>
+      {info && (
+        <button type="button" className="link-btn" onClick={() => onCopy(fontFamilyCss(info), `font-family for ${font.family}`)}>
+          Copy CSS
+        </button>
+      )}
+      <StarButton on onClick={() => void unstarFont(font.family)} />
+    </li>
+  );
+}
+
+/** Saved (Picker group): starred colors, saved palettes and starred fonts in one place. */
 export function SavedPage({ section }: { section: Section }) {
   const [colors, setColors] = useState<StarredColor[]>([]);
   const [palettes, setPalettes] = useState<SavedPalette[]>([]);
+  const [fonts, setFonts] = useState<StarredFont[]>([]);
+  const [catalog, setCatalog] = useState<Map<string, FontFamily>>(new Map());
   const [query, setQuery] = useState("");
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [renaming, setRenaming] = useState<{ id: number; name: string } | null>(null);
   const [status, setStatus] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    Promise.all([listStarred(), listPalettes()])
-      .then(([c, p]) => {
+    Promise.all([listStarred(), listPalettes(), listStarredFonts()])
+      .then(([c, p, f]) => {
         setColors(c);
         setPalettes(p);
+        setFonts(f);
       })
       .catch((e) => setStatus(`Could not load the library: ${e}`));
+  }, []);
+
+  useEffect(() => {
+    getCatalog()
+      .then((cat) => setCatalog(new Map(cat.families.map((f) => [f.family, f]))))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -71,6 +115,7 @@ export function SavedPage({ section }: { section: Section }) {
   const shownColors = q
     ? colors.filter((c) => c.hex.toLowerCase().includes(q.replace(/^#?/, "")) || c.note.toLowerCase().includes(q) || nearestName(c.hex).name.includes(q))
     : colors;
+  const shownFonts = q ? fonts.filter((f) => f.family.toLowerCase().includes(q) || f.note.toLowerCase().includes(q)) : fonts;
   const shownPalettes = q ? palettes.filter((p) => p.name.toLowerCase().includes(q) || p.colors.some((c) => c.toLowerCase().includes(q.replace(/^#?/, "")))) : palettes;
 
   const open = (p: SavedPalette) => {
@@ -99,13 +144,13 @@ export function SavedPage({ section }: { section: Section }) {
 
   const exportAll = async () => {
     try {
-      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes)`);
+      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes, ${fonts.length} fonts)`);
     } catch (e) {
       setStatus(`Could not export: ${e}`);
     }
   };
 
-  const empty = colors.length === 0 && palettes.length === 0;
+  const empty = colors.length === 0 && palettes.length === 0 && fonts.length === 0;
 
   return (
     <div className="page">
@@ -126,7 +171,7 @@ export function SavedPage({ section }: { section: Section }) {
       </div>
 
       <p className="help" role="status">
-        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, or save a palette." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
+        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, save a palette, or star a font in Font listing." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
       </p>
 
       <section className="picks" aria-labelledby="saved-colors">
@@ -147,7 +192,7 @@ export function SavedPage({ section }: { section: Section }) {
                       <StarButton on onClick={() => void unstarColor(c.hex)} />
                     </span>
                     <small>{nearestName(c.hex).name}</small>
-                    <NoteField color={c} />
+                    <NoteField note={c.note} label={`Note for ${c.hex}`} onSave={(n) => setColorNote(c.hex, n)} />
                   </div>
                 </li>
               );
@@ -211,7 +256,21 @@ export function SavedPage({ section }: { section: Section }) {
         )}
       </section>
 
-      <p className="note">Gradients and fonts you star will appear here once those sections are built. Everything is stored on this computer.</p>
+      <section className="picks" aria-labelledby="saved-fonts">
+        <div className="picks-head">
+          <h2 id="saved-fonts">Fonts</h2>
+          <span className="help">{q ? `${shownFonts.length} of ${fonts.length}` : fonts.length || "None yet"}</span>
+        </div>
+        {shownFonts.length > 0 && (
+          <ul className="saved-fonts">
+            {shownFonts.map((f) => (
+              <SavedFontRow key={f.id} font={f} info={catalog.get(f.family)} onCopy={copy} />
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <p className="note">Gradients you star will appear here once that section is built. Everything is stored on this computer.</p>
     </div>
   );
 }

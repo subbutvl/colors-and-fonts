@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "fonts:catalog": "node scripts/font-catalog.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

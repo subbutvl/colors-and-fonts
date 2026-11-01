@@ -1,5 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
-import { exportLibrary, isStarred, listStarred, onLibraryChanged, setColorNote, starColor, toggleStar, unstarColor } from "./library";
+import {
+  exportLibrary,
+  isStarred,
+  listStarred,
+  listStarredFonts,
+  onLibraryChanged,
+  setColorNote,
+  setFontNote,
+  starColor,
+  starFont,
+  toggleStar,
+  unstarColor,
+  unstarFont,
+} from "./library";
 import { deletePalette, listPalettes, savePalette } from "./palettes";
 
 describe("library (in-memory outside Tauri)", () => {
@@ -46,5 +59,18 @@ describe("library (in-memory outside Tauri)", () => {
     await deletePalette(id);
     await unstarColor("#5B6CFF");
     expect(await listPalettes()).toEqual([]);
+  });
+
+  it("stars fonts once and exports them", async () => {
+    await starFont("Inter");
+    await starFont(" Inter ");
+    await starFont("Lora");
+    await setFontNote("Lora", "Body copy");
+    expect((await listStarredFonts()).map((f) => f.family)).toEqual(["Lora", "Inter"]);
+    const json = JSON.parse(await exportLibrary());
+    expect(json.fonts).toEqual([expect.objectContaining({ family: "Lora", note: "Body copy" }), expect.objectContaining({ family: "Inter" })]);
+    await unstarFont("Inter");
+    await unstarFont("Lora");
+    expect(await listStarredFonts()).toEqual([]);
   });
 });

@@ -56,6 +56,22 @@ pub fn migrations() -> Vec<Migration> {
               );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 5,
+            description: "create saved_fonts and cache tables",
+            sql: "CREATE TABLE IF NOT EXISTS saved_fonts (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                family     TEXT NOT NULL UNIQUE,
+                note       TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );
+              CREATE TABLE IF NOT EXISTS cache (
+                key        TEXT PRIMARY KEY,
+                value      TEXT NOT NULL,
+                updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

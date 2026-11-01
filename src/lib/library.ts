@@ -105,15 +105,68 @@ export async function setColorNote(hex: string, note: string): Promise<void> {
   await libraryChanged();
 }
 
+// ---------------------------------------------------------------- fonts
+
+export interface StarredFont {
+  id: number;
+  family: string;
+  note: string;
+  createdAt: string;
+}
+
+const fontMemory: StarredFont[] = [];
+
+export async function listStarredFonts(): Promise<StarredFont[]> {
+  if (!isTauri()) return fontMemory.map((f) => ({ ...f }));
+  const db = await getDb();
+  return db.select<StarredFont[]>("SELECT id, family, note, created_at AS createdAt FROM saved_fonts ORDER BY id DESC");
+}
+
+export async function starFont(family: string): Promise<void> {
+  const name = family.trim();
+  if (!name) return;
+  if (!isTauri()) {
+    if (!fontMemory.some((f) => f.family === name)) fontMemory.unshift({ id: nextId++, family: name, note: "", createdAt: new Date().toISOString() });
+  } else {
+    const db = await getDb();
+    await db.execute("INSERT OR IGNORE INTO saved_fonts (family) VALUES ($1)", [name]);
+  }
+  await libraryChanged();
+}
+
+export async function unstarFont(family: string): Promise<void> {
+  if (!isTauri()) {
+    const i = fontMemory.findIndex((f) => f.family === family);
+    if (i >= 0) fontMemory.splice(i, 1);
+  } else {
+    const db = await getDb();
+    await db.execute("DELETE FROM saved_fonts WHERE family = $1", [family]);
+  }
+  await libraryChanged();
+}
+
+export async function setFontNote(family: string, note: string): Promise<void> {
+  const clean = note.trim().slice(0, 200);
+  if (!isTauri()) {
+    const f = fontMemory.find((m) => m.family === family);
+    if (f) f.note = clean;
+  } else {
+    const db = await getDb();
+    await db.execute("UPDATE saved_fonts SET note = $1 WHERE family = $2", [clean, family]);
+  }
+  await libraryChanged();
+}
+
 /** The whole library as JSON, for backup or for use elsewhere. */
 export async function exportLibrary(): Promise<string> {
-  const [colors, palettes] = await Promise.all([listStarred(), listPalettes()]);
+  const [colors, palettes, fonts] = await Promise.all([listStarred(), listPalettes(), listStarredFonts()]);
   return JSON.stringify(
     {
       app: "Huetype",
       version: 1,
       colors: colors.map((c) => ({ hex: c.hex, note: c.note || undefined, saved: c.createdAt })),
       palettes: palettes.map((p) => ({ name: p.name, colors: p.colors, saved: p.createdAt })),
+      fonts: fonts.map((f) => ({ family: f.family, note: f.note || undefined, saved: f.createdAt })),
     },
     null,
     2,
