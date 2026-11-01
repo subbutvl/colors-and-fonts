@@ -20,18 +20,19 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - Pick history: the main window (always loaded, even hidden) records every pick in the SQLite `picks` table (kept to the newest 500), copies it in the copy format (`picker.format` setting: hex, rgb, hsl or oklch; changed from the toolbar's format chip), and refreshes the tray's "Recent colors" menu via `set_recent_picks`. Other windows only read history. Color math is culori (`src/lib/colors.ts`): nearest CSS name by CIEDE2000, WCAG 2 contrast.
 - The toolbar window grows upward by `POPOVER_HEIGHT` while a swatch popover is open (`toolbar_popover`), so the pill never moves and no transparent area blocks clicks the rest of the time.
 - Converter: input is anything CSS parses plus bare hex and `r, g, b` triplets. Colors outside sRGB keep their exact Lab/LCH/OKLab/OKLCH/P3 values; sRGB-based formats (HEX, RGB, HSL, HWB, HSV, CMYK) show the color gamut-mapped by reducing OKLCH chroma, and the page says so. HSV and CMYK are labelled "not CSS"; CMYK is the naive device-independent formula.
+- Contrast: WCAG 2.2 ratio (culori) and APCA-W3 0.0.98G-4g (own implementation in `src/lib/contrast.ts`, tested against the published reference values). "Nearest passing color" moves one color's OKLCH lightness (hue kept, chroma clamped to sRGB) by binary search, for text or background, lighter or darker.
 - Curated datasets are our own JSON in the repo; do not scrape colorsinspo.com or similar sites.
 
 ## How work is done
 
 - Work in small steps, one branch and one PR per step: `phase-<n>/step-<m>-<slug>`.
 - At the end of each step, tick it in `docs/ROADMAP.md` and add any new decision here.
-- Before pushing: `npm run build` (tsc + vite), and `cargo clippy` + `cargo test` in `src-tauri`. CI runs the same on `windows-latest`.
+- Before pushing: `npm run build` (tsc + vite), `npm test` (vitest, `src/**/*.test.ts`), and `cargo clippy` + `cargo test` in `src-tauri`. CI runs the same on `windows-latest`.
 
 ## Layout
 
 - `src/sections.ts`: the single list of all sections (sidebar, routing, placeholders read it).
-- `src/pages/`: one component per section as they get built (`PickerHome`, `ConverterPage`, `ColorNamesPage`, `SettingsPage`), routed in `src/App.tsx`; `components/PageHead.tsx` renders the numbered title. `src/components/`: shared UI.
+- `src/pages/`: one component per section as they get built (`PickerHome`, `ContrastPage`, `ConverterPage`, `ColorNamesPage`, `SettingsPage`), routed in `src/App.tsx`; `components/PageHead.tsx` renders the numbered title. `src/components/`: shared UI.
 - `src/styles.css`: design tokens (light base, dark override) and app styles.
 - `src/lib/`: frontend services. `db.ts` (shared SQLite connection), `settings.ts` (key/value settings, localStorage fallback outside Tauri), `autostart.ts`, `env.ts` (`isTauri()`).
 - `src/SettingsContext.tsx`: settings state for the app, applies the theme.
