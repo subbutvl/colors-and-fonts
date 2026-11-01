@@ -15,6 +15,8 @@ import {
   type StarredColor,
   type StarredFont,
 } from "../lib/library";
+import { exportGradient, gradientCss } from "../lib/gradient";
+import { deleteGradient, listGradients, renameGradient, requestOpenGradient, type SavedGradient } from "../lib/gradients";
 import { deletePalette, listPalettes, renamePalette, requestOpenPalette, type SavedPalette } from "../lib/palettes";
 import type { Section } from "../sections";
 import { useFontCatalog } from "../useFontCatalog";
@@ -74,6 +76,8 @@ export function SavedPage({ section }: { section: Section }) {
   const [colors, setColors] = useState<StarredColor[]>([]);
   const [palettes, setPalettes] = useState<SavedPalette[]>([]);
   const [fonts, setFonts] = useState<StarredFont[]>([]);
+  const [gradients, setGradients] = useState<SavedGradient[]>([]);
+  const [renamingGradient, setRenamingGradient] = useState<{ id: number; name: string } | null>(null);
   const { catalog: fontCatalog } = useFontCatalog();
   const catalog = useMemo(() => new Map((fontCatalog?.families ?? []).map((f) => [f.family, f])), [fontCatalog]);
   const [query, setQuery] = useState("");
@@ -82,11 +86,12 @@ export function SavedPage({ section }: { section: Section }) {
   const [status, setStatus] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    Promise.all([listStarred(), listPalettes(), listStarredFonts()])
-      .then(([c, p, f]) => {
+    Promise.all([listStarred(), listPalettes(), listStarredFonts(), listGradients()])
+      .then(([c, p, f, g]) => {
         setColors(c);
         setPalettes(p);
         setFonts(f);
+        setGradients(g);
       })
       .catch((e) => setStatus(`Could not load the library: ${e}`));
   }, []);
@@ -114,6 +119,34 @@ export function SavedPage({ section }: { section: Section }) {
   const shownFonts = q ? fonts.filter((f) => f.family.toLowerCase().includes(q) || f.note.toLowerCase().includes(q)) : fonts;
   const shownPalettes = q ? palettes.filter((p) => p.name.toLowerCase().includes(q) || p.colors.some((c) => c.toLowerCase().includes(q.replace(/^#?/, "")))) : palettes;
 
+  const shownGradients = q
+    ? gradients.filter((g) => g.name.toLowerCase().includes(q) || g.gradient.stops.some((s) => s.color.toLowerCase().includes(q.replace(/^#?/, ""))))
+    : gradients;
+
+  const openGradient = (g: SavedGradient) => {
+    requestOpenGradient(g.gradient, g.name);
+    window.location.hash = "/gradients";
+  };
+
+  const renameGrad = async () => {
+    if (!renamingGradient) return;
+    try {
+      await renameGradient(renamingGradient.id, renamingGradient.name);
+      setRenamingGradient(null);
+    } catch (e) {
+      setStatus(`Could not rename: ${e}`);
+    }
+  };
+
+  const dropGradient = async (g: SavedGradient) => {
+    try {
+      await deleteGradient(g.id);
+      setStatus(`Deleted "${g.name}"`);
+    } catch (e) {
+      setStatus(`Could not delete: ${e}`);
+    }
+  };
+
   const open = (p: SavedPalette) => {
     requestOpenPalette(p.id);
     window.location.hash = "/palettes";
@@ -140,13 +173,13 @@ export function SavedPage({ section }: { section: Section }) {
 
   const exportAll = async () => {
     try {
-      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes, ${fonts.length} fonts)`);
+      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes, ${fonts.length} fonts, ${gradients.length} gradients)`);
     } catch (e) {
       setStatus(`Could not export: ${e}`);
     }
   };
 
-  const empty = colors.length === 0 && palettes.length === 0 && fonts.length === 0;
+  const empty = colors.length === 0 && palettes.length === 0 && fonts.length === 0 && gradients.length === 0;
 
   return (
     <div className="page">
@@ -167,7 +200,7 @@ export function SavedPage({ section }: { section: Section }) {
       </div>
 
       <p className="help" role="status">
-        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, save a palette, or star a font in Font listing." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
+        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, save a palette or gradient, or star a font in Font listing." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
       </p>
 
       <section className="picks" aria-labelledby="saved-colors">
@@ -266,7 +299,58 @@ export function SavedPage({ section }: { section: Section }) {
         )}
       </section>
 
-      <p className="note">Gradients you star will appear here once that section is built. Everything is stored on this computer.</p>
+      <section className="picks" aria-labelledby="saved-gradients">
+        <div className="picks-head">
+          <h2 id="saved-gradients">Gradients</h2>
+          <span className="help">{q ? `${shownGradients.length} of ${gradients.length}` : gradients.length || "None yet"}</span>
+        </div>
+        {shownGradients.length > 0 && (
+          <ul className="saved-pals">
+            {shownGradients.map((g) => (
+              <li key={g.id} className="saved-pal">
+                <button type="button" className="saved-strip" style={{ background: gradientCss(g.gradient) }} onClick={() => openGradient(g)} title="Open in Gradients" />
+                {renamingGradient?.id === g.id ? (
+                  <form
+                    className="saved-meta"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void renameGrad();
+                    }}
+                  >
+                    <input
+                      className="text-input saved-rename"
+                      value={renamingGradient.name}
+                      maxLength={80}
+                      autoFocus
+                      onChange={(e) => setRenamingGradient({ id: g.id, name: e.target.value })}
+                      onKeyDown={(e) => e.key === "Escape" && setRenamingGradient(null)}
+                      aria-label="Gradient name"
+                    />
+                    <button type="submit" className="link-btn">
+                      Save
+                    </button>
+                  </form>
+                ) : (
+                  <div className="saved-meta">
+                    <strong>{g.name}</strong>
+                    <button type="button" className="link-btn" onClick={() => copy(exportGradient(g.gradient, "css"), `CSS of "${g.name}"`)} title="Copy CSS">
+                      Copy
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => setRenamingGradient({ id: g.id, name: g.name })}>
+                      Rename
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => void dropGradient(g)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <p className="note">Everything is stored on this computer.</p>
     </div>
   );
 }

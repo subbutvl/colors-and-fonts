@@ -72,6 +72,17 @@ pub fn migrations() -> Vec<Migration> {
               );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 6,
+            description: "create gradients table (saved gradients)",
+            sql: "CREATE TABLE IF NOT EXISTS gradients (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                name       TEXT NOT NULL,
+                data       TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

@@ -1,11 +1,14 @@
 import { emit, listen } from "@tauri-apps/api/event";
 import { getDb } from "./db";
 import { isTauri } from "./env";
+import { gradientCss } from "./gradient";
+import { listGradients } from "./gradients";
 import { listPalettes } from "./palettes";
 
 /**
  * The saved library: starred colors in the SQLite `saved_colors` table
- * (migration 4) and saved palettes (`palettes.ts`). Any window may star a
+ * (migration 4), saved palettes (`palettes.ts`), starred fonts and saved
+ * gradients (`gradients.ts`). Any window may star a
  * color; every change is broadcast so open pages refresh.
  */
 export interface StarredColor {
@@ -16,7 +19,7 @@ export interface StarredColor {
   createdAt: string;
 }
 
-/** Broadcast after any library change (colors or palettes). */
+/** Broadcast after any library change (colors, palettes, fonts or gradients). */
 export const LIBRARY_EVENT = "huetype://library-changed";
 
 const norm = (hex: string) => hex.trim().toUpperCase();
@@ -159,7 +162,7 @@ export async function setFontNote(family: string, note: string): Promise<void> {
 
 /** The whole library as JSON, for backup or for use elsewhere. */
 export async function exportLibrary(): Promise<string> {
-  const [colors, palettes, fonts] = await Promise.all([listStarred(), listPalettes(), listStarredFonts()]);
+  const [colors, palettes, fonts, gradients] = await Promise.all([listStarred(), listPalettes(), listStarredFonts(), listGradients()]);
   return JSON.stringify(
     {
       app: "Huetype",
@@ -167,6 +170,7 @@ export async function exportLibrary(): Promise<string> {
       colors: colors.map((c) => ({ hex: c.hex, note: c.note || undefined, saved: c.createdAt })),
       palettes: palettes.map((p) => ({ name: p.name, colors: p.colors, saved: p.createdAt })),
       fonts: fonts.map((f) => ({ family: f.family, note: f.note || undefined, saved: f.createdAt })),
+      gradients: gradients.map((g) => ({ name: g.name, css: gradientCss(g.gradient), gradient: g.gradient, saved: g.createdAt })),
     },
     null,
     2,
