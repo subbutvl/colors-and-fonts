@@ -536,3 +536,39 @@ ol.font-grid { counter-reset: none; }
 .grad-card-actions { display: inline-flex; gap: 10px; flex-shrink: 0; }
 .grad-card-actions .link-btn { padding: 0; }
 @media (max-width: 960px) { .grad-editor { grid-template-columns: 1fr; } }
+
+/* Guess the color (12) */
+.guess-stats { display: flex; gap: 18px; margin: 0; }
+.guess-stats div { display: grid; text-align: right; }
+.guess-stats dt { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.guess-stats dd { margin: 0; font: 600 18px var(--font-display); }
+.guess-card { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.guess-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.guess-head small { color: var(--muted); }
+.guess-score { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.guess-score b { color: var(--ink); font-size: 18px; }
+.guess-card > .help { margin: -8px 0 0; }
+.guess-seq { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.guess-seq li { height: 120px; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08); }
+.guess-next { display: grid; place-items: center; border: 2px dashed var(--line); box-shadow: none !important; color: var(--muted); font: 600 36px var(--font-display); }
+.guess-next.shown { border: 0; animation: guess-pop .25s ease-out; }
+@keyframes guess-pop { from { transform: scale(.94); opacity: .4; } to { transform: none; opacity: 1; } }
+.guess-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.guess-option { position: relative; height: 72px; border: 0; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform .1s; }
+.guess-option:not(:disabled):hover { transform: translateY(-2px); }
+.guess-option:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.guess-option:disabled { cursor: default; }
+.guess-option kbd { position: absolute; top: 6px; left: 6px; padding: 0 5px; border-radius: 4px; background: rgba(0, 0, 0, 0.45); color: #fff; font: 11px var(--mono); }
+.guess-option.right { box-shadow: 0 0 0 3px #1f9d55; }
+.guess-option.wrong { box-shadow: 0 0 0 3px #e5484d; }
+.guess-option.dim { opacity: .35; }
+.guess-result { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 38px; flex-wrap: wrap; }
+.guess-result .help { margin: 0; }
+.guess-summary { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.guess-summary li { display: grid; grid-template-columns: auto 28px 1fr auto auto; align-items: center; gap: 12px; }
+.guess-mini { display: inline-flex; overflow: hidden; border-radius: 6px; }
+.guess-mini span { width: 28px; height: 24px; }
+.guess-mini-answer { margin-left: 3px; border-radius: 0 6px 6px 0; }
+.guess-mini-pick { width: 28px; height: 24px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
+.guess-summary small { color: var(--muted); }
+@media (max-width: 900px) { .guess-seq li { height: 80px; } .guess-option { height: 56px; } }
