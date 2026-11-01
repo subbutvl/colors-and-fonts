@@ -12,7 +12,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 1.1 Windows screen capture (xcap) per monitor with per-monitor DPI mapping; Rust command that returns the color at a point; unit tests for sampling
 - [x] 1.2 Capture overlay per monitor: frozen screenshot, loupe (11x11 at 10x), click adds, arrow nudge, Shift+drag average, Esc ends
 - [x] 1.3 Toolbar swatches and multi-pick, swatch popover (formats, copy, nearest name, contrast), format toggle, pick history in SQLite, tray "Recent"
-- [ ] 1.4 Color engine (culori) + Converter (14) + HTML color names (13)
+- [x] 1.4 Color engine (culori) + Converter (14) + HTML color names (13)
 - [ ] 1.5 Contrast (3): WCAG 2.2 + APCA, suggest nearest passing color; Picker home with recent picks
 
 ## Phase 2: Color tools
