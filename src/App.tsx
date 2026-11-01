@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { applySavedShortcuts } from "./lib/shortcuts";
+import { ColorNamesPage } from "./pages/ColorNamesPage";
+import { ConverterPage } from "./pages/ConverterPage";
 import { PickerHome } from "./pages/PickerHome";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -14,6 +16,10 @@ function Page({ id }: { id: string }) {
   switch (section.id) {
     case "picker":
       return <PickerHome />;
+    case "converter":
+      return <ConverterPage section={section} />;
+    case "html-color-names":
+      return <ColorNamesPage section={section} />;
     case "settings":
       return <SettingsPage />;
     default:
