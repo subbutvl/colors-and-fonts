@@ -87,7 +87,14 @@ export function ConverterPage({ section }: { section: Section }) {
                 Pick from screen
               </button>
             )}
-            {result && <StarButton on={isStarred(result.hex)} onClick={() => toggle(result.hex)} />}
+            {result && (
+              <StarButton
+                on={result.alpha >= 1 && isStarred(result.hex)}
+                onClick={() => toggle(result.hex)}
+                // Saved colors are opaque, so a translucent one would lose its alpha.
+                disabledReason={result.alpha < 1 ? "Translucent colors can't be starred yet: Saved keeps opaque colors only" : undefined}
+              />
+            )}
           </div>
           <span id="conv-help" className={color ? "help" : "help error"}>
             {color
