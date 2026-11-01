@@ -4,6 +4,7 @@ import { isTauri } from "./env";
 
 /** Must match the constants in src-tauri/src/picker.rs. */
 export const PICKED_EVENT = "huetype://picked";
+export const PICKER_ERROR_EVENT = "huetype://picker-error";
 export const OVERLAY_OPEN_EVENT = "huetype://overlay-open";
 /** Bytes before the RGBA pixels in an `overlay_frame` response. */
 export const FRAME_HEADER = 20;
@@ -34,6 +35,29 @@ export function onPick(handler: (pick: Pick) => void): () => void {
   let unlisten: (() => void) | undefined;
   let cancelled = false;
   listen<Pick>(PICKED_EVENT, (e) => handler(e.payload)).then((fn) => (cancelled ? fn() : (unlisten = fn)));
+  return () => {
+    cancelled = true;
+    unlisten?.();
+  };
+}
+
+/**
+ * Picker start-up failures (capture or window creation), wherever the pick was
+ * started. Delivers a failure that happened before this page mounted, then
+ * live ones. Returns an unsubscribe function.
+ */
+export function onPickerError(handler: (message: string) => void): () => void {
+  if (!isTauri()) return () => {};
+  let unlisten: (() => void) | undefined;
+  let cancelled = false;
+  invoke<string | null>("take_picker_error")
+    .then((m) => !cancelled && m && handler(m))
+    .catch(() => {});
+  listen<string>(PICKER_ERROR_EVENT, (e) => {
+    handler(e.payload);
+    // Already shown here; don't show it again on the next mount.
+    invoke("take_picker_error").catch(() => {});
+  }).then((fn) => (cancelled ? fn() : (unlisten = fn)));
   return () => {
     cancelled = true;
     unlisten?.();

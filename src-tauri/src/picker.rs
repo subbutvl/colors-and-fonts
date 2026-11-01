@@ -29,6 +29,10 @@ pub const OPEN_EVENT: &str = "huetype://overlay-open";
 /// Broadcast for every picked color (payload: [`Pick`]).
 pub const PICKED_EVENT: &str = "huetype://picked";
 
+/// Sent when a pick session could not open (payload: message). The main
+/// window is shown on Picker home, which displays it.
+pub const ERROR_EVENT: &str = "huetype://picker-error";
+
 /// Time for Windows to repaint after we hide our own windows, so they are
 /// not in the frozen frame.
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
@@ -44,6 +48,8 @@ struct Session {
     frames: Vec<(String, Frame)>,
     restore_toolbar: bool,
     restore_main: bool,
+    /// Why the last session failed to open, until Picker home reads it.
+    last_error: Option<String>,
 }
 
 /// Managed state for the picker session.
@@ -98,6 +104,7 @@ pub fn start(app: &AppHandle) {
             return;
         }
         s.active = true;
+        s.last_error = None;
         s.restore_toolbar = is_visible(app, toolbar::TOOLBAR_WINDOW);
         s.restore_main = is_visible(app, MAIN_WINDOW);
     }
@@ -108,6 +115,7 @@ pub fn start(app: &AppHandle) {
         if let Err(e) = open(&app) {
             eprintln!("picker: {e}");
             finish(&app);
+            report_error(&app, e);
         }
     });
 }
@@ -222,6 +230,21 @@ pub fn finish(app: &AppHandle) {
     if restore_main {
         crate::show_main_window(app);
     }
+}
+
+/// Tell the user why no picker opened, wherever the pick was started from
+/// (shortcut, tray, toolbar or Picker home): keep the message for Picker home
+/// to read when it mounts, show it there, and broadcast it to a mounted page.
+fn report_error(app: &AppHandle, message: String) {
+    app.state::<Picker>().0.lock().unwrap().last_error = Some(message.clone());
+    crate::open_section(app, "picker");
+    let _ = app.emit(ERROR_EVENT, message);
+}
+
+/// The last start-up error, if any, cleared once read.
+#[tauri::command]
+pub fn take_picker_error(state: State<'_, Picker>) -> Option<String> {
+    state.0.lock().unwrap().last_error.take()
 }
 
 #[tauri::command]

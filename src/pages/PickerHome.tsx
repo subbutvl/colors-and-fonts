@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getShortcutStatus, prettyShortcut, type ShortcutAction, type ShortcutStatus } from "../lib/shortcuts";
-import { onPick, startPick, type Pick } from "../lib/picker";
+import { onPick, onPickerError, startPick, type Pick } from "../lib/picker";
 
 const FALLBACK: Record<ShortcutAction, string> = {
   pick_color: "Ctrl+Alt+KeyC",
@@ -21,6 +21,7 @@ export function PickerHome() {
     getShortcutStatus().then(setShortcuts).catch(() => {});
   }, []);
   useEffect(() => onPick((p) => setPicks((prev) => [p, ...prev].slice(0, MAX_PICKS))), []);
+  useEffect(() => onPickerError((m) => setError(`The picker could not start: ${m}`)), []);
 
   const keys = (a: ShortcutAction) =>
     prettyShortcut(shortcuts?.find((s) => s.action === a)?.accelerator ?? FALLBACK[a]);

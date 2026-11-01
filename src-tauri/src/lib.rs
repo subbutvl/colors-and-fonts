@@ -84,6 +84,7 @@ pub fn run() {
             capture::color_at_point,
             capture::color_at_cursor,
             picker::start_pick,
+            picker::take_picker_error,
             picker::overlay_frame,
             picker::overlay_ready,
             picker::overlay_pick,
