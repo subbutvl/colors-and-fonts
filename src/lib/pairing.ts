@@ -40,8 +40,31 @@ export interface Partner {
   base: boolean;
 }
 
-/** Lightness steps (OKLCH L offsets) for the monochromatic set, base in the middle. */
-const MONO = [-0.3, -0.15, 0, 0.12, 0.24];
+/** Monochromatic set: five lightnesses this far apart in total, within these bounds. */
+const MONO_SPAN = 0.54;
+const MONO_MIN = 0.15;
+const MONO_MAX = 0.97;
+
+/**
+ * Five evenly spaced lightnesses around `l`, kept inside the bounds by
+ * sliding the window (so near-black and near-white bases still get four
+ * distinct partners, all on one side). The step nearest `l` is the base.
+ */
+export function monoLightness(l: number): { values: number[]; baseIndex: number } {
+  let lo = Math.max(MONO_MIN, l - 0.3);
+  let hi = lo + MONO_SPAN;
+  if (hi > MONO_MAX) {
+    hi = MONO_MAX;
+    lo = hi - MONO_SPAN;
+  }
+  const values = Array.from({ length: 5 }, (_, i) => lo + ((hi - lo) * i) / 4);
+  let baseIndex = 0;
+  values.forEach((v, i) => {
+    if (Math.abs(v - l) < Math.abs(values[baseIndex] - l)) baseIndex = i;
+  });
+  values[baseIndex] = l;
+  return { values, baseIndex };
+}
 
 export function isGray(hex: string): boolean {
   return (oklch(hex)?.c ?? 0) < GRAY_LIMIT;
@@ -58,11 +81,11 @@ export function partners(hex: string, id: PairingId, wheel: Wheel = "oklch"): Pa
   const o = oklch(baseHex)!;
 
   if (id === "monochromatic") {
-    return MONO.map((dl) => {
-      if (dl === 0) return { hex: baseHex, hue: hueOf(baseHex, wheel), base: true };
-      const l = Math.min(0.97, Math.max(0.18, o.l + dl));
-      // Very light and very dark versions carry less chroma.
-      const c = (o.c ?? 0) * (1 - Math.min(0.6, Math.abs(dl) * 1.4));
+    const { values, baseIndex } = monoLightness(o.l);
+    return values.map((l, i) => {
+      if (i === baseIndex) return { hex: baseHex, hue: hueOf(baseHex, wheel), base: true };
+      // Lightnesses far from the base carry less chroma.
+      const c = (o.c ?? 0) * (1 - Math.min(0.6, Math.abs(l - o.l) * 1.4));
       const out = up(formatHex(clampChroma({ mode: "oklch", l, c, h: o.h }, "oklch")));
       return { hex: out, hue: hueOf(out, wheel), base: false };
     });

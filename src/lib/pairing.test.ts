@@ -39,6 +39,17 @@ describe("partners", () => {
     for (const p of list) expect(hueGap(oklch(p.hex)!.h!, h)).toBeLessThan(8);
   });
 
+  it.each(["#000000", "#FFFFFF", "#0A0A1E", "#FAFAF0", "#5B6CFF"])(
+    "monochromatic stays ordered and distinct for %s",
+    (hex) => {
+      const list = partners(hex, "monochromatic");
+      expect(list.filter((p) => p.base).map((p) => p.hex)).toEqual([hex]);
+      expect(new Set(list.map((p) => p.hex)).size).toBe(5);
+      const ls = list.map((p) => oklch(p.hex)!.l);
+      for (let i = 1; i < ls.length; i++) expect(ls[i]).toBeGreaterThan(ls[i - 1]);
+    },
+  );
+
   it("knows grays", () => {
     expect(isGray("#808080")).toBe(true);
     expect(isGray("#5B6CFF")).toBe(false);
