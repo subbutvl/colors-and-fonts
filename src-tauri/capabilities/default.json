@@ -10,6 +10,7 @@
     "opener:default",
     "sql:default",
     "sql:allow-execute",
-    "autostart:default"
+    "autostart:default",
+    "clipboard-manager:allow-write-text"
   ]
 }

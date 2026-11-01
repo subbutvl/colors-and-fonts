@@ -7,6 +7,7 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { DEFAULT_SECTION, findSection } from "./sections";
 import { SettingsProvider } from "./SettingsContext";
 import { useHashRoute } from "./useHashRoute";
+import { usePickRecorder } from "./usePickRecorder";
 
 function Page({ id }: { id: string }) {
   const section = findSection(id) ?? findSection(DEFAULT_SECTION)!;
@@ -22,6 +23,7 @@ function Page({ id }: { id: string }) {
 
 export default function App() {
   const [active, navigate] = useHashRoute();
+  usePickRecorder();
 
   // Re-register the user's saved shortcuts (Rust starts with the defaults).
   // Pages that show shortcuts wait for this through getShortcutStatus().

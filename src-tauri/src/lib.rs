@@ -59,6 +59,7 @@ pub fn run() {
             show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations(db::DB_URL, db::migrations())
@@ -94,6 +95,9 @@ pub fn run() {
             toolbar::hide_toolbar,
             toolbar::toggle_toolbar,
             toolbar::open_main_window,
+            toolbar::toolbar_popover,
+            toolbar::open_history,
+            tray::set_recent_picks,
         ])
         .setup(|app| {
             toolbar::create(app.handle())?;
@@ -111,9 +115,14 @@ pub fn run() {
             // tray menu); closing the toolbar (e.g. Alt+F4) just hides it.
             if let WindowEvent::CloseRequested { api, .. } = event {
                 let label = window.label();
-                if label == MAIN_WINDOW || label == toolbar::TOOLBAR_WINDOW {
+                if label == MAIN_WINDOW {
                     api.prevent_close();
                     let _ = window.hide();
+                } else if label == toolbar::TOOLBAR_WINDOW {
+                    // Alt+F4: hide through the helper so an open popover is
+                    // closed and the window shrinks back.
+                    api.prevent_close();
+                    toolbar::hide(window.app_handle());
                 } else if picker::is_overlay(label) {
                     // Alt+F4 on a picker overlay ends the session.
                     api.prevent_close();
