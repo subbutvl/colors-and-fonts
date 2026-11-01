@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { contrast, copyText, FORMAT_LABELS, FORMATS, formatColor, nearestName } from "../lib/colors";
-import { CheckIcon, CloseIcon, CopyIcon } from "./icons";
+import { useStarred } from "../useStarred";
+import { CheckIcon, CloseIcon, CopyIcon, StarIcon } from "./icons";
 
 /** Details for one picked color: every format with copy, nearest name, contrast. */
 export function Popover({ hex, onClose }: { hex: string; onClose: () => void }) {
   const [copied, setCopied] = useState<string | null>(null);
+  const { isStarred, toggle } = useStarred();
+  const starred = isStarred(hex);
   const name = nearestName(hex);
   const onWhite = contrast(hex, "#FFFFFF");
   const onBlack = contrast(hex, "#000000");
@@ -20,9 +23,21 @@ export function Popover({ hex, onClose }: { hex: string; onClose: () => void }) 
         <span className="pop-name" style={{ color: onBlack.ratio > onWhite.ratio ? "#000" : "#fff" }}>
           {hex}
         </span>
-        <button type="button" className="pop-close" onClick={onClose} aria-label="Close">
-          <CloseIcon />
-        </button>
+        <span className="pop-head-tools">
+          <button
+            type="button"
+            className={`pop-close pop-star${starred ? " on" : ""}`}
+            onClick={() => toggle(hex)}
+            aria-pressed={starred}
+            aria-label={starred ? "Remove from Saved" : "Save to Saved"}
+            title={starred ? "Starred: click to remove from Saved" : "Star: keep it in Saved"}
+          >
+            <StarIcon filled={starred} />
+          </button>
+          <button type="button" className="pop-close" onClick={onClose} aria-label="Close">
+            <CloseIcon />
+          </button>
+        </span>
       </div>
       <ul className="pop-formats">
         {FORMATS.map((f) => {

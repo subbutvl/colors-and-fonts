@@ -10,7 +10,8 @@ import {
   type ExportFormat,
   type Harmony,
 } from "../lib/palette";
-import { deletePalette, listPalettes, savePalette, type SavedPalette } from "../lib/palettes";
+import { onLibraryChanged } from "../lib/library";
+import { deletePalette, listPalettes, savePalette, takeOpenRequest, type SavedPalette } from "../lib/palettes";
 import type { Section } from "../sections";
 
 interface Slot {
@@ -56,7 +57,22 @@ export function PalettesPage({ section }: { section: Section }) {
       .then(setSaved)
       .catch((e) => setStatus(`Could not load saved palettes: ${e}`));
   }, []);
-  useEffect(refresh, [refresh]);
+  useEffect(() => {
+    refresh();
+    return onLibraryChanged(refresh);
+  }, [refresh]);
+
+  // Opened from the Saved page: load that palette into the generator.
+  useEffect(() => {
+    const id = takeOpenRequest();
+    if (id === null) return;
+    listPalettes()
+      .then((list) => {
+        const p = list.find((x) => x.id === id);
+        if (p) load(p);
+      })
+      .catch(() => {});
+  }, []);
 
   const regenerate = useCallback(() => {
     setSlots((s) => fresh(harmony, s.length, s));

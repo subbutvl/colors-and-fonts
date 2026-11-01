@@ -22,7 +22,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 2.4 Color blindness (5): simulations and situational cases
 - [x] 2.5 CSS generator (10): CSS vars, Tailwind v3/v4, Material 3, SCSS, tokens JSON
 - [x] 2.6 Image palette (11): drop/paste/screen-grab, k-means in OKLab
-- [ ] 2.7 Saved library
+- [x] 2.7 Saved library: star colors (recent picks, toolbar popover, Converter), Saved page with colors, notes and palettes, JSON export
 
 ## Phase 3: Fonts
 - [ ] 3.1 Google Fonts catalog fetch and offline cache; Font listing (15)
