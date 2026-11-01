@@ -4,6 +4,7 @@ import { applySavedShortcuts } from "./lib/shortcuts";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
+import { CssGeneratorPage } from "./pages/CssGeneratorPage";
 import { PairingPage } from "./pages/PairingPage";
 import { PalettesPage } from "./pages/PalettesPage";
 import { PickerHome } from "./pages/PickerHome";
@@ -33,6 +34,8 @@ function Page({ id }: { id: string }) {
       return <PairingPage section={section} />;
     case "color-blindness":
       return <VisionPage section={section} />;
+    case "css-generator":
+      return <CssGeneratorPage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
