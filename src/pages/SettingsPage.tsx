@@ -1,11 +1,26 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
+import { invoke } from "@tauri-apps/api/core";
 import { ThemeSwitch } from "../components/ThemeSwitch";
 import { getAutostart, setAutostart } from "../lib/autostart";
 import { isTauri } from "../lib/env";
 import { useSettings } from "../SettingsContext";
 
+interface ShortcutStatus {
+  action: "pick_color" | "identify_font" | "toggle_toolbar";
+  label: string;
+  registered: boolean;
+  error: string | null;
+}
+
+const SHORTCUT_NAMES: Record<ShortcutStatus["action"], string> = {
+  pick_color: "Pick color",
+  identify_font: "Identify font",
+  toggle_toolbar: "Show or hide the toolbar",
+};
+
 export function SettingsPage() {
+  const [shortcuts, setShortcuts] = useState<ShortcutStatus[] | null>(null);
   const { error } = useSettings();
   const [autostart, setAutostartState] = useState<boolean | null>(null);
   const [autostartError, setAutostartError] = useState<string | null>(null);
@@ -15,7 +30,10 @@ export function SettingsPage() {
     getAutostart()
       .then(setAutostartState)
       .catch((e) => setAutostartError(`Could not read the startup setting: ${String(e)}`));
-    if (isTauri()) getVersion().then(setVersion).catch(() => {});
+    if (isTauri()) {
+      getVersion().then(setVersion).catch(() => {});
+      invoke<ShortcutStatus[]>("shortcut_status").then(setShortcuts).catch(() => setShortcuts([]));
+    }
   }, []);
 
   const toggleAutostart = async (on: boolean) => {
@@ -71,6 +89,31 @@ export function SettingsPage() {
           />
         </div>
         {autostartError && <p className="alert" role="alert">{autostartError}</p>}
+      </section>
+
+      <section className="settings-group" aria-labelledby="set-shortcuts">
+        <h2 id="set-shortcuts">Keyboard shortcuts</h2>
+        {shortcuts === null ? (
+          <div className="setting-row">
+            <div>
+              <span>Shortcuts work in the desktop app, from any app.</span>
+            </div>
+          </div>
+        ) : (
+          shortcuts.map((s) => (
+            <div className="setting-row" key={s.action}>
+              <div>
+                <strong>{SHORTCUT_NAMES[s.action]}</strong>
+                <span>
+                  {s.registered
+                    ? "Works from any app."
+                    : "Not available: another app is already using these keys. Close that app or its shortcut and restart Huetype."}
+                </span>
+              </div>
+              <kbd className={`shortcut${s.registered ? "" : " off"}`}>{s.label.replace(/\+/g, " + ")}</kbd>
+            </div>
+          ))
+        )}
       </section>
 
       <section className="settings-group" aria-labelledby="set-about">

@@ -6,7 +6,10 @@ use tauri::{
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 };
 
+use crate::shortcuts::{self, Action};
+
 const OPEN: &str = "open";
+const TOOLBAR: &str = "toolbar";
 const PICK_COLOR: &str = "pick_color";
 const IDENTIFY_FONT: &str = "identify_font";
 const SETTINGS: &str = "settings";
@@ -14,6 +17,16 @@ const QUIT: &str = "quit";
 
 pub fn create(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, OPEN, "Open Huetype", true, None::<&str>)?;
+    let toolbar = MenuItem::with_id(
+        app,
+        TOOLBAR,
+        format!(
+            "Show or hide toolbar\t{}",
+            shortcuts::label(Action::ToggleToolbar)
+        ),
+        true,
+        None::<&str>,
+    )?;
     // Enabled in Phase 1 (color picker) and Phase 3 (font identify).
     let pick = MenuItem::with_id(
         app,
@@ -35,6 +48,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
         app,
         &[
             &open,
+            &toolbar,
             &PredefinedMenuItem::separator(app)?,
             &pick,
             &font,
@@ -51,6 +65,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
             OPEN => crate::show_main_window(app),
+            TOOLBAR => crate::toolbar::toggle(app),
             SETTINGS => crate::open_section(app, "settings"),
             QUIT => app.exit(0),
             _ => {}
