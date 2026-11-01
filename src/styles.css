@@ -55,7 +55,8 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Sidebar */
 .sidebar { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-right: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px; font: 600 16px var(--font-display); }
-.brand-mark { width: 18px; height: 18px; border-radius: 5px; background: conic-gradient(#ff6a88, #f2b84b, #3ccf8e, #7c8cff, #ff6a88); }
+.brand-mark { position: relative; width: 18px; height: 18px; border-radius: 5px; background: conic-gradient(from 200deg, #ff6a88, #f2b84b, #3ccf8e, #7c8cff, #ff6a88); }
+.brand-mark::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid #fff; background: radial-gradient(circle, #16161d 0 2px, transparent 2.5px); }
 .sidebar-scroll { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
 .nav-group-title { margin: 12px 10px 3px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .nav-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 4px 10px; border: 0; border-radius: 7px; background: none; text-align: left; font-size: 13px; cursor: pointer; }

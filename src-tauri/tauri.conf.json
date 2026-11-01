@@ -39,6 +39,10 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "shortDescription": "Pick colors and identify fonts from anywhere"
+    "shortDescription": "Pick colors and identify fonts from anywhere",
+    "longDescription": "Huetype picks colors and identifies fonts from anywhere on screen, with color, font and design-system reference tools.",
+    "publisher": "Subbu",
+    "copyright": "Copyright 2026 Subbu",
+    "category": "DeveloperTool"
   }
 }

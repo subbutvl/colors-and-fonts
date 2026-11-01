@@ -38,4 +38,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 4.5 Design systems hub, curated list and my design systems CRUD (19 to 21)
 
 ## Phase 5: Release
-- [ ] 5.1 App icon and branding, Windows installer (NSIS/MSI), auto-updater, code signing
+- [x] 5.1 App icon and branding (icon set from `scripts/app-icon.cjs`, sidebar mark, favicon, installer metadata)
+- [ ] 5.2 Windows installer (NSIS/MSI) built and attached to a GitHub release by a workflow on version tags
+- [ ] 5.3 Auto-updater (tauri-plugin-updater, signed update manifest on GitHub releases)
+- [ ] 5.4 Code signing: unsigned for now (decided 2026-11-01); revisit Azure Trusted Signing or an OV certificate later
