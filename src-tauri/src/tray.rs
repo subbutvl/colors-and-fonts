@@ -9,6 +9,7 @@ use tauri::{
 const OPEN: &str = "open";
 const PICK_COLOR: &str = "pick_color";
 const IDENTIFY_FONT: &str = "identify_font";
+const SETTINGS: &str = "settings";
 const QUIT: &str = "quit";
 
 pub fn create(app: &AppHandle) -> tauri::Result<()> {
@@ -28,6 +29,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
         false,
         None::<&str>,
     )?;
+    let settings = MenuItem::with_id(app, SETTINGS, "Settings…", true, None::<&str>)?;
     let quit = MenuItem::with_id(app, QUIT, "Quit Huetype", true, None::<&str>)?;
     let menu = Menu::with_items(
         app,
@@ -37,6 +39,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
             &pick,
             &font,
             &PredefinedMenuItem::separator(app)?,
+            &settings,
             &quit,
         ],
     )?;
@@ -48,6 +51,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
         .show_menu_on_left_click(false)
         .on_menu_event(|app, event| match event.id.as_ref() {
             OPEN => crate::show_main_window(app),
+            SETTINGS => crate::open_section(app, "settings"),
             QUIT => app.exit(0),
             _ => {}
         })

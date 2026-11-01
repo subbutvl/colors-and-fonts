@@ -3,7 +3,7 @@
  * read from this list, so adding a section means adding one entry here.
  * `num` matches the section numbers in the feature spec (1 to 21).
  */
-export type SectionGroup = "Picker" | "Colors" | "Fonts" | "Design systems";
+export type SectionGroup = "Picker" | "Colors" | "Fonts" | "Design systems" | "App";
 
 export interface Section {
   id: string;
@@ -42,8 +42,12 @@ export const SECTIONS: Section[] = [
   { id: "design-systems", num: 19, title: "Overview", group: "Design systems", phase: 4, blurb: "Search across curated and your own design systems." },
   { id: "curated-design-systems", num: 20, title: "Curated", group: "Design systems", phase: 4, blurb: "Public design systems with links to docs, tokens and guides." },
   { id: "my-design-systems", num: 21, title: "My design systems", group: "Design systems", phase: 4, blurb: "Add, edit and delete your own design-system references." },
+
+  // Not in the section list; reached from the sidebar footer and the tray menu.
+  { id: "settings", title: "Settings", group: "App", phase: 0, blurb: "Theme, startup and app info." },
 ];
 
+/** Groups shown in the sidebar list ("App" pages live in the sidebar footer). */
 export const GROUPS: SectionGroup[] = ["Picker", "Colors", "Fonts", "Design systems"];
 
 export const DEFAULT_SECTION = "picker";

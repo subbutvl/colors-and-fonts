@@ -1,20 +1,12 @@
 import { GROUPS, SECTIONS } from "../sections";
-import type { ThemePref } from "../useTheme";
+import { ThemeSwitch } from "./ThemeSwitch";
 
 interface Props {
   active: string;
   onNavigate: (id: string) => void;
-  theme: ThemePref;
-  onTheme: (p: ThemePref) => void;
 }
 
-const THEMES: { value: ThemePref; label: string }[] = [
-  { value: "system", label: "System" },
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-];
-
-export function Sidebar({ active, onNavigate, theme, onTheme }: Props) {
+export function Sidebar({ active, onNavigate }: Props) {
   return (
     <nav className="sidebar" aria-label="Sections">
       <div className="brand">
@@ -41,19 +33,17 @@ export function Sidebar({ active, onNavigate, theme, onTheme }: Props) {
           </div>
         ))}
       </div>
-      <div className="theme-switch" role="radiogroup" aria-label="Theme">
-        {THEMES.map((t) => (
-          <button
-            key={t.value}
-            type="button"
-            role="radio"
-            aria-checked={theme === t.value}
-            className={theme === t.value ? "on" : ""}
-            onClick={() => onTheme(t.value)}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div className="sidebar-foot">
+        <ThemeSwitch />
+        <button
+          type="button"
+          className={`nav-item${active === "settings" ? " active" : ""}`}
+          aria-current={active === "settings" ? "page" : undefined}
+          onClick={() => onNavigate("settings")}
+        >
+          <span className="nav-num" aria-hidden="true">⚙</span>
+          Settings
+        </button>
       </div>
     </nav>
   );

@@ -1,12 +1,19 @@
 //! Huetype app entry point.
 //!
-//! Phase 0 / step 1: a single main window that hides to the system tray on
-//! close, a tray icon with a menu, and single-instance enforcement so a second
-//! launch just brings the existing window forward.
+//! A single main window that hides to the system tray on close, a tray icon
+//! with a menu, single-instance enforcement so a second launch just brings the
+//! existing window forward, SQLite storage and launch-at-startup.
 
+mod db;
 mod tray;
 
-use tauri::{Manager, WindowEvent};
+use tauri::{Emitter, Manager, WindowEvent};
+
+/// Passed by the autostart entry so a login launch stays in the tray.
+pub const HIDDEN_ARG: &str = "--hidden";
+
+/// Frontend event that switches the main window to a section (payload: section id).
+pub const NAVIGATE_EVENT: &str = "huetype://navigate";
 
 /// Label of the one and only app window (see `tauri.conf.json`).
 pub const MAIN_WINDOW: &str = "main";
@@ -18,6 +25,12 @@ pub fn show_main_window(app: &tauri::AppHandle) {
         let _ = window.show();
         let _ = window.set_focus();
     }
+}
+
+/// Show the main window on a given section, e.g. "settings".
+pub fn open_section(app: &tauri::AppHandle, section: &str) {
+    show_main_window(app);
+    let _ = app.emit_to(MAIN_WINDOW, NAVIGATE_EVENT, section);
 }
 
 /// Hide the main window if it is visible, otherwise show it.
@@ -41,8 +54,22 @@ pub fn run() {
             show_main_window(app);
         }))
         .plugin(tauri_plugin_opener::init())
+        .plugin(
+            tauri_plugin_sql::Builder::default()
+                .add_migrations(db::DB_URL, db::migrations())
+                .build(),
+        )
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            Some(vec![HIDDEN_ARG]),
+        ))
         .setup(|app| {
             tray::create(app.handle())?;
+            // The window starts hidden (see tauri.conf.json) so a login launch
+            // never flashes it; show it unless we were started with --hidden.
+            if !std::env::args().any(|a| a == HIDDEN_ARG) {
+                show_main_window(app.handle());
+            }
             Ok(())
         })
         .on_window_event(|window, event| {
