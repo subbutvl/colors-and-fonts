@@ -4,6 +4,7 @@ import { applySavedShortcuts } from "./lib/shortcuts";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
+import { PairingPage } from "./pages/PairingPage";
 import { PalettesPage } from "./pages/PalettesPage";
 import { PickerHome } from "./pages/PickerHome";
 import { ScalesPage } from "./pages/ScalesPage";
@@ -27,6 +28,8 @@ function Page({ id }: { id: string }) {
       return <PalettesPage section={section} />;
     case "scales":
       return <ScalesPage section={section} />;
+    case "color-pairing":
+      return <PairingPage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
