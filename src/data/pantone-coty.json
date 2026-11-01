@@ -1,0 +1,42 @@
+{
+  "note": "Our own list of the Pantone Color of the Year selections, 2002 to 2026. Codes are Pantone's Fashion, Home + Interiors (TCX) numbers; hex values are commonly published sRGB approximations, not official Pantone conversions. Notes are our own short descriptions.",
+  "years": [
+    { "year": 2002, "colors": [{ "name": "True Red", "code": "19-1664", "hex": "#BF1932", "note": "A deep, confident red picked in the months after September 2001." }] },
+    { "year": 2003, "colors": [{ "name": "Aqua Sky", "code": "14-4811", "hex": "#7BC4C4", "note": "A calm, watery blue-green." }] },
+    { "year": 2004, "colors": [{ "name": "Tigerlily", "code": "17-1456", "hex": "#E2583E", "note": "A warm orange-red with a tropical feel." }] },
+    { "year": 2005, "colors": [{ "name": "Blue Turquoise", "code": "15-5217", "hex": "#53B0AE", "note": "A soft turquoise between blue and green." }] },
+    { "year": 2006, "colors": [{ "name": "Sand Dollar", "code": "13-1106", "hex": "#DECDBE", "note": "A quiet, sandy neutral." }] },
+    { "year": 2007, "colors": [{ "name": "Chili Pepper", "code": "19-1557", "hex": "#9B1B30", "note": "A spicy, dark red." }] },
+    { "year": 2008, "colors": [{ "name": "Blue Iris", "code": "18-3943", "hex": "#5A5B9F", "note": "A blue with a touch of purple." }] },
+    { "year": 2009, "colors": [{ "name": "Mimosa", "code": "14-0848", "hex": "#F0C05A", "note": "A warm, hopeful yellow chosen during a hard economic year." }] },
+    { "year": 2010, "colors": [{ "name": "Turquoise", "code": "15-5519", "hex": "#45B5AA", "note": "A bright, escapist turquoise." }] },
+    { "year": 2011, "colors": [{ "name": "Honeysuckle", "code": "18-2120", "hex": "#D94F70", "note": "A lively pink-red." }] },
+    { "year": 2012, "colors": [{ "name": "Tangerine Tango", "code": "17-1463", "hex": "#DD4124", "note": "A spirited reddish orange." }] },
+    { "year": 2013, "colors": [{ "name": "Emerald", "code": "17-5641", "hex": "#009473", "note": "A rich, jewel-toned green." }] },
+    { "year": 2014, "colors": [{ "name": "Radiant Orchid", "code": "18-3224", "hex": "#B163A3", "note": "A purple with pink undertones." }] },
+    { "year": 2015, "colors": [{ "name": "Marsala", "code": "18-1438", "hex": "#955251", "note": "An earthy wine red." }] },
+    {
+      "year": 2016,
+      "colors": [
+        { "name": "Rose Quartz", "code": "13-1520", "hex": "#F7CAC9", "note": "A gentle pink, paired with Serenity: the first year with two colors." },
+        { "name": "Serenity", "code": "15-3919", "hex": "#92A8D1", "note": "A cool, airy blue, paired with Rose Quartz." }
+      ]
+    },
+    { "year": 2017, "colors": [{ "name": "Greenery", "code": "15-0343", "hex": "#88B04B", "note": "A fresh yellow-green." }] },
+    { "year": 2018, "colors": [{ "name": "Ultra Violet", "code": "18-3838", "hex": "#5F4B8B", "note": "A deep, blue-based purple." }] },
+    { "year": 2019, "colors": [{ "name": "Living Coral", "code": "16-1546", "hex": "#FF6F61", "note": "A warm coral with a golden undertone." }] },
+    { "year": 2020, "colors": [{ "name": "Classic Blue", "code": "19-4052", "hex": "#0F4C81", "note": "A steady, dependable blue." }] },
+    {
+      "year": 2021,
+      "colors": [
+        { "name": "Ultimate Gray", "code": "17-5104", "hex": "#939597", "note": "A solid mid gray, paired with Illuminating." },
+        { "name": "Illuminating", "code": "13-0647", "hex": "#F5DF4D", "note": "A bright, cheerful yellow, paired with Ultimate Gray." }
+      ]
+    },
+    { "year": 2022, "colors": [{ "name": "Very Peri", "code": "17-3938", "hex": "#6667AB", "note": "A periwinkle blue with violet-red undertones, the first color Pantone created for the title." }] },
+    { "year": 2023, "colors": [{ "name": "Viva Magenta", "code": "18-1750", "hex": "#BB2649", "note": "A vivid crimson-magenta." }] },
+    { "year": 2024, "colors": [{ "name": "Peach Fuzz", "code": "13-1023", "hex": "#FFBE98", "note": "A soft, velvety peach." }] },
+    { "year": 2025, "colors": [{ "name": "Mocha Mousse", "code": "17-1230", "hex": "#A47864", "note": "A warm, chocolatey brown." }] },
+    { "year": 2026, "colors": [{ "name": "Cloud Dancer", "code": "11-4201", "hex": "#F0EEE9", "note": "A soft, airy white, the first white chosen." }] }
+  ]
+}

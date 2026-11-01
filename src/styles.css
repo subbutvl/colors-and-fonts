@@ -431,3 +431,41 @@ ol.font-grid { counter-reset: none; }
 .font-tag.plain { background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); }
 .font-tag.muted { background: color-mix(in srgb, var(--muted) 16%, transparent); color: var(--muted); }
 .id-matches { margin-top: 4px; }
+
+/* Pantone Color of the Year */
+.coty-strip { display: grid; grid-template-columns: repeat(25, minmax(0, 1fr)); gap: 3px; }
+.coty-strip-year { display: grid; gap: 3px; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; text-align: center; }
+.coty-strip-sw { display: flex; height: 40px; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+.coty-strip-sw span { flex: 1; }
+.coty-strip-year small { font: 11px var(--mono); }
+.coty-strip-year.on small { color: var(--ink); font-weight: 700; }
+.coty-strip-year.on .coty-strip-sw { outline: 2px solid var(--accent); outline-offset: 1px; }
+.coty-strip-year:hover .coty-strip-sw { border-color: var(--ink); }
+.spacer { flex: 1; }
+.coty-selected { display: grid; gap: 14px; }
+.coty-selected.two { grid-template-columns: 1fr 1fr; }
+.coty-detail { display: grid; grid-template-columns: minmax(220px, 300px) 1fr; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); }
+.coty-selected.two .coty-detail { grid-template-columns: 1fr; }
+.coty-hero { display: grid; align-content: end; gap: 2px; min-height: 220px; padding: 18px; }
+.coty-hero strong { font-size: 26px; line-height: 1.15; }
+.coty-hero-year { font: 600 13px var(--mono); opacity: 0.8; }
+.coty-info { display: grid; gap: 12px; align-content: start; padding: 16px 18px; }
+.coty-info-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+.coty-info-head p { margin: 0; }
+.coty-values { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 14px; margin: 0; }
+.coty-values div { display: grid; gap: 1px; }
+.coty-values dt { color: var(--muted); font-size: 12px; }
+.coty-values dd { margin: 0; }
+.coty-values .link-btn { padding: 0; text-align: left; }
+.coty-contrast { display: flex; flex-wrap: wrap; gap: 8px; }
+.coty-chip { display: inline-flex; gap: 8px; align-items: center; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; font-weight: 600; }
+.coty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.coty-card { display: grid; grid-template-rows: 84px auto; width: 100%; padding: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--panel); color: var(--ink); cursor: pointer; text-align: left; }
+.coty-card:hover, .coty-card.on { border-color: var(--accent); }
+.coty-card-sw { display: flex; }
+.coty-card-sw span { flex: 1; }
+.coty-card-text { display: grid; gap: 1px; padding: 8px 10px; }
+.coty-card-text small { color: var(--muted); }
+@media (max-width: 900px) { .coty-selected.two { grid-template-columns: 1fr; } .coty-detail { grid-template-columns: 1fr; } .coty-strip { grid-template-columns: repeat(13, minmax(0, 1fr)); } }
+.coty-hero .mono { color: inherit; opacity: 0.8; }
+.coty-selected.two .coty-detail { grid-template-rows: auto 1fr; }

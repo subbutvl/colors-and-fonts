@@ -31,7 +31,7 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 3.4 Font matching index (pre-rendered Google Fonts features) and results card with confidence labels
 
 ## Phase 4: Content
-- [ ] 4.1 Pantone Color of the Year 2002 to 2026 (4)
+- [x] 4.1 Pantone Color of the Year 2002 to 2026 (4)
 - [ ] 4.2 Curated colors (7) and Brand colors (8)
 - [ ] 4.3 Gradients (9): curated set and editor
 - [ ] 4.4 Guess the color game (12)

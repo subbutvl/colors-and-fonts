@@ -14,6 +14,7 @@ import { SavedPage } from "./pages/SavedPage";
 import { ImagePalettePage } from "./pages/ImagePalettePage";
 import { PairingPage } from "./pages/PairingPage";
 import { PalettesPage } from "./pages/PalettesPage";
+import { PantonePage } from "./pages/PantonePage";
 import { PickerHome } from "./pages/PickerHome";
 import { ScalesPage } from "./pages/ScalesPage";
 import { Placeholder } from "./pages/Placeholder";
@@ -57,6 +58,8 @@ function Page({ id }: { id: string }) {
       return <SavedPage section={section} />;
     case "image-palette":
       return <ImagePalettePage section={section} />;
+    case "pantone":
+      return <PantonePage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
