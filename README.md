@@ -8,7 +8,7 @@ Status: early development. See [docs/ROADMAP.md](docs/ROADMAP.md).
 
 Prerequisites (one time):
 
-1. [Node.js](https://nodejs.org/) 20 or newer
+1. [Node.js](https://nodejs.org/) 20.19+ or 22.12+ (required by Vite 8)
 2. [Rust](https://www.rust-lang.org/tools/install) (stable, MSVC toolchain)
 3. Microsoft C++ Build Tools ("Desktop development with C++") and WebView2 (preinstalled on Windows 11). Full list: https://v2.tauri.app/start/prerequisites/
 
