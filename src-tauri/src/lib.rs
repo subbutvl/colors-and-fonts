@@ -3,8 +3,9 @@
 //! A single main window that hides to the system tray on close, a tray icon
 //! with a menu, single-instance enforcement so a second launch just brings the
 //! existing window forward, SQLite storage, launch-at-startup, global
-//! shortcuts and the floating picker toolbar.
+//! shortcuts, the floating picker toolbar and screen color sampling.
 
+mod capture;
 mod db;
 mod shortcuts;
 mod toolbar;
@@ -78,6 +79,8 @@ pub fn run() {
         )
         .plugin(shortcuts::plugin())
         .invoke_handler(tauri::generate_handler![
+            capture::color_at_point,
+            capture::color_at_cursor,
             shortcuts::shortcut_status,
             shortcuts::set_shortcut,
             toolbar::hide_toolbar,

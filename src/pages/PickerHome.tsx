@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TryPick } from "../components/TryPick";
 import { getShortcutStatus, prettyShortcut, type ShortcutAction, type ShortcutStatus } from "../lib/shortcuts";
 
 const FALLBACK: Record<ShortcutAction, string> = {
@@ -33,6 +34,7 @@ export function PickerHome() {
           <kbd>{keys("identify_font")}</kbd>
         </button>
       </div>
+      <TryPick />
       <p className="note">
         The color picker arrives in Phase 1 and font identify in Phase 3. Press {keys("toggle_toolbar")} to show the
         floating toolbar. Close this window any time: Huetype keeps running in the system tray.
