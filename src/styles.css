@@ -239,3 +239,29 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .scale-ratio { display: flex; justify-content: space-between; gap: 4px; padding: 0 2px; color: var(--muted); font: 10.5px var(--mono); white-space: nowrap; }
 .scale-code { margin: 0; padding: 12px 16px; border-top: 1px solid var(--line); background: var(--bg); font: 12px/1.55 var(--mono); overflow: auto; max-height: 320px; }
 @media (max-width: 1000px) { .scale { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+
+/* Color pairing */
+.pair-main { display: flex; gap: 28px; align-items: center; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.hue-wheel { flex: none; position: relative; border-radius: 50%; }
+.hue-wheel svg { position: absolute; inset: 0; }
+.hue-wheel-hole { fill: var(--panel); }
+.hue-wheel-line { stroke: var(--ink); stroke-opacity: .35; stroke-width: 1.5; }
+.hue-dot { stroke: #fff; stroke-width: 2.5; filter: drop-shadow(0 1px 2px rgba(0,0,0,.4)); }
+.hue-dot.base { stroke-width: 3.5; }
+.pair-feature { flex: 1; min-width: 0; display: grid; gap: 10px; justify-items: start; }
+.pair-feature h2 { margin: 0; font: 600 18px var(--font-display); }
+.pair-big { display: flex; width: 100%; height: 140px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.pair-big-col { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: 2px; padding: 10px; }
+.pair-big-col button { padding: 1px 4px; border: 0; border-radius: 5px; background: none; color: inherit; font: 600 13px var(--mono); cursor: pointer; }
+.pair-big-col button:hover { background: color-mix(in srgb, currentColor 14%, transparent); }
+.pair-big-col .pair-use { font: 11.5px var(--font); opacity: .75; }
+.pair-tag { position: absolute; top: 8px; left: 10px; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; opacity: .85; }
+.pair-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.pair-card { display: grid; gap: 6px; width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); text-align: left; cursor: pointer; }
+.pair-card:hover { border-color: var(--accent); }
+.pair-card.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.pair-card .mono { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pair-strip { display: flex; height: 40px; border-radius: 8px; overflow: hidden; }
+.pair-strip span { flex: 1; }
+@media (max-width: 900px) { .pair-main { flex-direction: column; align-items: stretch; } .hue-wheel { align-self: center; } }
+.pair-wheel-switch { flex: none; margin: 0; min-width: 130px; }

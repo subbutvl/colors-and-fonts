@@ -23,6 +23,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - Contrast: WCAG 2.2 ratio (culori) and APCA-W3 0.0.98G-4g (own implementation in `src/lib/contrast.ts`, tested against the published reference values). "Nearest passing color" moves one color's OKLCH lightness (hue kept, chroma clamped to sRGB) by binary search, for text or background, lighter or darker.
 - Palettes: generated in OKLCH (`src/lib/palette.ts`, pure and seedable): harmony sets hue offsets, lightness runs dark to light so every palette has contrast inside it, chroma is tapered at the extremes and clamped to sRGB. The first locked color anchors hue and chroma. 3 to 8 colors; Space generates (not while typing or on a button). Saved palettes are rows in the SQLite `palettes` table (migration 3, colors as a JSON hex array; `src/lib/palettes.ts`).
 - Scales: `src/lib/scale.ts` makes 50 to 950 in OKLCH from per-step lightness and relative-chroma tables shaped like Tailwind's. The base color is kept exactly at the step with the nearest lightness; other steps are shifted by its lightness offset, fading to zero at both ends, so the scale stays monotonic. Chroma is clamped to sRGB. Yellows (hue 50 to 115) lean darker steps towards orange. Default name is the Tailwind hue family. Export: CSS vars, Tailwind v4 `@theme`, Tailwind v3 config, JSON, values in HEX or OKLCH.
+- Color pairing: `src/lib/pairing.ts`, seven pairings (complementary, analogous, split, triadic, square, rectangle, monochromatic). Default wheel is OKLCH (partners keep the base's lightness and chroma, clamped to sRGB); an HSL wheel toggle gives the classic answers (red pairs with cyan). Grays get a note, since they have no hue.
 - Curated datasets are our own JSON in the repo; do not scrape colorsinspo.com or similar sites.
 
 ## How work is done
@@ -34,7 +35,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 ## Layout
 
 - `src/sections.ts`: the single list of all sections (sidebar, routing, placeholders read it).
-- `src/pages/`: one component per section as they get built (`PickerHome`, `ContrastPage`, `ConverterPage`, `ColorNamesPage`, `PalettesPage`, `ScalesPage`, `SettingsPage`), routed in `src/App.tsx`; `components/PageHead.tsx` renders the numbered title. `src/components/`: shared UI.
+- `src/pages/`: one component per section as they get built (`PickerHome`, `ContrastPage`, `ConverterPage`, `ColorNamesPage`, `PalettesPage`, `ScalesPage`, `PairingPage`, `SettingsPage`), routed in `src/App.tsx`; `components/PageHead.tsx` renders the numbered title. `src/components/`: shared UI.
 - `src/styles.css`: design tokens (light base, dark override) and app styles.
 - `src/lib/`: frontend services. `db.ts` (shared SQLite connection), `settings.ts` (key/value settings, localStorage fallback outside Tauri), `autostart.ts`, `env.ts` (`isTauri()`).
 - `src/SettingsContext.tsx`: settings state for the app, applies the theme.
@@ -42,7 +43,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - `src-tauri/src/shortcuts.rs`: global shortcut registry (`shortcut_status`, `set_shortcut` commands; accelerators like `Ctrl+Alt+KeyC`). Frontend side: `src/lib/shortcuts.ts`, `src/components/ShortcutRow.tsx`.
 - `src-tauri/src/capture/`: `mod.rs` has the `ScreenSource` trait (OS side; `XcapSource` today), `sample_point`, and the `color_at_point` / `color_at_cursor` commands. `sampler.rs` is pure pixel math (pixel, area average), unit tested. Building on Linux needs `libpipewire-0.3-dev` (xcap).
 - `src-tauri/src/picker.rs`: the pick session (`start`, `finish`, overlay windows, `start_pick` / `overlay_*` commands, frame sent as binary: 20-byte header + RGBA). `overlay.html` + `src/overlay/` is the overlay page (third Vite entry, always dark; `pixels.ts` mirrors `sampler.rs`). `src/lib/picker.ts` is the frontend API (`startPick`, `onPick`, `onPickerError`).
-- `src/lib/colors.ts` (formats, nearest name, contrast, copy format, clipboard, `parseColor` / `convert` for the Converter, `NAMED_COLORS`), `src/lib/history.ts` (pick history), `src/lib/palette.ts` (palette generator, export) `src/lib/palettes.ts` (saved palettes), `src/lib/scale.ts` (scales), `src/usePickRecorder.ts` (main window recorder). Toolbar popover: `src/toolbar/Popover.tsx`.
+- `src/lib/colors.ts` (formats, nearest name, contrast, copy format, clipboard, `parseColor` / `convert` for the Converter, `NAMED_COLORS`), `src/lib/history.ts` (pick history), `src/lib/palette.ts` (palette generator, export) `src/lib/palettes.ts` (saved palettes), `src/lib/scale.ts` (scales), `src/lib/pairing.ts` (color pairing), `src/usePickRecorder.ts` (main window recorder). Toolbar popover: `src/toolbar/Popover.tsx`.
 - `src-tauri/src/lib.rs`: app setup, window behavior, `open_section()` (tray to page navigation via the `huetype://navigate` event). `tray.rs`: tray icon and menu. `db.rs`: SQLite migrations (append-only; add a new version, never edit a released one).
 
 ## Storage
