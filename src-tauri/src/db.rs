@@ -34,6 +34,17 @@ pub fn migrations() -> Vec<Migration> {
               CREATE INDEX IF NOT EXISTS picks_picked_at ON picks (picked_at DESC);",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "create palettes table (saved palettes)",
+            sql: "CREATE TABLE IF NOT EXISTS palettes (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                name       TEXT NOT NULL,
+                colors     TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 

@@ -4,6 +4,7 @@ import { applySavedShortcuts } from "./lib/shortcuts";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
+import { PalettesPage } from "./pages/PalettesPage";
 import { PickerHome } from "./pages/PickerHome";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -21,6 +22,8 @@ function Page({ id }: { id: string }) {
       return <ContrastPage section={section} />;
     case "converter":
       return <ConverterPage section={section} />;
+    case "palettes":
+      return <PalettesPage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
