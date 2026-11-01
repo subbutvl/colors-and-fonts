@@ -33,6 +33,10 @@ pub const PICKED_EVENT: &str = "huetype://picked";
 /// window is shown on Picker home, which displays it.
 pub const ERROR_EVENT: &str = "huetype://picker-error";
 
+/// Broadcast when a pick session ends, with or without picks (Esc, right-click,
+/// Alt+F4 or a failed start), so pages waiting for a pick can stop waiting.
+pub const FINISHED_EVENT: &str = "huetype://picker-finished";
+
 /// Time for Windows to repaint after we hide our own windows, so they are
 /// not in the frozen frame.
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
@@ -230,6 +234,7 @@ pub fn finish(app: &AppHandle) {
     if restore_main {
         crate::show_main_window(app);
     }
+    let _ = app.emit(FINISHED_EVENT, ());
 }
 
 /// Tell the user why no picker opened, wherever the pick was started from

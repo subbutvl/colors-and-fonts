@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { convert, copyText, parseColor } from "../lib/colors";
-import { apcaLc, apcaUse, suggest, TARGETS, wcag, type Suggestion } from "../lib/contrast";
+import { apcaLc, apcaUse, flatten, suggest, TARGETS, wcag, type Suggestion } from "../lib/contrast";
 import { isTauri } from "../lib/env";
-import { onPick, startPick } from "../lib/picker";
+import { onPick, onPickerFinished, startPick } from "../lib/picker";
 import type { Section } from "../sections";
 import { PageHead } from "../components/PageHead";
 
@@ -78,8 +78,11 @@ export function ContrastPage({ section }: { section: Section }) {
 
   const text = parseColor(pair.text);
   const background = parseColor(pair.background);
-  const fg = text ? convert(text).hex : null;
-  const bg = background ? convert(background).hex : null;
+  // Translucent colors are measured as drawn: the background over white,
+  // the text over the background.
+  const bg = background ? flatten(background, "#FFFFFF") : null;
+  const fg = text && bg ? flatten(text, bg) : null;
+  const translucent = (text?.alpha ?? 1) < 1 || (background?.alpha ?? 1) < 1;
 
   useEffect(() => {
     try {
@@ -89,16 +92,20 @@ export function ContrastPage({ section }: { section: Section }) {
     }
   }, [pair, fg, bg]);
 
-  useEffect(
-    () =>
-      onPick((p) => {
-        const side = picking.current;
-        if (!side) return;
-        picking.current = null;
-        setPair((prev) => ({ ...prev, [side]: p.hex }));
-      }),
-    [],
-  );
+  useEffect(() => {
+    const offPick = onPick((p) => {
+      const side = picking.current;
+      if (!side) return;
+      picking.current = null;
+      setPair((prev) => ({ ...prev, [side]: p.hex }));
+    });
+    // Cancelled with Esc: later picks from elsewhere must not land here.
+    const offFinished = onPickerFinished(() => (picking.current = null));
+    return () => {
+      offPick();
+      offFinished();
+    };
+  }, []);
 
   const set = (side: Side) => (value: string) => setPair((prev) => ({ ...prev, [side]: value }));
   const pickScreen = (side: Side) => {
@@ -148,6 +155,12 @@ export function ContrastPage({ section }: { section: Section }) {
         </p>
       ) : (
         <>
+          {translucent && (
+            <p className="help">
+              Translucent colors are measured as drawn: the background over white ({bg}), the text over the background
+              ({fg}).
+            </p>
+          )}
           <div className="ct-preview" style={{ background: bg!, color: fg! }}>
             <p className="ct-large">Large text 24px</p>
             <p className="ct-bold">Bold UI label 18.66px</p>
