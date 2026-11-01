@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
+import { applySavedShortcuts } from "./lib/shortcuts";
 import { PickerHome } from "./pages/PickerHome";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -20,6 +22,12 @@ function Page({ id }: { id: string }) {
 
 export default function App() {
   const [active, navigate] = useHashRoute();
+
+  // Re-register the user's saved shortcuts (Rust starts with the defaults).
+  // Pages that show shortcuts wait for this through getShortcutStatus().
+  useEffect(() => {
+    void applySavedShortcuts();
+  }, []);
   return (
     <SettingsProvider>
       <div className="app">

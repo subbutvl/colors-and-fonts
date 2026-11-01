@@ -1,7 +1,7 @@
 //! System tray icon and menu.
 
 use tauri::{
-    AppHandle,
+    AppHandle, Manager,
     menu::{Menu, MenuItem, PredefinedMenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
 };
@@ -15,18 +15,28 @@ const IDENTIFY_FONT: &str = "identify_font";
 const SETTINGS: &str = "settings";
 const QUIT: &str = "quit";
 
+/// Menu items whose text shows a shortcut, kept so a rebind can update them.
+struct TrayItems {
+    toolbar: MenuItem<tauri::Wry>,
+}
+
+fn toolbar_text(app: &AppHandle) -> String {
+    format!(
+        "Show or hide toolbar\t{}",
+        shortcuts::pretty(&shortcuts::current(app, Action::ToggleToolbar))
+    )
+}
+
+/// Re-read shortcut labels after a rebind.
+pub fn refresh_labels(app: &AppHandle) {
+    if let Some(items) = app.try_state::<TrayItems>() {
+        let _ = items.toolbar.set_text(toolbar_text(app));
+    }
+}
+
 pub fn create(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, OPEN, "Open Huetype", true, None::<&str>)?;
-    let toolbar = MenuItem::with_id(
-        app,
-        TOOLBAR,
-        format!(
-            "Show or hide toolbar\t{}",
-            shortcuts::label(Action::ToggleToolbar)
-        ),
-        true,
-        None::<&str>,
-    )?;
+    let toolbar = MenuItem::with_id(app, TOOLBAR, toolbar_text(app), true, None::<&str>)?;
     // Enabled in Phase 1 (color picker) and Phase 3 (font identify).
     let pick = MenuItem::with_id(
         app,
@@ -84,6 +94,9 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     if let Some(icon) = app.default_window_icon() {
         builder = builder.icon(icon.clone());
     }
+    app.manage(TrayItems {
+        toolbar: toolbar.clone(),
+    });
     builder.build(app)?;
     Ok(())
 }
