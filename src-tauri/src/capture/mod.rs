@@ -43,10 +43,18 @@ impl MonitorInfo {
             i64::from(y) - i64::from(self.y),
         )
     }
+
+    /// Whether the virtual-desktop point is on this monitor.
+    pub fn contains(&self, x: i32, y: i32) -> bool {
+        let (lx, ly) = self.to_local(x, y);
+        lx >= 0 && ly >= 0 && lx < i64::from(self.width) && ly < i64::from(self.height)
+    }
 }
 
 /// Something that can tell which monitor a point is on and capture part of it.
 pub trait ScreenSource {
+    /// Every connected monitor.
+    fn monitors(&self) -> Result<Vec<MonitorInfo>, String>;
     fn monitor_at(&self, x: i32, y: i32) -> Result<MonitorInfo, String>;
     /// Capture `region` (monitor-local physical pixels) of `monitor`.
     fn capture(&self, monitor: &MonitorInfo, region: Region) -> Result<RgbaImage, String>;
@@ -97,6 +105,30 @@ pub fn sample_point(
     })
 }
 
+/// A full-resolution still of one monitor.
+pub struct Frame {
+    pub monitor: MonitorInfo,
+    pub image: RgbaImage,
+}
+
+/// Capture every monitor, whole. Used to freeze the screen for the picker.
+pub fn capture_all(source: &impl ScreenSource) -> Result<Vec<Frame>, String> {
+    source
+        .monitors()?
+        .into_iter()
+        .map(|monitor| {
+            let full = Region {
+                x: 0,
+                y: 0,
+                width: monitor.width,
+                height: monitor.height,
+            };
+            let image = source.capture(&monitor, full)?;
+            Ok(Frame { monitor, image })
+        })
+        .collect()
+}
+
 /// [`ScreenSource`] backed by the `xcap` crate (GDI on Windows).
 pub struct XcapSource;
 
@@ -106,9 +138,8 @@ impl XcapSource {
     }
 }
 
-impl ScreenSource for XcapSource {
-    fn monitor_at(&self, x: i32, y: i32) -> Result<MonitorInfo, String> {
-        let m = Self::find(x, y)?;
+impl XcapSource {
+    fn info(m: &xcap::Monitor) -> Result<MonitorInfo, String> {
         let err = |e: xcap::XCapError| e.to_string();
         Ok(MonitorInfo {
             name: m.friendly_name().or_else(|_| m.name()).unwrap_or_default(),
@@ -118,6 +149,20 @@ impl ScreenSource for XcapSource {
             height: m.height().map_err(err)?,
             scale_factor: m.scale_factor().unwrap_or(1.0),
         })
+    }
+}
+
+impl ScreenSource for XcapSource {
+    fn monitors(&self) -> Result<Vec<MonitorInfo>, String> {
+        xcap::Monitor::all()
+            .map_err(|e| format!("Could not list monitors: {e}"))?
+            .iter()
+            .map(Self::info)
+            .collect()
+    }
+
+    fn monitor_at(&self, x: i32, y: i32) -> Result<MonitorInfo, String> {
+        Self::info(&Self::find(x, y)?)
     }
 
     fn capture(&self, monitor: &MonitorInfo, region: Region) -> Result<RgbaImage, String> {
@@ -190,13 +235,14 @@ mod tests {
     }
 
     impl ScreenSource for Fake {
+        fn monitors(&self) -> Result<Vec<MonitorInfo>, String> {
+            Ok(self.monitors.clone())
+        }
+
         fn monitor_at(&self, x: i32, y: i32) -> Result<MonitorInfo, String> {
             self.monitors
                 .iter()
-                .find(|m| {
-                    let (lx, ly) = m.to_local(x, y);
-                    lx >= 0 && ly >= 0 && lx < i64::from(m.width) && ly < i64::from(m.height)
-                })
+                .find(|m| m.contains(x, y))
                 .cloned()
                 .ok_or_else(|| "no monitor".into())
         }
@@ -262,6 +308,15 @@ mod tests {
         assert_eq!(s.sample_size, MAX_SAMPLE_SIZE);
         let s = sample_point(&fake(), 500, 500, 0).unwrap();
         assert_eq!(s.sample_size, 1);
+    }
+
+    #[test]
+    fn capture_all_grabs_each_monitor_whole() {
+        let src = fake();
+        let frames = capture_all(&src).unwrap();
+        assert_eq!(frames.len(), 2);
+        assert_eq!(frames[1].monitor.name, "Left");
+        assert_eq!(frames[1].image.dimensions(), (2880, 1620));
     }
 
     #[test]

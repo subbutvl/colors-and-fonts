@@ -16,6 +16,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - One app window only (`main`). The picker toolbar and capture overlay are transient helper windows. Closing `main` hides it to the tray; Quit is in the tray menu.
 - Default global shortcuts are **Ctrl+Alt+C** (pick color), **Ctrl+Alt+F** (identify font), **Ctrl+Alt+Space** (toolbar). Not Ctrl+Shift: Ctrl+Shift+C is browser DevTools. A shortcut another app owns is reported in Settings, never fatal. Users can rebind in Settings; choices are stored as `shortcut.<action>` settings rows and re-applied by the main window on load (`applySavedShortcuts`).
 - Screen coordinates are physical pixels on the virtual desktop (same space as `cursor_position()`; monitors can have negative origins and different scale factors). Sampling captures only a small square around the point via xcap (GDI on Windows, default features off), never a full screen, and averages in sRGB (1, 3, 5 up to 25 px squares).
+- Picking: each pick session hides our own windows, freezes every monitor (full capture), and covers each monitor with an overlay window `overlay-<n>` (created once, then hidden and reused). Click adds and keeps the session open (multi-pick); Shift+drag averages; arrows nudge 1 px (Shift 10); Enter picks; Esc, right-click or Alt+F4 ends. Picks are broadcast as `huetype://picked`.
 - Curated datasets are our own JSON in the repo; do not scrape colorsinspo.com or similar sites.
 
 ## How work is done
@@ -33,7 +34,8 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - `src/SettingsContext.tsx`: settings state for the app, applies the theme.
 - `toolbar.html` + `src/toolbar/`: the floating toolbar page (second Vite entry, always dark, own CSS). Its window is created in `src-tauri/src/toolbar.rs`; `capabilities/toolbar.json` scopes what it may call.
 - `src-tauri/src/shortcuts.rs`: global shortcut registry (`shortcut_status`, `set_shortcut` commands; accelerators like `Ctrl+Alt+KeyC`). Frontend side: `src/lib/shortcuts.ts`, `src/components/ShortcutRow.tsx`.
-- `src-tauri/src/capture/`: `mod.rs` has the `ScreenSource` trait (OS side; `XcapSource` today), `sample_point`, and the `color_at_point` / `color_at_cursor` commands. `sampler.rs` is pure pixel math (pixel, area average, loupe grid), unit tested. Frontend: `src/lib/capture.ts`. Building on Linux needs `libpipewire-0.3-dev` (xcap).
+- `src-tauri/src/capture/`: `mod.rs` has the `ScreenSource` trait (OS side; `XcapSource` today), `sample_point`, and the `color_at_point` / `color_at_cursor` commands. `sampler.rs` is pure pixel math (pixel, area average), unit tested. Building on Linux needs `libpipewire-0.3-dev` (xcap).
+- `src-tauri/src/picker.rs`: the pick session (`start`, `finish`, overlay windows, `start_pick` / `overlay_*` commands, frame sent as binary: 20-byte header + RGBA). `overlay.html` + `src/overlay/` is the overlay page (third Vite entry, always dark; `pixels.ts` mirrors `sampler.rs`). `src/lib/picker.ts` is the frontend API (`startPick`, `onPick`).
 - `src-tauri/src/lib.rs`: app setup, window behavior, `open_section()` (tray to page navigation via the `huetype://navigate` event). `tray.rs`: tray icon and menu. `db.rs`: SQLite migrations (append-only; add a new version, never edit a released one).
 
 ## Storage

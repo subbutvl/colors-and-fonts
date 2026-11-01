@@ -7,11 +7,12 @@ import { AppIcon, CloseIcon, DropperIcon, FontIcon, HistoryIcon, PlusIcon } from
 /** Must match `ACTION_EVENT` in src-tauri/src/toolbar.rs. */
 const ACTION_EVENT = "huetype://toolbar-action";
 
+/** Only identify_font flashes now: pick_color opens the picker instead. */
 type Action = "pick_color" | "identify_font";
 
 /**
- * Floating picker toolbar (always dark, see CLAUDE.md). Step 0.3 is the shell:
- * it moves, hides and opens the app. Picking is wired up in Phase 1.
+ * Floating picker toolbar (always dark, see CLAUDE.md). It moves, hides, opens
+ * the app and starts a pick. Swatches and history arrive in step 1.3.
  */
 export function Toolbar() {
   const [flash, setFlash] = useState<Action | null>(null);
@@ -44,7 +45,7 @@ export function Toolbar() {
         <span className="handle" data-tauri-drag-region title="Drag to move" />
         <div className="swatches" data-tauri-drag-region>
           {[0, 1, 2].map((i) => (
-            <button key={i} type="button" className="tb-btn slot" disabled title="Pick a color (coming in Phase 1)" aria-label="Empty color slot">
+            <button key={i} type="button" className="tb-btn slot" disabled title="Picked colors appear here (coming in step 1.3)" aria-label="Empty color slot">
               <PlusIcon />
             </button>
           ))}
@@ -52,10 +53,10 @@ export function Toolbar() {
         <span className="divider" data-tauri-drag-region />
         <button
           type="button"
-          className={`tb-btn${flash === "pick_color" ? " flash" : ""}`}
-          disabled
-          title="Pick color (coming in Phase 1)"
+          className="tb-btn"
+          title="Pick color"
           aria-label="Pick color"
+          onClick={() => call("start_pick")}
         >
           <DropperIcon />
         </button>
@@ -68,10 +69,10 @@ export function Toolbar() {
         >
           <FontIcon />
         </button>
-        <button type="button" className="tb-btn" disabled title="Pick history (coming in Phase 1)" aria-label="Pick history">
+        <button type="button" className="tb-btn" disabled title="Pick history (coming in step 1.3)" aria-label="Pick history">
           <HistoryIcon />
         </button>
-        <span className="fmt" title="Copy format (coming in Phase 1)">HEX</span>
+        <span className="fmt" title="Copy format (coming in step 1.3)">HEX</span>
         <span className="divider" data-tauri-drag-region />
         <button type="button" className="tb-btn" title="Open Huetype" aria-label="Open Huetype" onClick={() => call("open_main_window")}>
           <AppIcon />
@@ -80,9 +81,9 @@ export function Toolbar() {
           <CloseIcon />
         </button>
       </div>
-      {flash && (
+      {flash === "identify_font" && (
         <p className="hint" role="status">
-          {flash === "pick_color" ? "Color picking arrives in Phase 1" : "Font identify arrives in Phase 3"}
+          Font identify arrives in Phase 3
         </p>
       )}
     </div>

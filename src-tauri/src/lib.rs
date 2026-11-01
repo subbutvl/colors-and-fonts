@@ -7,6 +7,7 @@
 
 mod capture;
 mod db;
+mod picker;
 mod shortcuts;
 mod toolbar;
 mod tray;
@@ -78,9 +79,16 @@ pub fn run() {
                 .build(),
         )
         .plugin(shortcuts::plugin())
+        .manage(picker::Picker::default())
         .invoke_handler(tauri::generate_handler![
             capture::color_at_point,
             capture::color_at_cursor,
+            picker::start_pick,
+            picker::take_picker_error,
+            picker::overlay_frame,
+            picker::overlay_ready,
+            picker::overlay_pick,
+            picker::overlay_finish,
             shortcuts::shortcut_status,
             shortcuts::set_shortcut,
             toolbar::hide_toolbar,
@@ -101,11 +109,16 @@ pub fn run() {
         .on_window_event(|window, event| {
             // Closing the main window hides it to the tray (Quit lives in the
             // tray menu); closing the toolbar (e.g. Alt+F4) just hides it.
-            if let WindowEvent::CloseRequested { api, .. } = event
-                && (window.label() == MAIN_WINDOW || window.label() == toolbar::TOOLBAR_WINDOW)
-            {
-                api.prevent_close();
-                let _ = window.hide();
+            if let WindowEvent::CloseRequested { api, .. } = event {
+                let label = window.label();
+                if label == MAIN_WINDOW || label == toolbar::TOOLBAR_WINDOW {
+                    api.prevent_close();
+                    let _ = window.hide();
+                } else if picker::is_overlay(label) {
+                    // Alt+F4 on a picker overlay ends the session.
+                    api.prevent_close();
+                    picker::finish(window.app_handle());
+                }
             }
         })
         .run(tauri::generate_context!())
