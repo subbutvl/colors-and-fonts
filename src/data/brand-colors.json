@@ -1,0 +1,502 @@
+{
+ "note": "Our own list of brand colors as the brands publish them in their brand or design guidelines (HEX only, no logos). Brands update their colors; check the linked guidelines before production use. All names are trademarks of their owners.",
+ "brands": [
+  {
+   "name": "Airbnb",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Rausch", "hex": "#FF385C" }
+   ],
+   "site": "https://www.airbnb.com"
+  },
+  {
+   "name": "Amazon",
+   "category": "Retail",
+   "colors": [
+    { "name": "Orange", "hex": "#FF9900" },
+    { "name": "Squid ink", "hex": "#232F3E" }
+   ],
+   "site": "https://www.amazon.com"
+  },
+  {
+   "name": "Android",
+   "category": "Tech",
+   "colors": [
+    { "name": "Green", "hex": "#3DDC84" }
+   ],
+   "guide": "https://developer.android.com/distribute/marketing-tools/brand-guidelines"
+  },
+  {
+   "name": "Asana",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Coral", "hex": "#F06A6A" }
+   ],
+   "guide": "https://asana.com/brand"
+  },
+  {
+   "name": "Atlassian",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Blue", "hex": "#0052CC" },
+    { "name": "Dark blue", "hex": "#172B4D" }
+   ],
+   "guide": "https://atlassian.design/foundations/color"
+  },
+  {
+   "name": "Coca-Cola",
+   "category": "Food & drink",
+   "colors": [
+    { "name": "Red", "hex": "#F40009" }
+   ],
+   "site": "https://www.coca-colacompany.com"
+  },
+  {
+   "name": "DHL",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Yellow", "hex": "#FFCC00" },
+    { "name": "Red", "hex": "#D40511" }
+   ],
+   "guide": "https://www.dpdhl-brands.com"
+  },
+  {
+   "name": "Discord",
+   "category": "Social",
+   "colors": [
+    { "name": "Blurple", "hex": "#5865F2" }
+   ],
+   "guide": "https://discord.com/branding"
+  },
+  {
+   "name": "Dropbox",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue", "hex": "#0061FF" }
+   ],
+   "guide": "https://brand.dropbox.com"
+  },
+  {
+   "name": "Duolingo",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Feather green", "hex": "#58CC02" },
+    { "name": "Macaw", "hex": "#1CB0F6" },
+    { "name": "Cardinal", "hex": "#FF4B4B" },
+    { "name": "Bee", "hex": "#FFC800" }
+   ],
+   "guide": "https://design.duolingo.com/identity/color"
+  },
+  {
+   "name": "easyJet",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Orange", "hex": "#FF6600" }
+   ],
+   "site": "https://www.easyjet.com"
+  },
+  {
+   "name": "eBay",
+   "category": "Retail",
+   "colors": [
+    { "name": "Red", "hex": "#E53238" },
+    { "name": "Blue", "hex": "#0064D2" },
+    { "name": "Yellow", "hex": "#F5AF02" },
+    { "name": "Green", "hex": "#86B817" }
+   ],
+   "site": "https://www.ebay.com"
+  },
+  {
+   "name": "Etsy",
+   "category": "Retail",
+   "colors": [
+    { "name": "Orange", "hex": "#F1641E" }
+   ],
+   "site": "https://www.etsy.com"
+  },
+  {
+   "name": "Facebook",
+   "category": "Social",
+   "colors": [
+    { "name": "Blue", "hex": "#0866FF" }
+   ],
+   "guide": "https://about.meta.com/brand/resources/facebook/logo/"
+  },
+  {
+   "name": "FedEx",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Purple", "hex": "#4D148C" },
+    { "name": "Orange", "hex": "#FF6600" }
+   ],
+   "site": "https://www.fedex.com"
+  },
+  {
+   "name": "Figma",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Orange", "hex": "#F24E1E" },
+    { "name": "Coral", "hex": "#FF7262" },
+    { "name": "Purple", "hex": "#A259FF" },
+    { "name": "Blue", "hex": "#1ABCFE" },
+    { "name": "Green", "hex": "#0ACF83" }
+   ],
+   "guide": "https://www.figma.com/using-the-figma-brand/"
+  },
+  {
+   "name": "Google",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue", "hex": "#4285F4" },
+    { "name": "Red", "hex": "#EA4335" },
+    { "name": "Yellow", "hex": "#FBBC05" },
+    { "name": "Green", "hex": "#34A853" }
+   ],
+   "guide": "https://about.google/brand-resource-center/"
+  },
+  {
+   "name": "IBM",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue 60", "hex": "#0F62FE" },
+    { "name": "Gray 100", "hex": "#161616" }
+   ],
+   "guide": "https://www.ibm.com/design/language/color/"
+  },
+  {
+   "name": "IKEA",
+   "category": "Retail",
+   "colors": [
+    { "name": "Blue", "hex": "#0058A3" },
+    { "name": "Yellow", "hex": "#FFDB00" }
+   ],
+   "site": "https://www.ikea.com"
+  },
+  {
+   "name": "LinkedIn",
+   "category": "Social",
+   "colors": [
+    { "name": "Blue", "hex": "#0A66C2" }
+   ],
+   "guide": "https://brand.linkedin.com"
+  },
+  {
+   "name": "Lyft",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Pink", "hex": "#FF00BF" }
+   ],
+   "site": "https://www.lyft.com"
+  },
+  {
+   "name": "Mailchimp",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Cavendish yellow", "hex": "#FFE01B" },
+    { "name": "Peppercorn", "hex": "#241C15" }
+   ],
+   "guide": "https://mailchimp.com/about/brand-assets/"
+  },
+  {
+   "name": "Mastercard",
+   "category": "Finance",
+   "colors": [
+    { "name": "Red", "hex": "#EB001B" },
+    { "name": "Yellow", "hex": "#F79E1B" },
+    { "name": "Orange", "hex": "#FF5F00" }
+   ],
+   "guide": "https://www.mastercard.com/brandcenter"
+  },
+  {
+   "name": "McDonald's",
+   "category": "Food & drink",
+   "colors": [
+    { "name": "Yellow", "hex": "#FFC72C" },
+    { "name": "Red", "hex": "#DA291C" }
+   ],
+   "site": "https://www.mcdonalds.com"
+  },
+  {
+   "name": "Microsoft",
+   "category": "Tech",
+   "colors": [
+    { "name": "Red", "hex": "#F25022" },
+    { "name": "Green", "hex": "#7FBA00" },
+    { "name": "Blue", "hex": "#00A4EF" },
+    { "name": "Yellow", "hex": "#FFB900" },
+    { "name": "Gray", "hex": "#737373" }
+   ],
+   "site": "https://www.microsoft.com"
+  },
+  {
+   "name": "National Geographic",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Yellow", "hex": "#FFCE00" }
+   ],
+   "site": "https://www.nationalgeographic.com"
+  },
+  {
+   "name": "Netflix",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Red", "hex": "#E50914" },
+    { "name": "Black", "hex": "#221F1F" }
+   ],
+   "guide": "https://brand.netflix.com"
+  },
+  {
+   "name": "Nintendo",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Red", "hex": "#E60012" }
+   ],
+   "site": "https://www.nintendo.com"
+  },
+  {
+   "name": "PayPal",
+   "category": "Finance",
+   "colors": [
+    { "name": "Blue", "hex": "#003087" },
+    { "name": "Light blue", "hex": "#009CDE" },
+    { "name": "Dark blue", "hex": "#012169" }
+   ],
+   "site": "https://www.paypal.com"
+  },
+  {
+   "name": "Pinterest",
+   "category": "Social",
+   "colors": [
+    { "name": "Red", "hex": "#E60023" }
+   ],
+   "site": "https://business.pinterest.com"
+  },
+  {
+   "name": "PlayStation",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Blue", "hex": "#003791" }
+   ],
+   "site": "https://www.playstation.com"
+  },
+  {
+   "name": "Python",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Blue", "hex": "#3776AB" },
+    { "name": "Yellow", "hex": "#FFD43B" }
+   ],
+   "guide": "https://www.python.org/community/logos/"
+  },
+  {
+   "name": "React",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Cyan", "hex": "#61DAFB" },
+    { "name": "Dark", "hex": "#20232A" }
+   ],
+   "site": "https://react.dev"
+  },
+  {
+   "name": "Reddit",
+   "category": "Social",
+   "colors": [
+    { "name": "Orangered", "hex": "#FF4500" }
+   ],
+   "guide": "https://redditinc.com/brand"
+  },
+  {
+   "name": "Salesforce",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue", "hex": "#00A1E0" }
+   ],
+   "site": "https://www.salesforce.com"
+  },
+  {
+   "name": "Samsung",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue", "hex": "#1428A0" }
+   ],
+   "site": "https://www.samsung.com"
+  },
+  {
+   "name": "Shell",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Yellow", "hex": "#FFD500" },
+    { "name": "Red", "hex": "#DD1D21" }
+   ],
+   "site": "https://www.shell.com"
+  },
+  {
+   "name": "Shopify",
+   "category": "Retail",
+   "colors": [
+    { "name": "Green", "hex": "#95BF47" },
+    { "name": "Dark green", "hex": "#5E8E3E" }
+   ],
+   "guide": "https://www.shopify.com/brand-assets"
+  },
+  {
+   "name": "Slack",
+   "category": "Design & dev tools",
+   "colors": [
+    { "name": "Aubergine", "hex": "#4A154B" },
+    { "name": "Blue", "hex": "#36C5F0" },
+    { "name": "Green", "hex": "#2EB67D" },
+    { "name": "Red", "hex": "#E01E5A" },
+    { "name": "Yellow", "hex": "#ECB22E" }
+   ],
+   "guide": "https://slack.com/media-kit"
+  },
+  {
+   "name": "Snapchat",
+   "category": "Social",
+   "colors": [
+    { "name": "Yellow", "hex": "#FFFC00" }
+   ],
+   "guide": "https://snap.com/en-US/brand-guidelines"
+  },
+  {
+   "name": "Spotify",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Green", "hex": "#1ED760" },
+    { "name": "Black", "hex": "#121212" }
+   ],
+   "guide": "https://developer.spotify.com/documentation/design"
+  },
+  {
+   "name": "Starbucks",
+   "category": "Food & drink",
+   "colors": [
+    { "name": "Starbucks green", "hex": "#006241" },
+    { "name": "Accent green", "hex": "#00754A" },
+    { "name": "House green", "hex": "#1E3932" }
+   ],
+   "guide": "https://creative.starbucks.com/color/"
+  },
+  {
+   "name": "Stripe",
+   "category": "Finance",
+   "colors": [
+    { "name": "Blurple", "hex": "#635BFF" },
+    { "name": "Downriver", "hex": "#0A2540" }
+   ],
+   "guide": "https://stripe.com/newsroom/brand-assets"
+  },
+  {
+   "name": "T-Mobile",
+   "category": "Tech",
+   "colors": [
+    { "name": "Magenta", "hex": "#E20074" }
+   ],
+   "site": "https://www.t-mobile.com"
+  },
+  {
+   "name": "Target",
+   "category": "Retail",
+   "colors": [
+    { "name": "Red", "hex": "#CC0000" }
+   ],
+   "site": "https://corporate.target.com"
+  },
+  {
+   "name": "The Home Depot",
+   "category": "Retail",
+   "colors": [
+    { "name": "Orange", "hex": "#F96302" }
+   ],
+   "site": "https://www.homedepot.com"
+  },
+  {
+   "name": "TikTok",
+   "category": "Social",
+   "colors": [
+    { "name": "Cyan", "hex": "#25F4EE" },
+    { "name": "Red", "hex": "#FE2C55" },
+    { "name": "Black", "hex": "#000000" }
+   ],
+   "site": "https://www.tiktok.com"
+  },
+  {
+   "name": "Toyota",
+   "category": "Travel & logistics",
+   "colors": [
+    { "name": "Red", "hex": "#EB0A1E" }
+   ],
+   "site": "https://www.toyota.com"
+  },
+  {
+   "name": "Twitch",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Purple", "hex": "#9146FF" }
+   ],
+   "guide": "https://brand.twitch.tv"
+  },
+  {
+   "name": "Ubuntu",
+   "category": "Tech",
+   "colors": [
+    { "name": "Orange", "hex": "#E95420" },
+    { "name": "Aubergine", "hex": "#77216F" }
+   ],
+   "guide": "https://design.ubuntu.com/brand"
+  },
+  {
+   "name": "Visa",
+   "category": "Finance",
+   "colors": [
+    { "name": "Blue", "hex": "#1A1F71" },
+    { "name": "Gold", "hex": "#F7B600" }
+   ],
+   "site": "https://www.visa.com"
+  },
+  {
+   "name": "Walmart",
+   "category": "Retail",
+   "colors": [
+    { "name": "Blue", "hex": "#0071CE" },
+    { "name": "Spark yellow", "hex": "#FFC220" }
+   ],
+   "site": "https://corporate.walmart.com"
+  },
+  {
+   "name": "WhatsApp",
+   "category": "Social",
+   "colors": [
+    { "name": "Green", "hex": "#25D366" },
+    { "name": "Teal green", "hex": "#128C7E" }
+   ],
+   "guide": "https://www.whatsapp.com/brand-resources/"
+  },
+  {
+   "name": "Xbox",
+   "category": "Media & games",
+   "colors": [
+    { "name": "Green", "hex": "#107C10" }
+   ],
+   "site": "https://www.xbox.com"
+  },
+  {
+   "name": "YouTube",
+   "category": "Social",
+   "colors": [
+    { "name": "Red", "hex": "#FF0000" },
+    { "name": "Almost black", "hex": "#282828" }
+   ],
+   "guide": "https://www.youtube.com/howyoutubeworks/resources/brand-resources/"
+  },
+  {
+   "name": "Zoom",
+   "category": "Tech",
+   "colors": [
+    { "name": "Blue", "hex": "#0B5CFF" }
+   ],
+   "site": "https://www.zoom.com"
+  }
+ ]
+}

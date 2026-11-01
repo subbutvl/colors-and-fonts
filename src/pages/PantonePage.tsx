@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { PageHead } from "../components/PageHead";
 import { StarButton } from "../components/StarButton";
+import { colorSwatchInk } from "../lib/colorInk";
 import { contrast, copyText, FORMAT_LABELS, FORMATS, formatColor } from "../lib/colors";
 import { byDecade, COTY_YEARS, cotyCss, cotyYear, LAST_YEAR, pantoneLabel, type CotyColor } from "../lib/pantone";
 import type { Section } from "../sections";
@@ -18,13 +19,11 @@ function initialYear(): number {
   return LAST_YEAR;
 }
 
-/** Text on the color: whichever of near-white and near-black reads better. */
-const inkOn = (hex: string) => (contrast("#111111", hex).ratio >= contrast("#FFFFFF", hex).ratio ? "#111111" : "#FFFFFF");
 
 /** One color of the selected year: big swatch, values, contrast. */
 function ColorDetail({ color, year, onCopy }: { color: CotyColor; year: number; onCopy: (text: string, what: string) => void }) {
   const { isStarred, toggle } = useStarred();
-  const ink = inkOn(color.hex);
+  const ink = colorSwatchInk(color.hex);
   const onWhite = contrast(color.hex, "#FFFFFF");
   const onBlack = contrast(color.hex, "#000000");
   return (

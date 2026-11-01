@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Sidebar } from "./components/Sidebar";
 import { applySavedShortcuts } from "./lib/shortcuts";
+import { BrandColorsPage } from "./pages/BrandColorsPage";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { CssGeneratorPage } from "./pages/CssGeneratorPage";
 import { FontListingPage } from "./pages/FontListingPage";
 import { TopFontsPage } from "./pages/TopFontsPage";
+import { CuratedColorsPage } from "./pages/CuratedColorsPage";
 import { CuratedFontsPage } from "./pages/CuratedFontsPage";
 import { FontPairingPage } from "./pages/FontPairingPage";
 import { IdentifyFontPage } from "./pages/IdentifyFontPage";
@@ -58,6 +60,10 @@ function Page({ id }: { id: string }) {
       return <SavedPage section={section} />;
     case "image-palette":
       return <ImagePalettePage section={section} />;
+    case "curated-colors":
+      return <CuratedColorsPage section={section} />;
+    case "brand-colors":
+      return <BrandColorsPage section={section} />;
     case "pantone":
       return <PantonePage section={section} />;
     case "html-color-names":

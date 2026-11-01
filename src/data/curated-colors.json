@@ -1,0 +1,109 @@
+{
+  "note": "Our own hand-picked palettes, grouped by mood and theme. Five colors each, ordered light to dark or as they work together.",
+  "collections": [
+    {
+      "id": "earthy",
+      "title": "Earthy",
+      "blurb": "Clay, moss, sand and bark: warm, grounded colors for natural brands and calm interfaces.",
+      "palettes": [
+        { "name": "Terracotta Studio", "colors": ["#F4E9DC", "#E3B98F", "#C8704A", "#8E4A31", "#4A2C21"] },
+        { "name": "Forest Floor", "colors": ["#EEF0E2", "#B7BE8F", "#7C8A4E", "#4E5D33", "#2B3320"] },
+        { "name": "Desert Road", "colors": ["#F7EEDB", "#E8CFA0", "#CFA26B", "#9C6B3F", "#5C3D24"] },
+        { "name": "Olive Grove", "colors": ["#F1F0E4", "#C9C79B", "#8F8B4F", "#5F5C32", "#33321D"] },
+        { "name": "Riverstone", "colors": ["#EDEAE4", "#C5BCAE", "#958B7C", "#655D52", "#3B3631"] },
+        { "name": "Spiced Chai", "colors": ["#FAF1E6", "#EBC9A4", "#C98E5B", "#93593A", "#55311F"] }
+      ]
+    },
+    {
+      "id": "pastel",
+      "title": "Pastel",
+      "blurb": "Soft, low-chroma tints that stay friendly and light. Pair with a dark text color for contrast.",
+      "palettes": [
+        { "name": "Sorbet", "colors": ["#FFD6D6", "#FFE5C7", "#FFF6C2", "#D8F3DC", "#D6E4FF"] },
+        { "name": "Lavender Fields", "colors": ["#F3EEFF", "#E2D6FF", "#CDBBF7", "#B4A2E8", "#8E7CC9"] },
+        { "name": "Mint Cream", "colors": ["#F0FBF6", "#D5F3E5", "#B5E8D2", "#8FD6BA", "#5FBF9B"] },
+        { "name": "Cotton Candy", "colors": ["#FFF0F6", "#FFD3E6", "#F4C1F0", "#D3C4FF", "#BFD9FF"] },
+        { "name": "Peach Morning", "colors": ["#FFF4EC", "#FFDCC7", "#FFC1A6", "#F5A38C", "#E3857A"] },
+        { "name": "Baby Blues", "colors": ["#F0F7FF", "#D9EAFE", "#BBD8FA", "#97C0F0", "#6E9FDB"] }
+      ]
+    },
+    {
+      "id": "neon",
+      "title": "Neon",
+      "blurb": "Saturated, glowing colors that shine on dark backgrounds. Use sparingly as accents.",
+      "palettes": [
+        { "name": "Arcade", "colors": ["#0B0B1A", "#FF2E97", "#FFE53B", "#2BFFF1", "#7A5CFF"] },
+        { "name": "Night Market", "colors": ["#120A1F", "#FF3D3D", "#FF9F1C", "#2EF27A", "#36B5FF"] },
+        { "name": "Synthwave", "colors": ["#1A0B2E", "#F72585", "#B5179E", "#7209B7", "#4CC9F0"] },
+        { "name": "Acid Lime", "colors": ["#0E120A", "#C6FF00", "#76FF03", "#00E676", "#1DE9B6"] },
+        { "name": "Laser Tag", "colors": ["#08080F", "#FF006E", "#FB5607", "#FFBE0B", "#3A86FF"] },
+        { "name": "Electric Ice", "colors": ["#050A14", "#00F0FF", "#00A3FF", "#5B5BFF", "#C04BFF"] }
+      ]
+    },
+    {
+      "id": "corporate",
+      "title": "Corporate",
+      "blurb": "Trustworthy blues, steady neutrals and one clear accent: safe choices for business products.",
+      "palettes": [
+        { "name": "Boardroom", "colors": ["#F5F7FA", "#D9E1EA", "#1F4E79", "#0F2D4A", "#F2A541"] },
+        { "name": "Clear Ledger", "colors": ["#FFFFFF", "#E8EEF4", "#2563EB", "#1E293B", "#10B981"] },
+        { "name": "Steel and Teal", "colors": ["#F4F6F7", "#C8D1D6", "#0F766E", "#334155", "#F59E0B"] },
+        { "name": "Navy Classic", "colors": ["#F7F8FB", "#DDE3EE", "#2B4C7E", "#14213D", "#E63946"] },
+        { "name": "Graphite", "colors": ["#FAFAFA", "#E4E4E7", "#71717A", "#27272A", "#6366F1"] },
+        { "name": "Fintech", "colors": ["#F6F9FC", "#E3E8EE", "#635BFF", "#0A2540", "#00D4B4"] }
+      ]
+    },
+    {
+      "id": "dark-ui",
+      "title": "Dark UI",
+      "blurb": "Layered dark surfaces with readable text and one accent: background, raised surface, border, text, accent.",
+      "palettes": [
+        { "name": "Midnight", "colors": ["#0D1117", "#161B22", "#30363D", "#E6EDF3", "#58A6FF"] },
+        { "name": "Charcoal Amber", "colors": ["#121212", "#1E1E1E", "#333333", "#EDEDED", "#FFB020"] },
+        { "name": "Deep Plum", "colors": ["#15111C", "#201A2B", "#3A3049", "#EEE8F5", "#C084FC"] },
+        { "name": "Slate Mint", "colors": ["#0F172A", "#1E293B", "#334155", "#E2E8F0", "#34D399"] },
+        { "name": "Ink and Coral", "colors": ["#101418", "#1A2026", "#2E363F", "#F1F3F5", "#FF6B6B"] },
+        { "name": "Graphite Blue", "colors": ["#18181B", "#232327", "#3F3F46", "#F4F4F5", "#60A5FA"] }
+      ]
+    },
+    {
+      "id": "vintage",
+      "title": "Vintage",
+      "blurb": "Faded prints, old posters and sun-washed paper: muted colors with a warm cast.",
+      "palettes": [
+        { "name": "Old Poster", "colors": ["#F2E8D5", "#E0B157", "#C4553D", "#2F6F73", "#2A2A2A"] },
+        { "name": "Seventies Lounge", "colors": ["#F4E3C1", "#E6A04A", "#C0622D", "#7A4A25", "#3E5C3A"] },
+        { "name": "Faded Denim", "colors": ["#EEF0F0", "#BCC8CF", "#7F96A6", "#4F6779", "#2E3E4C"] },
+        { "name": "Postcard", "colors": ["#F6EEE3", "#E6C3A1", "#D98B73", "#7FA7A1", "#3F5F66"] },
+        { "name": "Diner", "colors": ["#FBF3E4", "#F2C14E", "#E2584A", "#5DA9A6", "#2C3E50"] },
+        { "name": "Darkroom", "colors": ["#EDE6DB", "#BFA78A", "#8C6E54", "#4E3B31", "#1F1915"] }
+      ]
+    },
+    {
+      "id": "ocean",
+      "title": "Ocean",
+      "blurb": "Sea glass, reef and deep water: cool blues and greens from shallow to deep.",
+      "palettes": [
+        { "name": "Lagoon", "colors": ["#E6F8F6", "#A8E6DF", "#4FC3B8", "#11867F", "#0B4F4C"] },
+        { "name": "Deep Sea", "colors": ["#E3EEF7", "#8DB8DA", "#3A7CB3", "#1B4A7A", "#0B2340"] },
+        { "name": "Sea Glass", "colors": ["#EEF5F1", "#C9E3D6", "#9CCBB8", "#6EA898", "#3F7768"] },
+        { "name": "Coral Reef", "colors": ["#FFF1EB", "#FFB4A2", "#FF7F6E", "#2EC4B6", "#11577A"] },
+        { "name": "Harbor", "colors": ["#F2F4F5", "#C3CED6", "#6E8CA0", "#2F4F66", "#D9A441"] },
+        { "name": "Tide Pool", "colors": ["#EAF6F6", "#B5DCE0", "#6FB1BC", "#3B7F8E", "#E07A5F"] }
+      ]
+    },
+    {
+      "id": "sunset",
+      "title": "Sunset",
+      "blurb": "Golden hour to dusk: warm oranges and pinks fading into purple.",
+      "palettes": [
+        { "name": "Golden Hour", "colors": ["#FFF3D6", "#FFD27A", "#FFA94D", "#F0703C", "#B23A48"] },
+        { "name": "Dusk", "colors": ["#FFD5C2", "#F79D84", "#D9667A", "#8E4A84", "#3C2A63"] },
+        { "name": "Desert Sunset", "colors": ["#FCE7C8", "#F7B267", "#F4845F", "#F25C54", "#7A2E3A"] },
+        { "name": "Pink Sky", "colors": ["#FFF0F3", "#FFC2D1", "#FF8FAB", "#FB6F92", "#6D3B6B"] },
+        { "name": "Last Light", "colors": ["#FFE8A3", "#FFB55E", "#E86A58", "#A23E6E", "#2E2353"] },
+        { "name": "Ember", "colors": ["#FFE5D4", "#FFAE7A", "#F26B38", "#B8361E", "#4A1A12"] }
+      ]
+    }
+  ]
+}
