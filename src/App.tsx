@@ -10,6 +10,7 @@ import { PickerHome } from "./pages/PickerHome";
 import { ScalesPage } from "./pages/ScalesPage";
 import { Placeholder } from "./pages/Placeholder";
 import { SettingsPage } from "./pages/SettingsPage";
+import { VisionPage } from "./pages/VisionPage";
 import { DEFAULT_SECTION, findSection } from "./sections";
 import { SettingsProvider } from "./SettingsContext";
 import { useHashRoute } from "./useHashRoute";
@@ -30,6 +31,8 @@ function Page({ id }: { id: string }) {
       return <ScalesPage section={section} />;
     case "color-pairing":
       return <PairingPage section={section} />;
+    case "color-blindness":
+      return <VisionPage section={section} />;
     case "html-color-names":
       return <ColorNamesPage section={section} />;
     case "settings":
