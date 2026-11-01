@@ -50,6 +50,13 @@ export interface Measured {
   lowContrast: number;
   /** Median x-height of the letters, in capture pixels. */
   xHeight: number | null;
+  /**
+   * The size unit the letter features use, in pixels: the x-height, or
+   * (no lowercase x-height letters, e.g. ALL CAPS) the median letter height.
+   * Then `scaleKnown` is false and ranking fits the scale per font.
+   */
+  unit: number | null;
+  scaleKnown: boolean;
   /** Light text on a dark background. */
   inverted: boolean;
 }
@@ -299,15 +306,20 @@ export function measureLetters(img: Pixels, words: WordBox[]): Measured {
   }
   const heights = pieces.filter((p) => XHEIGHT_CHARS.includes(p.char)).map((p) => inkSize(p.ink, inkBox(p.ink)!).height);
   const xHeight = heights.length ? median(heights) : null;
+  const all = pieces.flatMap((p) => {
+    const b = inkBox(p.ink);
+    return b && CHARSET.includes(p.char) ? [inkSize(p.ink, b).height] : [];
+  });
+  const unit = xHeight ?? (all.length ? median(all) : null);
   const letters: Letter[] = [];
-  if (xHeight) {
+  if (unit) {
     for (const p of pieces) {
       if (!CHARSET.includes(p.char)) continue;
       const box = inkBox(p.ink);
-      if (box) letters.push({ char: p.char, box: p.box, feature: glyphFeature(p.ink, box, xHeight) });
+      if (box) letters.push({ char: p.char, box: p.box, feature: glyphFeature(p.ink, box, unit) });
     }
   }
-  return { letters, skippedWords, lowContrast, xHeight, inverted: invertedVotes * 2 > splitWords };
+  return { letters, skippedWords, lowContrast, xHeight, unit, scaleKnown: xHeight !== null, inverted: invertedVotes * 2 > splitWords };
 }
 
 /** Average of each letter's occurrences: repeated letters steady the measurement. */
@@ -342,19 +354,25 @@ export interface Match {
  */
 export const PREFER_FACTOR = 0.95;
 
-/** Index fonts ranked by distance to the measured letters, one entry per family. */
-export function rankFonts(index: FontIndex, letters: Map<string, GlyphFeature>, limit = 8, prefer?: Set<string>): Match[] {
+/**
+ * Index fonts ranked by distance to the measured letters, one entry per
+ * family. With `freeScale` (letters measured in some unit other than the
+ * x-height) each font's sizes are first shifted by the mean log-height
+ * difference, so only proportions between letters count.
+ */
+export function rankFonts(index: FontIndex, letters: Map<string, GlyphFeature>, limit = 8, prefer?: Set<string>, freeScale = false): Match[] {
   const wanted = [...letters.keys()].map((c) => [CHARSET.indexOf(c), letters.get(c)!] as const).filter(([i]) => i >= 0);
   const best = new Map<string, Match>();
   index.entries.forEach((e, ei) => {
-    let sum = 0;
-    let n = 0;
-    for (const [ci, f] of wanted) {
+    const pairs = wanted.flatMap(([ci, f]) => {
       const g = indexGlyph(index, ei, ci);
-      if (!g) continue;
-      sum += glyphDistance(f, g);
-      n++;
-    }
+      return g ? [[f, g] as const] : [];
+    });
+    let shift = 0;
+    if (freeScale && pairs.length) shift = pairs.reduce((s, [f, g]) => s + g.height - f.height, 0) / pairs.length;
+    let sum = 0;
+    const n = pairs.length;
+    for (const [f, g] of pairs) sum += glyphDistance(shift ? { ...f, aspect: f.aspect + shift, height: f.height + shift } : f, g);
     // A font missing most of the letters cannot be judged on them.
     if (n < Math.max(1, wanted.length * 0.75)) return;
     const m = { family: e.family, weight: e.weight, distance: (sum / n) * (prefer?.has(e.family) ? PREFER_FACTOR : 1), letters: n };
@@ -423,8 +441,9 @@ export interface Identified {
 export function identify(index: FontIndex, img: Pixels, words: WordBox[], { limit = 6, prefer }: { limit?: number; prefer?: Set<string> } = {}): Identified {
   const measured = measureLetters(img, words);
   const letters = averageLetters(measured.letters);
-  const ranked = letters.size ? rankFonts(index, letters, limit, prefer) : [];
-  const xh = measured.xHeight ?? 1;
+  const ranked = letters.size ? rankFonts(index, letters, limit, prefer, !measured.scaleKnown) : [];
+  // Without lowercase, capitals are roughly 1.4 x-heights tall.
+  const xh = measured.xHeight ?? (measured.unit ? measured.unit / 1.4 : 1);
   const matches = ranked.map((m, i) => ({
     ...m,
     // Only the leader can be "likely"; the rest are possible only when close to it.

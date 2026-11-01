@@ -11,12 +11,16 @@ const BLOCK: ToyFont = {
   o: { width: 1, rects: [[0, 0, 1, 0.25], [0, 0.75, 1, 0.25], [0, 0, 0.25, 1], [0.75, 0, 0.25, 1]] },
   i: { width: 0.25, rects: [[0, 0, 0.25, 1], [0, -0.5, 0.25, 0.25]] },
   n: { width: 0.9, rects: [[0, 0, 0.25, 1], [0.65, 0, 0.25, 1], [0, 0, 0.9, 0.25]] },
+  l: { width: 0.25, rects: [[0, -0.5, 0.25, 1.5]] },
+  T: { width: 1, rects: [[0, -0.4, 1, 0.25], [0.375, -0.4, 0.25, 1.4]] },
 };
 const THIN: ToyFont = {
   x: { width: 0.7, rects: [[0, 0, 0.7, 1]] },
   o: { width: 0.7, rects: [[0, 0, 0.7, 0.1], [0, 0.9, 0.7, 0.1], [0, 0, 0.1, 1], [0.6, 0, 0.1, 1]] },
   i: { width: 0.1, rects: [[0, 0, 0.1, 1], [0, -0.4, 0.1, 0.12]] },
   n: { width: 0.6, rects: [[0, 0, 0.1, 1], [0.5, 0, 0.1, 1], [0, 0, 0.6, 0.1]] },
+  l: { width: 0.1, rects: [[0, -0.6, 0.1, 1.6]] },
+  T: { width: 0.8, rects: [[0, -0.3, 0.8, 0.1], [0.35, -0.3, 0.1, 1.3]] },
 };
 
 /** Paint words in a toy font; returns pixels and OCR-like word boxes. */
@@ -99,6 +103,20 @@ describe("measureLetters", () => {
 });
 
 describe("rankFonts", () => {
+  it("ranks text without x-height letters by proportions alone", () => {
+    // No x-height letter (as in ALL CAPS): only proportions between letters can count.
+    for (const [font, family] of [
+      [BLOCK, "Block"],
+      [THIN, "Thin"],
+    ] as const) {
+      const { img, boxes } = paint(font, ["Til", "lT"], 20);
+      const m = measureLetters(img, boxes);
+      expect(m.scaleKnown).toBe(false);
+      expect(m.letters).toHaveLength(5);
+      expect(rankFonts(index, averageLetters(m.letters), 8, undefined, true)[0].family).toBe(family);
+    }
+  });
+
   it.each([
     [BLOCK, "Block", 24],
     [THIN, "Thin", 24],
