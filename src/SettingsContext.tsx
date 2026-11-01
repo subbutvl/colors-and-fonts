@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { cachedSettings, loadSettings, saveSetting, type Settings } from "./lib/settings";
 
 interface Ctx {
@@ -13,10 +13,18 @@ const SettingsCtx = createContext<Ctx | null>(null);
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<Settings>(cachedSettings);
   const [error, setError] = useState<string | null>(null);
+  // Keys the user changed before the initial load finished; the load must not revert them.
+  const edited = useRef(new Set<keyof Settings>());
 
   useEffect(() => {
     loadSettings()
-      .then(setSettings)
+      .then((loaded) =>
+        setSettings((current) => {
+          const next = { ...loaded };
+          for (const key of edited.current) Object.assign(next, { [key]: current[key] });
+          return next;
+        }),
+      )
       .catch((e) => setError(`Could not load settings: ${String(e)}`));
   }, []);
 
@@ -28,6 +36,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [settings.theme]);
 
   const update: Ctx["update"] = (key, value) => {
+    edited.current.add(key);
     setSettings((s) => ({ ...s, [key]: value }));
     saveSetting(key, value)
       .then(() => setError(null))
