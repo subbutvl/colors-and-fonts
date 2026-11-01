@@ -14,12 +14,13 @@ const host = process.env.TAURI_DEV_HOST;
 export default defineConfig(() => ({
   plugins: [react()],
 
-  // Two pages: the main window and the floating toolbar window.
+  // Three pages: the main window, the floating toolbar and the picker overlay.
   build: {
     rollupOptions: {
       input: {
         main: resolve(root, "index.html"),
         toolbar: resolve(root, "toolbar.html"),
+        overlay: resolve(root, "overlay.html"),
       },
     },
   },

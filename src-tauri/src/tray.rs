@@ -18,6 +18,14 @@ const QUIT: &str = "quit";
 /// Menu items whose text shows a shortcut, kept so a rebind can update them.
 struct TrayItems {
     toolbar: MenuItem<tauri::Wry>,
+    pick: MenuItem<tauri::Wry>,
+}
+
+fn pick_text(app: &AppHandle) -> String {
+    format!(
+        "Pick color\t{}",
+        shortcuts::pretty(&shortcuts::current(app, Action::PickColor))
+    )
 }
 
 fn toolbar_text(app: &AppHandle) -> String {
@@ -31,20 +39,15 @@ fn toolbar_text(app: &AppHandle) -> String {
 pub fn refresh_labels(app: &AppHandle) {
     if let Some(items) = app.try_state::<TrayItems>() {
         let _ = items.toolbar.set_text(toolbar_text(app));
+        let _ = items.pick.set_text(pick_text(app));
     }
 }
 
 pub fn create(app: &AppHandle) -> tauri::Result<()> {
     let open = MenuItem::with_id(app, OPEN, "Open Huetype", true, None::<&str>)?;
     let toolbar = MenuItem::with_id(app, TOOLBAR, toolbar_text(app), true, None::<&str>)?;
-    // Enabled in Phase 1 (color picker) and Phase 3 (font identify).
-    let pick = MenuItem::with_id(
-        app,
-        PICK_COLOR,
-        "Pick color (coming soon)",
-        false,
-        None::<&str>,
-    )?;
+    let pick = MenuItem::with_id(app, PICK_COLOR, pick_text(app), true, None::<&str>)?;
+    // Enabled in Phase 3 (font identify).
     let font = MenuItem::with_id(
         app,
         IDENTIFY_FONT,
@@ -76,6 +79,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
         .on_menu_event(|app, event| match event.id.as_ref() {
             OPEN => crate::show_main_window(app),
             TOOLBAR => crate::toolbar::toggle(app),
+            PICK_COLOR => crate::picker::start(app),
             SETTINGS => crate::open_section(app, "settings"),
             QUIT => app.exit(0),
             _ => {}
@@ -96,6 +100,7 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     }
     app.manage(TrayItems {
         toolbar: toolbar.clone(),
+        pick: pick.clone(),
     });
     builder.build(app)?;
     Ok(())

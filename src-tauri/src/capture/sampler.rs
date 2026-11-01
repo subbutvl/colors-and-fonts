@@ -1,5 +1,6 @@
 //! Pure pixel sampling on a captured RGBA image. No OS calls here, so all of
-//! it is unit tested.
+//! it is unit tested. (The picker overlay's loupe samples its frozen frame in
+//! the webview, see `src/overlay/pixels.ts`, using the same averaging rule.)
 
 use image::RgbaImage;
 use serde::Serialize;
@@ -92,23 +93,6 @@ pub fn average(img: &RgbaImage, cx: i64, cy: i64, size: u32) -> Option<Rgb> {
     Some(Rgb::new(mean(sr), mean(sg), mean(sb)))
 }
 
-/// The `n` x `n` block of pixels centred on (`cx`, `cy`), row by row, for the
-/// loupe. Cells outside the image are `None` so the loupe can draw them empty.
-/// `n` is rounded up to odd so there is a true centre cell.
-// Used by the capture overlay's loupe (roadmap step 1.2).
-#[allow(dead_code)]
-pub fn grid(img: &RgbaImage, cx: i64, cy: i64, n: u32) -> Vec<Option<Rgb>> {
-    let n = n.max(1) | 1;
-    let r = i64::from(n / 2);
-    let mut cells = Vec::with_capacity((n * n) as usize);
-    for y in (cy - r)..=(cy + r) {
-        for x in (cx - r)..=(cx + r) {
-            cells.push(pixel_at(img, x, y));
-        }
-    }
-    cells
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -158,17 +142,6 @@ mod tests {
     #[test]
     fn even_sizes_round_up_to_odd() {
         assert_eq!(average(&ramp(), 1, 1, 2), average(&ramp(), 1, 1, 3));
-        assert_eq!(grid(&ramp(), 1, 1, 2).len(), 9);
-    }
-
-    #[test]
-    fn loupe_grid_is_row_major_with_empty_edges() {
-        let cells = grid(&ramp(), 0, 0, 3);
-        assert_eq!(cells.len(), 9);
-        assert_eq!(cells[0], None); // (-1,-1)
-        assert_eq!(cells[4], Some(Rgb::new(0, 0, 200))); // centre (0,0)
-        assert_eq!(cells[5], Some(Rgb::new(10, 0, 200))); // (1,0)
-        assert_eq!(cells[7], Some(Rgb::new(0, 10, 200))); // (0,1)
     }
 
     #[test]

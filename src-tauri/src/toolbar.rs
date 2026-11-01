@@ -82,9 +82,10 @@ pub fn toggle(app: &AppHandle) {
 pub fn handle_action(app: &AppHandle, action: Action) {
     match action {
         Action::ToggleToolbar => toggle(app),
-        // Picking arrives in Phase 1 and font identify in Phase 3; for now
-        // show the toolbar and let it highlight the matching button.
-        Action::PickColor | Action::IdentifyFont => {
+        Action::PickColor => crate::picker::start(app),
+        // Font identify arrives in Phase 3; for now show the toolbar and let
+        // it highlight the matching button.
+        Action::IdentifyFont => {
             show(app);
             let _ = app.emit_to(TOOLBAR_WINDOW, ACTION_EVENT, action);
         }
