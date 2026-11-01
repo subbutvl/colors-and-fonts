@@ -26,7 +26,10 @@ export function CuratedColorsPage({ section }: { section: Section }) {
 
   const openInPalettes = (p: CuratedPalette) =>
     savePalette(p.name, p.colors)
-      .then((id) => requestOpenPalette(id))
+      .then((id) => {
+        requestOpenPalette(id);
+        window.location.hash = "/palettes";
+      })
       .catch((e) => setStatus(`Could not save the palette: ${e}`));
 
   return (
