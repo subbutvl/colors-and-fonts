@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_KEY_SETTING, clearCatalogCache, getCatalog, refreshCatalog, type Catalog } from "../lib/fonts";
+import { API_KEY_SETTING, clearCatalogCache, getCatalog, onCatalogChanged, refreshCatalog, type Catalog } from "../lib/fonts";
 import { openExternal } from "../lib/open";
 import { getRawSettings, setRawSetting } from "../lib/settings";
 
@@ -16,7 +16,9 @@ export function FontCatalogSetting() {
     getRawSettings(API_KEY_SETTING)
       .then((rows) => setKey(rows[API_KEY_SETTING] ?? ""))
       .catch(() => {});
-    getCatalog().then(setCatalog).catch(() => {});
+    const load = () => getCatalog().then(setCatalog).catch(() => {});
+    void load();
+    return onCatalogChanged(() => void load());
   }, []);
 
   const refresh = async () => {

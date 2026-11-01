@@ -138,6 +138,18 @@ export function bundledCatalog(): Catalog {
 
 // ---------------------------------------------------------------- storage
 
+const catalogListeners = new Set<() => void>();
+
+/** Called after the catalog is refreshed or reset, so mounted pages reload it. */
+export function onCatalogChanged(handler: () => void): () => void {
+  catalogListeners.add(handler);
+  return () => catalogListeners.delete(handler);
+}
+
+function catalogChanged(): void {
+  catalogListeners.forEach((fn) => fn());
+}
+
 /** The cached API catalog if there is one, else the bundled snapshot. */
 export async function getCatalog(): Promise<Catalog> {
   if (isTauri()) {
@@ -190,6 +202,7 @@ export async function refreshCatalog(apiKey: string): Promise<Catalog> {
       [CACHE_KEY, JSON.stringify(catalog)],
     );
   }
+  catalogChanged();
   return catalog;
 }
 
@@ -224,6 +237,7 @@ export async function clearCatalogCache(): Promise<void> {
   if (!isTauri()) return;
   const db = await getDb();
   await db.execute("DELETE FROM cache WHERE key = $1", [CACHE_KEY]);
+  catalogChanged();
 }
 
 // ---------------------------------------------------------------- queries

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageHead } from "../components/PageHead";
 import { StarButton } from "../components/StarButton";
 import { copyText, FORMAT_LABELS, formatColor, getCopyFormat, nearestName, onCopyFormat, type ColorFormat } from "../lib/colors";
-import { fallbackFor, fontFamilyCss, getCatalog, loadPreviewFont, type FontFamily } from "../lib/fonts";
+import { fallbackFor, fontFamilyCss, loadPreviewFont, type FontFamily } from "../lib/fonts";
 import {
   exportLibrary,
   listStarred,
@@ -17,6 +17,7 @@ import {
 } from "../lib/library";
 import { deletePalette, listPalettes, renamePalette, requestOpenPalette, type SavedPalette } from "../lib/palettes";
 import type { Section } from "../sections";
+import { useFontCatalog } from "../useFontCatalog";
 
 /** A note field that saves when it loses focus or on Enter. */
 function NoteField({ note, label, onSave }: { note: string; label: string; onSave: (note: string) => Promise<void> }) {
@@ -73,7 +74,8 @@ export function SavedPage({ section }: { section: Section }) {
   const [colors, setColors] = useState<StarredColor[]>([]);
   const [palettes, setPalettes] = useState<SavedPalette[]>([]);
   const [fonts, setFonts] = useState<StarredFont[]>([]);
-  const [catalog, setCatalog] = useState<Map<string, FontFamily>>(new Map());
+  const { catalog: fontCatalog } = useFontCatalog();
+  const catalog = useMemo(() => new Map((fontCatalog?.families ?? []).map((f) => [f.family, f])), [fontCatalog]);
   const [query, setQuery] = useState("");
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [renaming, setRenaming] = useState<{ id: number; name: string } | null>(null);
@@ -87,12 +89,6 @@ export function SavedPage({ section }: { section: Section }) {
         setFonts(f);
       })
       .catch((e) => setStatus(`Could not load the library: ${e}`));
-  }, []);
-
-  useEffect(() => {
-    getCatalog()
-      .then((cat) => setCatalog(new Map(cat.families.map((f) => [f.family, f]))))
-      .catch(() => {});
   }, []);
 
   useEffect(() => {

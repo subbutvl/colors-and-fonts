@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { bundledCatalog, isStale, type Catalog } from "./fonts";
 import { BODY_FONTS, COLLECTIONS, PAIRS, pairCss, suggestBodies, TOP_FALLBACK, topFonts, trendingFonts } from "./fontSets";
 
@@ -85,5 +85,22 @@ describe("pairing", () => {
     expect(css).toContain('h1, h2, h3 { font-family: "Playfair Display", serif; }');
     expect(css).toContain('body { font-family: "Source Sans 3", sans-serif; }');
     expect(pairCss(get("Inter"), get("Inter")).match(/family=/g)).toHaveLength(1);
+  });
+});
+
+describe("catalog refresh", () => {
+  it("tells mounted pages when a refresh lands", async () => {
+    const { onCatalogChanged, refreshCatalog } = await import("./fonts");
+    const items = Array.from({ length: 120 }, (_, i) => ({ family: `Family ${i}`, category: "serif", variants: ["regular"], subsets: ["latin"], lastModified: "2026-01-01" }));
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ items }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const seen = vi.fn();
+    const off = onCatalogChanged(seen);
+    const fresh = await refreshCatalog("key");
+    off();
+    vi.unstubAllGlobals();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(seen).toHaveBeenCalledTimes(1);
+    expect(fresh.families[0]).toMatchObject({ family: "Family 0", rank: 1, trend: 1 });
   });
 });

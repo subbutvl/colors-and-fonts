@@ -6,16 +6,15 @@ import { copyText } from "../lib/colors";
 import {
   CATEGORIES,
   filterFonts,
-  getCatalog,
   sortFonts,
   subsetLabel,
   subsetsByUse,
   WEIGHT_NAMES,
-  type Catalog,
   type FontCategory,
   type FontSort,
 } from "../lib/fonts";
 import type { Section } from "../sections";
+import { useFontCatalog } from "../useFontCatalog";
 import { useStarredFonts } from "../useStarredFonts";
 
 const PAGE = 48;
@@ -46,19 +45,13 @@ function loadPrefs(): Prefs {
 
 /** Font listing (15): every Google Fonts family with live previews. */
 export function FontListingPage({ section }: { section: Section }) {
-  const [catalog, setCatalog] = useState<Catalog | null>(null);
+  const { catalog, error } = useFontCatalog();
   const [prefs, setPrefs] = useState<Prefs>(loadPrefs);
   const [query, setQuery] = useState("");
   const [shown, setShown] = useState(PAGE);
   const [status, setStatus] = useState<string | null>(null);
   const { isStarred, toggle } = useStarredFonts();
   const more = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    getCatalog()
-      .then(setCatalog)
-      .catch((e) => setStatus(`Could not load the font catalog: ${e}`));
-  }, []);
 
   useEffect(() => {
     try {
@@ -196,7 +189,8 @@ export function FontListingPage({ section }: { section: Section }) {
       </div>
 
       <p className="help" role="status">
-        {status ??
+        {error ??
+          status ??
           (catalog
             ? `${results.length.toLocaleString()} of ${catalog.families.length.toLocaleString()} families. ${
                 catalog.origin === "api" ? `Catalog refreshed from Google Fonts on ${catalog.updated}.` : `Built-in catalog (Google Fonts as of ${catalog.updated}); add an API key in Settings to refresh it and sort by popularity.`
