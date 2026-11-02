@@ -42,3 +42,8 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 5.2 Windows installer (NSIS/MSI) built and attached to a GitHub release by a workflow on version tags (`docs/RELEASING.md`)
 - [ ] 5.3 Auto-updater (tauri-plugin-updater, signed update manifest on GitHub releases)
 - [ ] 5.4 Code signing: unsigned for now (decided 2026-11-01); revisit Azure Trusted Signing or an OV certificate later
+
+## Phase 6: Feedback from first test build (Subbu, 2026-11-02)
+- [x] 6.1 Sidebar without numbers, grouped by task: Picker, Create, Check, Discover, Fonts, Design systems
+- [ ] 6.2 Pick session bar: the colors picked so far with hover values (HEX, RGB, RGBA, HSL, HSB) and copy, plus a close button; toolbar swatches get the same hover card
+- [ ] 6.3 Color details page for any picked color: values, contrast at a glance, tints, shades, harmonies, actions

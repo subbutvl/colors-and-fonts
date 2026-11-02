@@ -76,14 +76,12 @@ export function DesignSystemsHubPage({ section }: { section: Section }) {
 
       <div className="ds-hub-cards">
         <a className="ds-hub-card" href="#/curated-design-systems">
-          <span className="ds-hub-num">20</span>
           <strong>Curated</strong>
           <span>
             <b>{CURATED_DS.length}</b> public design systems with links to their docs and code
           </span>
         </a>
         <a className="ds-hub-card" href="#/my-design-systems">
-          <span className="ds-hub-num">21</span>
           <strong>My design systems</strong>
           <span>
             {mine.length ? (

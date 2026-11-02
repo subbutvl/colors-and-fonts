@@ -26,7 +26,6 @@ export function Sidebar({ active, onNavigate }: Props) {
                 ref={s.id === active ? (el) => el?.scrollIntoView({ block: "nearest" }) : undefined}
                 onClick={() => onNavigate(s.id)}
               >
-                <span className="nav-num">{s.num ?? ""}</span>
                 {s.title}
               </button>
             ))}
@@ -41,7 +40,7 @@ export function Sidebar({ active, onNavigate }: Props) {
           aria-current={active === "settings" ? "page" : undefined}
           onClick={() => onNavigate("settings")}
         >
-          <span className="nav-num" aria-hidden="true">⚙</span>
+          <span className="nav-icon" aria-hidden="true">⚙</span>
           Settings
         </button>
       </div>
