@@ -355,11 +355,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .star-btn.on svg { fill: currentColor; }
 .star-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .pick-item { position: relative; }
-.pick-item .star-btn { position: absolute; top: 2px; right: 2px; width: 22px; height: 22px; border-radius: 6px; background: rgba(0, 0, 0, 0.35); color: #fff; opacity: 0; }
+.pick-item .star-btn { position: absolute; top: 3px; left: 47px; width: 22px; height: 22px; border-radius: 6px; background: rgba(0, 0, 0, 0.35); color: #fff; opacity: 0; }
 .pick-item .star-btn svg { width: 13px; height: 13px; }
 .pick-item:hover .star-btn, .pick-item .star-btn:focus-visible, .pick-item .star-btn.on { opacity: 1; }
 .pick-item .star-btn.on { color: #ffd34d; }
-.pick-item .pick-details { position: absolute; bottom: 6px; right: 8px; font-size: 11.5px; opacity: 0; }
+/* Inside the swatch (bottom left, the star is top right), never over the hex and name below it. */
+.pick-item .pick-details { position: absolute; top: 26px; left: 4px; height: 18px; padding: 0 7px; border-radius: 6px; background: rgba(0, 0, 0, 0.45); color: #fff; font-size: 11px; line-height: 18px; text-decoration: none; opacity: 0; }
+.pick-item .pick-details:hover { background: rgba(0, 0, 0, 0.6); }
 .pick-item:hover .pick-details, .pick-item .pick-details:focus-visible { opacity: 1; }
 
 /* Saved */
