@@ -33,7 +33,10 @@ export default defineConfig(() => ({
   server: {
     port: 1420,
     strictPort: true,
-    host: host || false,
+    // An explicit IPv4 address: on some Windows setups "localhost" resolves
+    // to ::1 while the dev server listens on 127.0.0.1 (or the other way
+    // round), and the app window shows "localhost refused to connect".
+    host: host || "127.0.0.1",
     hmr: host
       ? {
           protocol: "ws",
