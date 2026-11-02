@@ -4,6 +4,7 @@ import { onPickerError, startPick } from "../lib/picker";
 import { startFontPick } from "../lib/fontIdentify";
 import { clearHistory, onHistoryChanged, recentPicks, type HistoryPick } from "../lib/history";
 import { StarButton } from "../components/StarButton";
+import { colorRoute } from "../lib/colorDetails";
 import { useStarred } from "../useStarred";
 import { copyText, FORMAT_LABELS, formatColor, getCopyFormat, nearestName, onCopyFormat, type ColorFormat } from "../lib/colors";
 
@@ -130,6 +131,14 @@ export function PickerHome() {
                   <small>
                     {nearestName(p.hex).name} · {when(p.pickedAt)}
                   </small>
+                </button>
+                <button
+                  type="button"
+                  className="link-btn pick-details"
+                  onClick={() => (window.location.hash = `/${colorRoute(p.hex)}`)}
+                  aria-label={`Details for ${p.hex}`}
+                >
+                  Details
                 </button>
                 <StarButton on={isStarred(p.hex)} onClick={() => toggle(p.hex)} />
               </li>

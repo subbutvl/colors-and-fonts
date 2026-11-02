@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { isTauri } from "../lib/env";
-import { FRAME_HEADER, OVERLAY_OPEN_EVENT, type Pick } from "../lib/picker";
+import { FRAME_HEADER, OVERLAY_OPEN_EVENT, onPick, type Pick } from "../lib/picker";
 import { averageRect, hex, pixel } from "./pixels";
+import { SessionBar } from "./SessionBar";
+import { CloseIcon } from "../toolbar/icons";
 
 /** Loupe: 11 x 11 pixels, each drawn 10 CSS px wide. */
 const LOUPE_CELLS = 11;
@@ -59,6 +61,17 @@ const finish = () => {
   if (isTauri()) invoke("overlay_finish").catch(console.error);
 };
 
+/** End the session, then show this color on the Color details page. */
+const openDetails = async (color: string) => {
+  if (!isTauri()) return;
+  try {
+    await invoke("overlay_finish");
+    await invoke("open_color", { hex: color });
+  } catch (e) {
+    console.error("open color", e);
+  }
+};
+
 /**
  * Full-screen picker for one monitor: shows the frozen frame, a loupe that
  * follows the pointer, and turns clicks into picks. Always dark.
@@ -71,7 +84,8 @@ export function Overlay() {
   const [pos, setPos] = useState<Point | null>(null);
   /** Shift+drag rectangle corners, frame pixels. */
   const [drag, setDrag] = useState<{ from: Point; to: Point } | null>(null);
-  const [picked, setPicked] = useState<{ hex: string; count: number } | null>(null);
+  /** Colors picked this session on any monitor, oldest first. */
+  const [picks, setPicks] = useState<string[]>([]);
   const [mode, setMode] = useState<Mode>("color");
   /** Font mode: the box has been sent and is being read. */
   const [reading, setReading] = useState(false);
@@ -79,7 +93,7 @@ export function Overlay() {
   const load = useCallback(async () => {
     setPos(null);
     setDrag(null);
-    setPicked(null);
+    setPicks([]);
     setReading(false);
     try {
       setMode(isTauri() ? await invoke<Mode>("overlay_mode") : new URLSearchParams(location.search).get("mode") === "font" ? "font" : "color");
@@ -112,6 +126,9 @@ export function Overlay() {
     };
   }, [load]);
 
+  // Picks from every overlay (one per monitor) arrive as the app event.
+  useEffect(() => onPick((p) => setPicks((prev) => [...prev, p.hex])), []);
+
   /** CSS px per frame pixel (the inverse of the monitor's scale factor). */
   const cssPerPx = frame ? window.innerWidth / frame.image.width : 1;
 
@@ -137,7 +154,8 @@ export function Overlay() {
         height: Math.abs(to.y - from.y) + 1,
       };
       if (isTauri()) invoke("overlay_pick", { pick: p }).catch(console.error);
-      setPicked((prev) => ({ hex: p.hex, count: (prev?.count ?? 0) + 1 }));
+      // The app event adds it in the desktop app; the browser preview has none.
+      else setPicks((prev) => [...prev, p.hex]);
     },
     [frame],
   );
@@ -327,17 +345,28 @@ export function Overlay() {
         </div>
       )}
       <div className="hint" role="status" hidden={mode === "font"}>
-        {picked ? (
-          <>
-            <span className="chip" style={{ background: picked.hex }} />
-            Picked <b>{picked.hex}</b>
-            {picked.count > 1 && <span className="muted"> · {picked.count} this time</span>}
-            <span className="sep" />
-          </>
-        ) : null}
         Click to pick <span className="sep" /> Shift+drag to average <span className="sep" /> Arrows nudge, Enter picks{" "}
         <span className="sep" /> <kbd>Esc</kbd> done
       </div>
+
+      {mode === "color" ? (
+        <SessionBar picks={picks} onClose={finish} onDetails={openDetails} onEnter={() => setPos(null)} />
+      ) : (
+        !reading && (
+          <button
+            type="button"
+            className="session-close floating"
+            onMouseDown={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            onClick={finish}
+            title="Cancel (Esc)"
+          >
+            <CloseIcon />
+            <span>Close</span>
+            <kbd>Esc</kbd>
+          </button>
+        )
+      )}
     </div>
   );
 }

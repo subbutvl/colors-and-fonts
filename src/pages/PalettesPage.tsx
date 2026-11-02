@@ -12,6 +12,7 @@ import {
 } from "../lib/palette";
 import { onLibraryChanged } from "../lib/library";
 import { deletePalette, listPalettes, savePalette, takeOpenRequest, type SavedPalette } from "../lib/palettes";
+import { takePaletteSeed } from "../lib/colorDetails";
 import type { Section } from "../sections";
 
 interface Slot {
@@ -61,6 +62,13 @@ export function PalettesPage({ section }: { section: Section }) {
     refresh();
     return onLibraryChanged(refresh);
   }, [refresh]);
+
+  // Opened from Color details ("Start a palette"): that color, locked, first.
+  useEffect(() => {
+    const seed = takePaletteSeed();
+    if (seed) setSlots(fresh(harmony, 5, [{ hex: seed, locked: true }]));
+    // Only on open.
+  }, []);
 
   // Opened from the Saved page: load that palette into the generator.
   useEffect(() => {
