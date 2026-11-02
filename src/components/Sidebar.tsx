@@ -9,10 +9,6 @@ interface Props {
 export function Sidebar({ active, onNavigate }: Props) {
   return (
     <nav className="sidebar" aria-label="Sections">
-      <div className="brand">
-        <span className="brand-mark" aria-hidden="true" />
-        Huetype
-      </div>
       <div className="sidebar-scroll">
         {GROUPS.map((group) => (
           <div key={group} className="nav-group">

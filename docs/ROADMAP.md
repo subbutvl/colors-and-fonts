@@ -49,3 +49,4 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 6.3 Color details page for any picked color: values, contrast at a glance, tints, shades, harmonies, actions
 - [x] 6.4 Dev server pinned to 127.0.0.1 so `npm run tauri dev` connects on Windows setups where localhost is IPv6
 - [x] 6.5 Picker home: the Details link and star sit inside the swatch, so they never cover the hex and name
+- [x] 6.6 Frameless main window with its own title bar: Pick color, Identify font, minimize, maximize, close

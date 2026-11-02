@@ -50,14 +50,31 @@ body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font); }
 button { font: inherit; color: inherit; }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.app { display: grid; grid-template-columns: 224px 1fr; height: 100%; }
+.window { display: flex; flex-direction: column; height: 100%; }
+.app { flex: 1; display: grid; grid-template-columns: 224px 1fr; min-height: 0; }
+
+/* Title bar: the main window has no system frame (decorations: false). */
+.titlebar { display: flex; align-items: center; height: 40px; background: var(--panel); border-bottom: 1px solid var(--line); user-select: none; -webkit-user-select: none; }
+.titlebar .brand { width: 224px; flex: none; padding: 0 18px; font-size: 14px; cursor: default; }
+.titlebar-modes { display: flex; gap: 4px; padding-left: 12px; }
+.titlebar-mode { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); font-size: 12.5px; line-height: 1; cursor: pointer; }
+.titlebar-mode:hover { background: var(--raise); }
+.titlebar-mode svg { width: 15px; height: 15px; color: var(--accent); }
+.titlebar-drag { flex: 1; align-self: stretch; }
+.titlebar-controls { display: flex; align-self: stretch; }
+.titlebar-btn { display: grid; place-items: center; width: 46px; border: 0; background: none; color: var(--ink); cursor: default; }
+.titlebar-btn svg { width: 10px; height: 10px; }
+.titlebar-btn:hover { background: var(--raise); }
+.titlebar-btn.close:hover { background: #c42b1c; color: #fff; }
+.titlebar-btn:focus-visible { outline-offset: -2px; }
+.titlebar-error { display: flex; gap: 12px; align-items: baseline; padding: 6px 18px; background: var(--raise); border-bottom: 1px solid var(--line); font-size: 13px; }
 
 /* Sidebar */
 .sidebar { display: flex; flex-direction: column; min-height: 0; background: var(--panel); border-right: 1px solid var(--line); }
 .brand { display: flex; align-items: center; gap: 10px; padding: 16px 18px 8px; font: 600 16px var(--font-display); }
 .brand-mark { position: relative; width: 18px; height: 18px; border-radius: 5px; background: conic-gradient(from 200deg, #ff6a88, #f2b84b, #3ccf8e, #7c8cff, #ff6a88); }
 .brand-mark::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; border: 2px solid #fff; background: radial-gradient(circle, #16161d 0 2px, transparent 2.5px); }
-.sidebar-scroll { flex: 1; overflow-y: auto; padding: 4px 8px 12px; }
+.sidebar-scroll { flex: 1; overflow-y: auto; padding: 8px 8px 12px; }
 .nav-group-title { margin: 12px 10px 3px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .nav-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 4px 10px; border: 0; border-radius: 7px; background: none; text-align: left; font-size: 13px; cursor: pointer; }
 .nav-item:hover { background: var(--raise); }
