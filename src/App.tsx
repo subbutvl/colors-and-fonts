@@ -3,6 +3,8 @@ import { Sidebar } from "./components/Sidebar";
 import { applySavedShortcuts } from "./lib/shortcuts";
 import { BrandColorsPage } from "./pages/BrandColorsPage";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
+import { ColorPage } from "./pages/ColorPage";
+import { colorFromRoute } from "./lib/colorDetails";
 import { ContrastPage } from "./pages/ContrastPage";
 import { ConverterPage } from "./pages/ConverterPage";
 import { CssGeneratorPage } from "./pages/CssGeneratorPage";
@@ -32,7 +34,7 @@ import { SettingsProvider } from "./SettingsContext";
 import { useHashRoute } from "./useHashRoute";
 import { usePickRecorder } from "./usePickRecorder";
 
-function Page({ id }: { id: string }) {
+function Page({ id, arg }: { id: string; arg?: string }) {
   const section = findSection(id) ?? findSection(DEFAULT_SECTION)!;
   switch (section.id) {
     case "picker":
@@ -85,13 +87,15 @@ function Page({ id }: { id: string }) {
       return <ColorNamesPage section={section} />;
     case "settings":
       return <SettingsPage />;
+    case "color":
+      return <ColorPage hex={colorFromRoute(arg)} />;
     default:
       return <Placeholder section={section} />;
   }
 }
 
 export default function App() {
-  const [active, navigate] = useHashRoute();
+  const [active, navigate, arg] = useHashRoute();
   usePickRecorder();
 
   // Re-register the user's saved shortcuts (Rust starts with the defaults).
@@ -106,7 +110,7 @@ export default function App() {
       <div className="app">
         <Sidebar active={active} onNavigate={navigate} />
         <main className="content">
-          <Page id={active} />
+          <Page id={active} arg={arg} />
         </main>
       </div>
     </SettingsProvider>

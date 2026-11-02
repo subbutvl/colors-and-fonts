@@ -104,6 +104,7 @@ pub fn run() {
             toolbar::open_main_window,
             toolbar::toolbar_popover,
             toolbar::open_history,
+            toolbar::open_color,
             tray::set_recent_picks,
         ])
         .setup(|app| {

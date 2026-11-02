@@ -15,12 +15,12 @@ use crate::shortcuts::Action;
 pub const TOOLBAR_WINDOW: &str = "toolbar";
 
 /// Logical size of the toolbar pill plus room for its drop shadow.
-pub const WIDTH: f64 = 420.0;
+pub const WIDTH: f64 = 500.0;
 pub const HEIGHT: f64 = 72.0;
 
 /// Extra logical height while a swatch popover is open. The window grows
 /// upwards so the pill stays where the user put it.
-pub const POPOVER_HEIGHT: f64 = 252.0;
+pub const POPOVER_HEIGHT: f64 = 312.0;
 
 /// Sent to the toolbar page when Rust closes the popover (e.g. on hide).
 pub const POPOVER_CLOSED_EVENT: &str = "huetype://toolbar-popover-closed";
@@ -174,7 +174,36 @@ pub fn open_history(app: AppHandle) {
     crate::open_section(&app, "picker");
 }
 
+/// The route argument for a color: six hex digits, upper case, or None.
+pub fn color_arg(hex: &str) -> Option<String> {
+    let h = hex.trim().trim_start_matches('#');
+    (h.len() == 6 && h.chars().all(|c| c.is_ascii_hexdigit())).then(|| h.to_ascii_uppercase())
+}
+
+/// Show one color on the Color details page (`#/color/<hex>`), from the
+/// toolbar card or the pick session bar.
+#[tauri::command]
+pub fn open_color(app: AppHandle, hex: String) -> Result<(), String> {
+    let arg = color_arg(&hex).ok_or_else(|| format!("Not a hex color: {hex}"))?;
+    crate::open_section(&app, &format!("color/{arg}"));
+    Ok(())
+}
+
 #[tauri::command]
 pub fn open_main_window(app: AppHandle) {
     crate::show_main_window(&app);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::color_arg;
+
+    #[test]
+    fn color_arg_accepts_hex_only() {
+        assert_eq!(color_arg("#5b6cff").as_deref(), Some("5B6CFF"));
+        assert_eq!(color_arg("F0F6FC").as_deref(), Some("F0F6FC"));
+        assert_eq!(color_arg("#abc"), None);
+        assert_eq!(color_arg("picker/../x"), None);
+        assert_eq!(color_arg("#GGGGGG"), None);
+    }
 }

@@ -46,7 +46,9 @@ export const SECTIONS: Section[] = [
   { id: "curated-design-systems", title: "Curated", group: "Design systems", phase: 4, blurb: "Public design systems with links to docs, tokens and guides." },
   { id: "my-design-systems", title: "My design systems", group: "Design systems", phase: 4, blurb: "Add, edit and delete your own design-system references." },
 
-  // Not in the section list; reached from the sidebar footer and the tray menu.
+  // Not in the section list. Color details opens from a picked color (`#/color/<hex>`).
+  { id: "color", title: "Color details", group: "App", phase: 6, blurb: "Values, contrast, tints, shades and harmonies for one color." },
+  // Reached from the sidebar footer and the tray menu.
   { id: "settings", title: "Settings", group: "App", phase: 0, blurb: "Theme, startup and app info." },
 ];
 
