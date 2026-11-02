@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar } from "./components/Sidebar";
+import { TitleBar } from "./components/TitleBar";
 import { applySavedShortcuts } from "./lib/shortcuts";
 import { BrandColorsPage } from "./pages/BrandColorsPage";
 import { ColorNamesPage } from "./pages/ColorNamesPage";
@@ -97,6 +98,7 @@ function Page({ id, arg }: { id: string; arg?: string }) {
 export default function App() {
   const [active, navigate, arg] = useHashRoute();
   usePickRecorder();
+  const [titleError, setTitleError] = useState<string | null>(null);
 
   // Re-register the user's saved shortcuts (Rust starts with the defaults).
   // Pages that show shortcuts wait for this through getShortcutStatus().
@@ -107,11 +109,22 @@ export default function App() {
   }, []);
   return (
     <SettingsProvider>
-      <div className="app">
-        <Sidebar active={active} onNavigate={navigate} />
-        <main className="content">
-          <Page id={active} arg={arg} />
-        </main>
+      <div className="window">
+        <TitleBar onError={setTitleError} />
+        {titleError && (
+          <div className="titlebar-error" role="alert">
+            <span>{titleError}</span>
+            <button type="button" className="link-btn" onClick={() => setTitleError(null)}>
+              Dismiss
+            </button>
+          </div>
+        )}
+        <div className="app">
+          <Sidebar active={active} onNavigate={navigate} />
+          <main className="content">
+            <Page id={active} arg={arg} />
+          </main>
+        </div>
       </div>
     </SettingsProvider>
   );
