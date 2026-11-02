@@ -40,7 +40,7 @@ Each step is one PR. Tick a step when its PR is merged.
 ## Phase 5: Release
 - [x] 5.1 App icon and branding (icon set from `scripts/app-icon.cjs`, sidebar mark, favicon, installer metadata)
 - [x] 5.2 Windows installer (NSIS/MSI) built and attached to a GitHub release by a workflow on version tags (`docs/RELEASING.md`)
-- [ ] 5.3 Auto-updater (tauri-plugin-updater, signed update manifest on GitHub releases)
+- [ ] 5.3 Auto-updater (tauri-plugin-updater, signed update manifest on GitHub releases): deferred (decided 2026-11-02) while Subbu is the only user; update by running the new installer over the old one
 - [ ] 5.4 Code signing: unsigned for now (decided 2026-11-01); revisit Azure Trusted Signing or an OV certificate later
 
 ## Phase 6: Feedback from first test build (Subbu, 2026-11-02)
