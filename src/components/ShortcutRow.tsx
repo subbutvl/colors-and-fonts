@@ -1,3 +1,4 @@
+import { osText } from "../lib/osText";
 import { useState } from "react";
 import {
   acceleratorFromEvent,
@@ -41,7 +42,7 @@ export function ShortcutRow({ status, onChange }: Props) {
     const accelerator = acceleratorFromEvent(e);
     if (!accelerator) return; // still holding modifiers
     if (!accelerator.includes("+")) {
-      setError("Add Ctrl, Alt, Shift or Win so the shortcut doesn't block normal typing.");
+      setError(`Add ${osText().modifiers} so the shortcut doesn't block normal typing.`);
       return;
     }
     apply(accelerator);

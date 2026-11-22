@@ -6,6 +6,7 @@ import { isTauri } from "../lib/env";
 import { extract, MAX_K, MIN_K, type Pixels } from "../lib/imagePalette";
 import { savePalette } from "../lib/palettes";
 import { FRAME_HEADER } from "../lib/picker";
+import { osText } from "../lib/osText";
 import type { Section } from "../sections";
 
 /** Images are scaled down to this on their long side before sampling. */
@@ -150,7 +151,7 @@ export function ImagePalettePage({ section }: { section: Section }) {
         {!loaded && (
           <div className="img-empty">
             <strong>Drop an image here</strong>
-            <span>or paste one with Ctrl+V, choose a file, or grab your screen.</span>
+            <span>or paste one with {osText().paste}, choose a file, or grab your screen.</span>
           </div>
         )}
         <div className="img-actions">

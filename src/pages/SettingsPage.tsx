@@ -7,6 +7,7 @@ import { ThemeSwitch } from "../components/ThemeSwitch";
 import { getShortcutStatus, type ShortcutStatus } from "../lib/shortcuts";
 import { getAutostart, setAutostart } from "../lib/autostart";
 import { isMac, isTauri } from "../lib/env";
+import { osText } from "../lib/osText";
 import { useSettings } from "../SettingsContext";
 
 export function SettingsPage() {
@@ -52,7 +53,7 @@ export function SettingsPage() {
         <div className="setting-row">
           <div>
             <strong>Theme</strong>
-            <span>System follows your Windows light or dark setting. The picker toolbar is always dark.</span>
+            <span>System follows your {osText().os} light or dark setting. The picker toolbar is always dark.</span>
           </div>
           <ThemeSwitch className="wide" />
         </div>
@@ -69,11 +70,11 @@ export function SettingsPage() {
         <h2 id="set-startup">Startup</h2>
         <div className="setting-row">
           <div>
-            <label htmlFor="autostart"><strong>Launch Huetype when Windows starts</strong></label>
+            <label htmlFor="autostart"><strong>Launch Huetype {osText().startup}</strong></label>
             <span>
               {autostart === null
                 ? "Available in the desktop app."
-                : "It starts quietly in the system tray, so it is ready when you need to pick a color."}
+                : `It starts quietly in the ${osText().tray}, so it is ready when you need to pick a color.`}
             </span>
           </div>
           <input

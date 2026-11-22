@@ -73,23 +73,27 @@ fn copy_recent(app: &AppHandle, text: &str) {
     }
 }
 
+/// Between an item and its shortcut: Windows menus align text after a tab;
+/// macOS menus show the tab as a gap, so use plain spaces there.
+const SEP: &str = if cfg!(target_os = "macos") { "    " } else { "\t" };
+
 fn pick_text(app: &AppHandle) -> String {
     format!(
-        "Pick color\t{}",
+        "Pick color{SEP}{}",
         shortcuts::pretty(&shortcuts::current(app, Action::PickColor))
     )
 }
 
 fn font_text(app: &AppHandle) -> String {
     format!(
-        "Identify font\t{}",
+        "Identify font{SEP}{}",
         shortcuts::pretty(&shortcuts::current(app, Action::IdentifyFont))
     )
 }
 
 fn toolbar_text(app: &AppHandle) -> String {
     format!(
-        "Show or hide toolbar\t{}",
+        "Show or hide toolbar{SEP}{}",
         shortcuts::pretty(&shortcuts::current(app, Action::ToggleToolbar))
     )
 }
@@ -130,8 +134,9 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
     let mut builder = TrayIconBuilder::with_id("main-tray")
         .tooltip("Huetype")
         .menu(&menu)
-        // Left click toggles the window; right click opens the menu.
-        .show_menu_on_left_click(false)
+        // Windows: left click toggles the window, right click opens the menu.
+        // macOS: a menu bar icon opens its menu on click, like every other.
+        .show_menu_on_left_click(cfg!(target_os = "macos"))
         .on_menu_event(|app, event| match event.id.as_ref() {
             OPEN => crate::show_main_window(app),
             TOOLBAR => crate::toolbar::toggle(app),
@@ -152,10 +157,20 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
                 ..
             } = event
             {
-                crate::toggle_main_window(tray.app_handle());
+                if !cfg!(target_os = "macos") {
+                    crate::toggle_main_window(tray.app_handle());
+                }
             }
         });
 
+    // macOS: a one-color template image, which the menu bar tints to match
+    // light or dark. Windows: the app icon.
+    #[cfg(target_os = "macos")]
+    {
+        let icon = tauri::image::Image::from_bytes(include_bytes!("../icons/tray-template.png"))?;
+        builder = builder.icon(icon).icon_as_template(true);
+    }
+    #[cfg(not(target_os = "macos"))]
     if let Some(icon) = app.default_window_icon() {
         builder = builder.icon(icon.clone());
     }

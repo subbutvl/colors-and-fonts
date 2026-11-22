@@ -29,6 +29,7 @@ pub const MAIN_WINDOW: &str = "main";
 /// Show, un-minimize and focus the main window.
 pub fn show_main_window(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window(MAIN_WINDOW) {
+        platform::set_dock_visible(app, true);
         let _ = window.unminimize();
         let _ = window.show();
         let _ = window.set_focus();
@@ -88,6 +89,7 @@ pub fn toggle_main_window(app: &tauri::AppHandle) {
         let minimized = window.is_minimized().unwrap_or(false);
         if visible && !minimized {
             let _ = window.hide();
+            platform::set_dock_visible(app, false);
         } else {
             show_main_window(app);
         }
@@ -155,7 +157,9 @@ pub fn run() {
             // The window starts hidden (see tauri.conf.json) so a login launch
             // never flashes it; show it unless we were started with --hidden.
             fit_main_window(app.handle());
-            if !std::env::args().any(|a| a == HIDDEN_ARG) {
+            if std::env::args().any(|a| a == HIDDEN_ARG) {
+                platform::set_dock_visible(app.handle(), false);
+            } else {
                 show_main_window(app.handle());
             }
             Ok(())
@@ -168,6 +172,7 @@ pub fn run() {
                 if label == MAIN_WINDOW {
                     api.prevent_close();
                     let _ = window.hide();
+                    platform::set_dock_visible(window.app_handle(), false);
                 } else if label == toolbar::TOOLBAR_WINDOW {
                     // Alt+F4: hide through the helper so an open popover is
                     // closed and the window shrinks back.
@@ -180,8 +185,17 @@ pub fn run() {
                 }
             }
         })
-        .run(tauri::generate_context!())
-        .expect("error while running Huetype");
+        .build(tauri::generate_context!())
+        .expect("error while building Huetype")
+        .run(|app, event| {
+            // macOS: clicking the Dock icon brings the window back.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen { .. } = event {
+                show_main_window(app);
+            }
+            #[cfg(not(target_os = "macos"))]
+            let _ = (app, event);
+        });
 }
 
 #[cfg(test)]

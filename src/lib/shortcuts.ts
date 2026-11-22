@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import { isTauri } from "./env";
+import { isMac, isTauri } from "./env";
 import { getRawSettings, setRawSetting } from "./settings";
 
 /**
@@ -29,12 +29,12 @@ export const SHORTCUT_NAMES: Record<ShortcutAction, string> = {
 
 const KEY_PREFIX = "shortcut.";
 
-/** `Ctrl+Alt+KeyC` -> `Ctrl + Alt + C` */
-export function prettyShortcut(accelerator: string): string {
-  return accelerator
-    .split("+")
-    .map((t) => t.replace(/^(Key|Digit)/, ""))
-    .join(" + ");
+const MAC_SYMBOLS: Record<string, string> = { Ctrl: "\u2303", Alt: "\u2325", Shift: "\u21E7", Super: "\u2318" };
+
+/** `Ctrl+Alt+KeyC` -> `Ctrl + Alt + C` (`⌃⌥C` on macOS). */
+export function prettyShortcut(accelerator: string, mac: boolean = isMac()): string {
+  const keys = accelerator.split("+").map((t) => t.replace(/^(Key|Digit)/, ""));
+  return mac ? keys.map((k) => MAC_SYMBOLS[k] ?? k).join("") : keys.join(" + ");
 }
 
 const MODIFIER_CODES = new Set([

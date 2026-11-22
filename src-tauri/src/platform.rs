@@ -6,8 +6,9 @@
 //! Dock included) on whatever Space is active, even over a full-screen app;
 //! the toolbar must float over full-screen apps too. Call these after every
 //! `set_always_on_top`, which resets the level. Elsewhere they do nothing.
+//! Also the Dock icon policy (`set_dock_visible`).
 
-use tauri::WebviewWindow;
+use tauri::{AppHandle, WebviewWindow};
 
 /// The pick overlay: above everything, on every Space.
 pub fn raise_overlay(w: &WebviewWindow) {
@@ -23,6 +24,19 @@ pub fn raise_toolbar(w: &WebviewWindow) {
     mac::apply(w, mac::STATUS_LEVEL);
     #[cfg(not(target_os = "macos"))]
     let _ = w;
+}
+
+/// macOS: show the Dock icon (and app menu) only while the main window is
+/// open; with it closed Huetype lives in the menu bar, like other pickers.
+pub fn set_dock_visible(app: &AppHandle, visible: bool) {
+    #[cfg(target_os = "macos")]
+    {
+        use tauri::ActivationPolicy;
+        let policy = if visible { ActivationPolicy::Regular } else { ActivationPolicy::Accessory };
+        let _ = app.set_activation_policy(policy);
+    }
+    #[cfg(not(target_os = "macos"))]
+    let _ = (app, visible);
 }
 
 #[cfg(target_os = "macos")]

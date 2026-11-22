@@ -4,6 +4,7 @@ import { onPickerError, startPick } from "../lib/picker";
 import { startFontPick } from "../lib/fontIdentify";
 import { clearHistory, onHistoryChanged, recentPicks, type HistoryPick } from "../lib/history";
 import { StarButton } from "../components/StarButton";
+import { osText } from "../lib/osText";
 import { OpenScreenSettingsButton, useScreenAccess } from "../components/ScreenPermission";
 import { colorRoute } from "../lib/colorDetails";
 import { useStarred } from "../useStarred";
@@ -153,7 +154,7 @@ export function PickerHome() {
         Picking freezes every screen: click to add a color (keep clicking for more), Shift+drag to average an area,
         arrow keys to nudge one pixel, Esc when done. Each pick is copied in the format shown on the toolbar (click it
         to change). Press {keys("toggle_toolbar")} for the floating toolbar. Close this window any time: Huetype keeps
-        running in the system tray.
+        running in the {osText().tray}.
       </p>
     </div>
   );
