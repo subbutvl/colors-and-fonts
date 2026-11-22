@@ -25,14 +25,11 @@
     ],
     "security": {
       "csp": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' ipc: http://ipc.localhost https://www.googleapis.com"
-    }
+    },
+    "macOSPrivateApi": true
   },
   "bundle": {
     "active": true,
-    "targets": [
-      "nsis",
-      "msi"
-    ],
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -44,14 +41,6 @@
     "longDescription": "Huetype picks colors and identifies fonts from anywhere on screen, with color, font and design-system reference tools.",
     "publisher": "Subbu",
     "copyright": "Copyright 2026 Subbu",
-    "category": "DeveloperTool",
-    "windows": {
-      "webviewInstallMode": {
-        "type": "downloadBootstrapper"
-      },
-      "nsis": {
-        "installMode": "currentUser"
-      }
-    }
+    "category": "DeveloperTool"
   }
 }
