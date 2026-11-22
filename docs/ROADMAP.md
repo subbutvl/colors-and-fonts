@@ -56,3 +56,4 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 6.11 Curated colors: 108 palettes in 12 collections (new: Botanical, Food and drink, Gemstones, Monochrome)
 - [x] 6.10 Scales: save scales (migration 8), listed on Scales and Saved, in the library export
 - [x] 6.12 Scales: a reopened saved scale shows and exports its stored steps (not a recomputed scale) until the base color is changed
+- [x] 6.13 Main window height raised to 1000 (1400 x 1000; still shrinks to fit a smaller work area)

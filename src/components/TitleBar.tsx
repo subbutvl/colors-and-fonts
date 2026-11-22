@@ -15,7 +15,7 @@ const stroke = {
 /**
  * The main window has no system frame (`decorations: false`), so this bar is
  * its title bar: drag area, the two pick modes, minimize and close. The
- * window has a fixed size (1400 x 800), so there is no maximize. Close hides
+ * window has a fixed size (1400 x 1000), so there is no maximize. Close hides
  * to the tray (Rust handles CloseRequested). Outside Tauri only the brand and
  * modes show.
  */
