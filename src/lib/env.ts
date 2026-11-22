@@ -2,3 +2,8 @@
 export function isTauri(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
+
+/** True on macOS (the webview's user agent says "Macintosh"). */
+export function isMac(): boolean {
+  return typeof navigator !== "undefined" && /Mac/.test(navigator.platform || navigator.userAgent);
+}

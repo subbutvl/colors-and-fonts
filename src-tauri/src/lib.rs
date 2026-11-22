@@ -8,6 +8,7 @@
 mod capture;
 mod db;
 mod fontid;
+mod permissions;
 mod picker;
 mod shortcuts;
 mod toolbar;
@@ -122,6 +123,8 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             capture::color_at_point,
             capture::color_at_cursor,
+            permissions::screen_permission,
+            permissions::open_screen_settings,
             picker::start_pick,
             picker::take_picker_error,
             picker::overlay_frame,

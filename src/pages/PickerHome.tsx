@@ -4,6 +4,7 @@ import { onPickerError, startPick } from "../lib/picker";
 import { startFontPick } from "../lib/fontIdentify";
 import { clearHistory, onHistoryChanged, recentPicks, type HistoryPick } from "../lib/history";
 import { StarButton } from "../components/StarButton";
+import { OpenScreenSettingsButton, useScreenAccess } from "../components/ScreenPermission";
 import { colorRoute } from "../lib/colorDetails";
 import { useStarred } from "../useStarred";
 import { copyText, FORMAT_LABELS, formatColor, getCopyFormat, nearestName, onCopyFormat, type ColorFormat } from "../lib/colors";
@@ -32,6 +33,7 @@ export function PickerHome() {
   const [format, setFormat] = useState<ColorFormat>("hex");
   const [copied, setCopied] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const screenAccess = useScreenAccess();
   const { isStarred, toggle } = useStarred();
 
   const reload = useCallback(() => {
@@ -100,6 +102,7 @@ export function PickerHome() {
           {error}
         </p>
       )}
+      {error && screenAccess === "denied" && <OpenScreenSettingsButton />}
       <section className="picks" aria-labelledby="picks-title">
         <div className="picks-head">
           <h2 id="picks-title">Recent picks</h2>
