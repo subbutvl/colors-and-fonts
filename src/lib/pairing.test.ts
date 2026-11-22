@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { oklch } from "culori";
-import { isGray, PAIRINGS, partners } from "./pairing";
+import { isGray, PAIRING_STARTERS, PAIRINGS, partners } from "./pairing";
 
 const HEX = /^#[0-9A-F]{6}$/;
 const hueGap = (a: number, b: number) => {
@@ -53,5 +53,20 @@ describe("partners", () => {
   it("knows grays", () => {
     expect(isGray("#808080")).toBe(true);
     expect(isGray("#5B6CFF")).toBe(false);
+  });
+});
+
+describe("pairing starters", () => {
+  it("has 25 distinct, colorful starting colors for every pairing", () => {
+    for (const p of PAIRINGS) {
+      const list = PAIRING_STARTERS[p.id];
+      expect(list, p.id).toHaveLength(25);
+      expect(new Set(list.map((s) => s.hex)).size).toBe(25);
+      expect(new Set(list.map((s) => s.name)).size).toBe(25);
+      for (const s of list) {
+        expect(s.hex).toMatch(/^#[0-9A-F]{6}$/);
+        expect(isGray(s.hex), `${p.id} ${s.name}`).toBe(false);
+      }
+    }
   });
 });

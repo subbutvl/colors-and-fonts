@@ -17,6 +17,8 @@ import {
 } from "../lib/library";
 import { exportGradient, gradientCss } from "../lib/gradient";
 import { deleteGradient, listGradients, renameGradient, requestOpenGradient, type SavedGradient } from "../lib/gradients";
+import { exportScale } from "../lib/scale";
+import { deleteScale, listScales, renameScale, requestOpenScale, type SavedScale } from "../lib/scales";
 import { deletePalette, listPalettes, renamePalette, requestOpenPalette, type SavedPalette } from "../lib/palettes";
 import type { Section } from "../sections";
 import { useFontCatalog } from "../useFontCatalog";
@@ -78,6 +80,8 @@ export function SavedPage({ section }: { section: Section }) {
   const [fonts, setFonts] = useState<StarredFont[]>([]);
   const [gradients, setGradients] = useState<SavedGradient[]>([]);
   const [renamingGradient, setRenamingGradient] = useState<{ id: number; name: string } | null>(null);
+  const [scales, setScales] = useState<SavedScale[]>([]);
+  const [renamingScale, setRenamingScale] = useState<{ id: number; name: string } | null>(null);
   const { catalog: fontCatalog } = useFontCatalog();
   const catalog = useMemo(() => new Map((fontCatalog?.families ?? []).map((f) => [f.family, f])), [fontCatalog]);
   const [query, setQuery] = useState("");
@@ -86,12 +90,13 @@ export function SavedPage({ section }: { section: Section }) {
   const [status, setStatus] = useState<string | null>(null);
 
   const reload = useCallback(() => {
-    Promise.all([listStarred(), listPalettes(), listStarredFonts(), listGradients()])
-      .then(([c, p, f, g]) => {
+    Promise.all([listStarred(), listPalettes(), listStarredFonts(), listGradients(), listScales()])
+      .then(([c, p, f, g, sc]) => {
         setColors(c);
         setPalettes(p);
         setFonts(f);
         setGradients(g);
+        setScales(sc);
       })
       .catch((e) => setStatus(`Could not load the library: ${e}`));
   }, []);
@@ -122,6 +127,33 @@ export function SavedPage({ section }: { section: Section }) {
   const shownGradients = q
     ? gradients.filter((g) => g.name.toLowerCase().includes(q) || g.gradient.stops.some((s) => s.color.toLowerCase().includes(q.replace(/^#?/, ""))))
     : gradients;
+
+  const hexQ = q.replace(/^#?/, "");
+  const shownScales = q ? scales.filter((s) => s.name.toLowerCase().includes(q) || s.steps.some((st) => st.hex.toLowerCase().includes(hexQ))) : scales;
+
+  const openScale = (s: SavedScale) => {
+    requestOpenScale(s.base, s.name);
+    window.location.hash = "/scales";
+  };
+
+  const renameSc = async () => {
+    if (!renamingScale) return;
+    try {
+      await renameScale(renamingScale.id, renamingScale.name);
+      setRenamingScale(null);
+    } catch (e) {
+      setStatus(`Could not rename: ${e}`);
+    }
+  };
+
+  const dropScale = async (s: SavedScale) => {
+    try {
+      await deleteScale(s.id);
+      setStatus(`Deleted "${s.name}"`);
+    } catch (e) {
+      setStatus(`Could not delete: ${e}`);
+    }
+  };
 
   const openGradient = (g: SavedGradient) => {
     requestOpenGradient(g.gradient, g.name);
@@ -173,13 +205,13 @@ export function SavedPage({ section }: { section: Section }) {
 
   const exportAll = async () => {
     try {
-      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes, ${fonts.length} fonts, ${gradients.length} gradients)`);
+      await copy(await exportLibrary(), `the library as JSON (${colors.length} colors, ${palettes.length} palettes, ${fonts.length} fonts, ${gradients.length} gradients, ${scales.length} scales)`);
     } catch (e) {
       setStatus(`Could not export: ${e}`);
     }
   };
 
-  const empty = colors.length === 0 && palettes.length === 0 && fonts.length === 0 && gradients.length === 0;
+  const empty = colors.length === 0 && palettes.length === 0 && fonts.length === 0 && gradients.length === 0 && scales.length === 0;
 
   return (
     <div className="page">
@@ -200,7 +232,7 @@ export function SavedPage({ section }: { section: Section }) {
       </div>
 
       <p className="help" role="status">
-        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, save a palette or gradient, or star a font in Font listing." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
+        {status ?? (empty ? "Nothing saved yet. Star a color in Recent picks, the toolbar or the Converter, save a palette, scale or gradient, or star a font in Font listing." : `Click a color to copy it as ${FORMAT_LABELS[format]}.`)}
       </p>
 
       <section className="picks" aria-labelledby="saved-colors">
@@ -340,6 +372,61 @@ export function SavedPage({ section }: { section: Section }) {
                       Rename
                     </button>
                     <button type="button" className="link-btn" onClick={() => void dropGradient(g)}>
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="picks" aria-labelledby="saved-scales">
+        <div className="picks-head">
+          <h2 id="saved-scales">Scales</h2>
+          <span className="help">{q ? `${shownScales.length} of ${scales.length}` : scales.length || "None yet"}</span>
+        </div>
+        {shownScales.length > 0 && (
+          <ul className="saved-pals">
+            {shownScales.map((sc) => (
+              <li key={sc.id} className="saved-pal">
+                <button type="button" className="saved-strip" onClick={() => openScale(sc)} title="Open in Scales">
+                  {sc.steps.map((st) => (
+                    <span key={st.step} style={{ background: st.hex }} />
+                  ))}
+                </button>
+                {renamingScale?.id === sc.id ? (
+                  <form
+                    className="saved-meta"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void renameSc();
+                    }}
+                  >
+                    <input
+                      className="text-input saved-rename"
+                      value={renamingScale.name}
+                      maxLength={40}
+                      autoFocus
+                      onChange={(e) => setRenamingScale({ id: sc.id, name: e.target.value })}
+                      onKeyDown={(e) => e.key === "Escape" && setRenamingScale(null)}
+                      aria-label="Scale name"
+                    />
+                    <button type="submit" className="link-btn">
+                      Save
+                    </button>
+                  </form>
+                ) : (
+                  <div className="saved-meta">
+                    <strong>{sc.name}</strong>
+                    <button type="button" className="link-btn" onClick={() => copy(exportScale(sc.steps, "css", sc.name), `CSS variables of "${sc.name}"`)} title="Copy CSS variables">
+                      Copy
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => setRenamingScale({ id: sc.id, name: sc.name })}>
+                      Rename
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => void dropScale(sc)}>
                       Delete
                     </button>
                   </div>

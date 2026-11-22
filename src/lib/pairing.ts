@@ -1,4 +1,5 @@
 import { clampChroma, formatHex, hsl, oklch } from "culori";
+import starterData from "../data/pairing-starters.json";
 
 /**
  * Color pairing: partners for one base color by hue relationship. The wheel
@@ -103,3 +104,14 @@ export function partners(hex: string, id: PairingId, wheel: Wheel = "oklch"): Pa
     return { hex: out, hue: hueOf(out, wheel), base: false };
   });
 }
+
+// ------------------------------------------------------------- starters
+
+export interface Starter {
+  name: string;
+  hex: string;
+}
+
+/** Our own 25 starting colors for each pairing (`src/data/pairing-starters.json`). */
+export const STARTERS_NOTE: string = starterData.note;
+export const PAIRING_STARTERS = starterData.starters as Record<PairingId, Starter[]>;
