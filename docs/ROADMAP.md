@@ -66,4 +66,4 @@ Plan and audit: https://claude.ai/artifact/KsycDYGDxjsdGYBKuuD5po. Apple silicon
 - [x] 7.3 Pick session on macOS: overlays and toolbar above the menu bar and Dock, on every Space; Retina coordinates
 - [x] 7.4 Mac look and feel: native window buttons, menu bar template icon, Dock icon only while the window is open, ⌃⌥⇧⌘ labels, wording and font stack
 - [x] 7.5 Font identify on macOS: Vision OCR (no exact-font probe for now)
-- [ ] 7.6 Release notes and docs for macOS
+- [x] 7.6 Release notes and docs for macOS (README install and dev steps, release body, `docs/MACOS-TESTING.md`)

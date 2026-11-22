@@ -45,7 +45,7 @@ jobs:
           releaseBody: |
             **Windows 10 and 11.** Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users). The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
 
-            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**.
+            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**. The first color pick asks for **Screen Recording** permission: turn Huetype on in System Settings, then quit and reopen Huetype. Shortcuts are ⌃⌥C (pick color), ⌃⌥F (identify font) and ⌃⌥Space (toolbar).
           releaseDraft: true
           prerelease: false
 
@@ -97,7 +97,7 @@ jobs:
           releaseBody: |
             **Windows 10 and 11.** Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users). The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
 
-            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**.
+            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**. The first color pick asks for **Screen Recording** permission: turn Huetype on in System Settings, then quit and reopen Huetype. Shortcuts are ⌃⌥C (pick color), ⌃⌥F (identify font) and ⌃⌥Space (toolbar).
           releaseDraft: true
           prerelease: false
 
