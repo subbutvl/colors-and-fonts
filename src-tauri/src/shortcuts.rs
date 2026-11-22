@@ -40,17 +40,26 @@ pub fn default_accelerator(action: Action) -> &'static str {
     }
 }
 
-/// `Ctrl+Alt+KeyC` -> `Ctrl+Alt+C`, for menus.
+/// `Ctrl+Alt+KeyC` -> `Ctrl+Alt+C` for menus (`⌃⌥C` on macOS).
 pub fn pretty(accelerator: &str) -> String {
-    accelerator
-        .split('+')
-        .map(|t| {
-            t.strip_prefix("Key")
-                .or_else(|| t.strip_prefix("Digit"))
-                .unwrap_or(t)
-        })
-        .collect::<Vec<_>>()
-        .join("+")
+    pretty_for(accelerator, cfg!(target_os = "macos"))
+}
+
+fn pretty_for(accelerator: &str, mac: bool) -> String {
+    let parts = accelerator.split('+').map(|t| {
+        let key = t
+            .strip_prefix("Key")
+            .or_else(|| t.strip_prefix("Digit"))
+            .unwrap_or(t);
+        match (mac, key) {
+            (true, "Ctrl") => "\u{2303}",
+            (true, "Alt") => "\u{2325}",
+            (true, "Shift") => "\u{21E7}",
+            (true, "Super") => "\u{2318}",
+            _ => key,
+        }
+    });
+    parts.collect::<Vec<_>>().join(if mac { "" } else { "+" })
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -77,7 +86,11 @@ fn parse(accelerator: &str) -> Result<Shortcut, String> {
         .map_err(|e| format!("\"{accelerator}\" is not a valid shortcut ({e})"))?;
     if shortcut.mods.is_empty() {
         return Err(
-            "Add Ctrl, Alt, Shift or Win so the shortcut doesn't block normal typing.".into(),
+            if cfg!(target_os = "macos") {
+                "Add Control, Option, Shift or Command so the shortcut doesn't block normal typing.".into()
+            } else {
+                "Add Ctrl, Alt, Shift or Win so the shortcut doesn't block normal typing.".into()
+            },
         );
     }
     Ok(shortcut)
@@ -234,8 +247,15 @@ mod tests {
 
     #[test]
     fn pretty_labels() {
-        assert_eq!(pretty("Ctrl+Alt+KeyC"), "Ctrl+Alt+C");
-        assert_eq!(pretty("Ctrl+Shift+Digit1"), "Ctrl+Shift+1");
-        assert_eq!(pretty("Ctrl+Alt+Space"), "Ctrl+Alt+Space");
+        assert_eq!(pretty_for("Ctrl+Alt+KeyC", false), "Ctrl+Alt+C");
+        assert_eq!(pretty_for("Ctrl+Shift+Digit1", false), "Ctrl+Shift+1");
+        assert_eq!(pretty_for("Ctrl+Alt+Space", false), "Ctrl+Alt+Space");
+    }
+
+    #[test]
+    fn pretty_labels_on_mac() {
+        assert_eq!(pretty_for("Ctrl+Alt+KeyC", true), "\u{2303}\u{2325}C");
+        assert_eq!(pretty_for("Ctrl+Shift+Super+Digit1", true), "\u{2303}\u{21E7}\u{2318}1");
+        assert_eq!(pretty_for("Ctrl+Alt+Space", true), "\u{2303}\u{2325}Space");
     }
 }

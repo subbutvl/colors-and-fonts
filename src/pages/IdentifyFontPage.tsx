@@ -168,7 +168,7 @@ export function IdentifyFontPage({ section }: { section: Section }) {
   const [capture, setCapture] = useState<FontCapture | null>(null);
   const [image, setImage] = useState<ImageData | null>(null);
   const [status, setStatus] = useState<string | null>(null);
-  const [keys, setKeys] = useState("Ctrl+Alt+F");
+  const [keys, setKeys] = useState(() => prettyShortcut("Ctrl+Alt+KeyF"));
   const { catalog } = useFontCatalog();
   const { isStarred, toggle } = useStarredFonts();
 

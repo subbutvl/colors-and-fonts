@@ -1,5 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { isTauri } from "../lib/env";
+import { isMac, isTauri } from "../lib/env";
 import { startPick } from "../lib/picker";
 import { startFontPick } from "../lib/fontIdentify";
 import { DropperIcon, FontIcon } from "../toolbar/icons";
@@ -21,13 +21,16 @@ const stroke = {
  */
 export function TitleBar({ onError }: { onError: (message: string) => void }) {
   const desktop = isTauri();
+  // macOS keeps its own window buttons (traffic lights, top left); the brand
+  // makes room for them.
+  const mac = isMac();
   const run = (start: () => Promise<void>) => () => {
     start().catch((e) => onError(e instanceof Error ? e.message : String(e)));
   };
   const win = () => getCurrentWindow();
 
   return (
-    <header className="titlebar" data-tauri-drag-region>
+    <header className={mac ? "titlebar mac" : "titlebar"} data-tauri-drag-region>
       <div className="brand" data-tauri-drag-region>
         <span className="brand-mark" aria-hidden="true" />
         Huetype
@@ -43,7 +46,7 @@ export function TitleBar({ onError }: { onError: (message: string) => void }) {
         </button>
       </div>
       <div className="titlebar-drag" data-tauri-drag-region />
-      {desktop && (
+      {desktop && !mac && (
         <div className="titlebar-controls">
           <button type="button" className="titlebar-btn" onClick={() => void win().minimize()} aria-label="Minimize" title="Minimize">
             <svg {...stroke}>

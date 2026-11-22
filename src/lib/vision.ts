@@ -35,7 +35,7 @@ export const VISIONS: Vision[] = [
   { id: "achroma", label: "Achromatopsia", note: "No color at all, only lightness. Very rare.", kind: "cvd", severity: false },
   { id: "dim", label: "Dim, low-contrast screen", note: "Brightness turned down or a cheap panel: contrast halves.", kind: "situation", severity: false },
   { id: "glare", label: "Sunlight glare", note: "Reflected light washes everything towards white.", kind: "situation", severity: false },
-  { id: "night", label: "Night light filter", note: "Blue light cut, as with Windows Night light.", kind: "situation", severity: false },
+  { id: "night", label: "Night light filter", note: "Blue light cut, as with Night light (Windows) or Night Shift (macOS).", kind: "situation", severity: false },
   { id: "print", label: "Grayscale print", note: "Printed or photocopied in black and white.", kind: "situation", severity: false },
 ];
 
