@@ -156,10 +156,9 @@ pub fn create(app: &AppHandle) -> tauri::Result<()> {
                 button_state: MouseButtonState::Up,
                 ..
             } = event
+                && !cfg!(target_os = "macos")
             {
-                if !cfg!(target_os = "macos") {
-                    crate::toggle_main_window(tray.app_handle());
-                }
+                crate::toggle_main_window(tray.app_handle());
             }
         });
 
