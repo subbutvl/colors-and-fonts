@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { PageHead } from "../components/PageHead";
 import { contrast, convert, copyText, FORMAT_LABELS, formatColor, getCopyFormat, onCopyFormat, parseColor, type ColorFormat } from "../lib/colors";
 import { isTauri } from "../lib/env";
-import { isGray, PAIRINGS, partners, type PairingId, type Partner, type Wheel } from "../lib/pairing";
+import { isGray, PAIRING_STARTERS, PAIRINGS, partners, STARTERS_NOTE, type PairingId, type Partner, type Wheel } from "../lib/pairing";
 import { onPick, startPick } from "../lib/picker";
 import type { Section } from "../sections";
 
@@ -53,6 +53,9 @@ function HueWheel({ list, wheel }: { list: Partner[]; wheel: Wheel }) {
 }
 
 /** Color pairing (6): partners for one color by hue relationship. */
+/** Base color into the input and back to the top of the page. */
+const scrollTop = () => document.querySelector(".content")?.scrollTo({ top: 0, behavior: "smooth" });
+
 export function PairingPage({ section }: { section: Section }) {
   const [input, setInput] = useState(lastInput);
   const [wheel, setWheel] = useState<Wheel>("oklch");
@@ -191,6 +194,43 @@ export function PairingPage({ section }: { section: Section }) {
           </li>
         ))}
       </ul>
+
+      {current && (
+        <section className="pair-starters" aria-labelledby="pair-starters-title">
+          <div className="picks-head">
+            <h2 id="pair-starters-title">
+              25 {current.pairing.label.toLowerCase()} pairings
+            </h2>
+            <span className="help">{STARTERS_NOTE} Click one to use it as the base.</span>
+          </div>
+          <ul className="pair-grid">
+            {PAIRING_STARTERS[current.pairing.id].map((st) => {
+              const list = partners(st.hex, current.pairing.id, wheel);
+              return (
+                <li key={st.hex}>
+                  <button
+                    type="button"
+                    className="pair-card"
+                    onClick={() => {
+                      setInput(st.hex);
+                      setStatus(`Base set to ${st.name} (${st.hex})`);
+                      scrollTop();
+                    }}
+                  >
+                    <span className="pair-strip">
+                      {list.map((p, i) => (
+                        <span key={i} style={{ background: p.hex }} />
+                      ))}
+                    </span>
+                    <strong>{st.name}</strong>
+                    <span className="mono">{list.map((p) => p.hex).join(" ")}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }
