@@ -10,7 +10,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 
 - Name **Huetype**. Theme: light and dark; default follows Windows. The floating picker toolbar and loupe are always dark.
 - Frontend React + TypeScript + Vite. Backend Rust (Tauri v2).
-- v1 targets **Windows 10/11 only**. Keep OS-specific code (screen capture, OCR, accessibility) behind a trait or `cfg` module so macOS/Linux can be added later.
+- v1 targets **Windows 10/11 only** (macOS added in Phase 7, see below). Keep OS-specific code (screen capture, OCR, accessibility) behind a trait or `cfg` module so macOS/Linux can be added later.
 - Pantone section = Color of the Year only, 2002 to 2026.
 - Font identify is offline in v1 (no AI/cloud). Google Fonts only, with "closest alternative" wording for other fonts.
 - One app window only (`main`). The picker toolbar and capture overlay are transient helper windows. Closing `main` hides it to the tray; Quit is in the tray menu.
@@ -47,6 +47,7 @@ Tauri v2 desktop app (Windows first) for picking colors and identifying fonts fr
 - Title bar (6.6, Subbu 2026-11-02): the main window is frameless (`decorations: false`); `components/TitleBar.tsx` is its title bar: brand, Pick color and Identify font buttons (same as the shortcuts), a drag area (`data-tauri-drag-region`), then minimize and close (no maximize since 6.7). Close calls `window.close()`, which Rust still turns into hide-to-tray. Window controls only render inside Tauri. Capabilities add start-dragging, minimize and close for `main`.
 - Window size (6.7, Subbu 2026-11-22): the main window is fixed at 1400 x 1000 logical px (800 until 6.13) (`resizable: false`, `maximizable: false`, `MAIN_SIZE` in `lib.rs`); on a monitor whose work area is smaller, `fit_main_window` shrinks it to fit at launch, and otherwise moves it back inside the work area when a remembered position would push it under the taskbar or off screen (`clamp_into`, physical pixels). Only `.content` scrolls, vertically (`overflow-x: hidden`); every section is checked for horizontal overflow at 1400 x 1000, 1400 x 800 and 1366 x 728.
 - Dev server (6.4): Vite listens on `127.0.0.1:1420` and `devUrl` points at the same address, never `localhost`, because on some Windows setups `localhost` resolves to IPv6 `::1` and the dev window shows "localhost refused to connect". `TAURI_DEV_HOST` still overrides the host for mobile dev.
+- macOS (Phase 7, Subbu 2026-11-22): second platform after Windows; Apple silicon, macOS 11+, plan at https://claude.ai/artifact/KsycDYGDxjsdGYBKuuD5po. Bundle settings live in `tauri.windows.conf.json` (NSIS, MSI) and `tauri.macos.conf.json` (app, dmg, ad-hoc `signingIdentity: "-"`, not notarized); `tauri.conf.json` keeps what both share. `macOSPrivateApi` is on (with tauri's `macos-private-api` feature, which must match) because the toolbar is a transparent window. CI and Release run a `macos` job on `macos-latest` next to `windows`. Agreed for later steps: keep Ctrl+Alt (Control+Option) shortcuts, shown as ⌃⌥ on Mac; Dock icon only while the main window is shown, menu bar only when hidden; font identify on Mac uses Vision OCR only (no Accessibility font probe for now).
 - Curated datasets are our own JSON in the repo; do not scrape colorsinspo.com or similar sites.
 
 ## How work is done

@@ -1,8 +1,9 @@
 name: Release
 
 # Push a tag like v0.2.0 to build the Windows installers (NSIS .exe and MSI)
-# and attach them to a draft GitHub release. Run it by hand (Actions tab,
-# "Run workflow") to build the installers as a workflow artifact only.
+# and the macOS disk image (.dmg, Apple silicon) and attach them to a draft
+# GitHub release. Run it by hand (Actions tab, "Run workflow") to build them
+# as workflow artifacts only.
 on:
   push:
     tags: ["v*"]
@@ -42,9 +43,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: Huetype ${{ github.ref_name }}
           releaseBody: |
-            Windows 10 and 11. Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users).
+            **Windows 10 and 11.** Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users). The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
 
-            The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
+            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**.
           releaseDraft: true
           prerelease: false
 
@@ -58,4 +59,54 @@ jobs:
           path: |
             src-tauri/target/release/bundle/nsis/*.exe
             src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
+
+  # Apple silicon .dmg, ad-hoc signed (not notarized): macOS asks the user to
+  # allow it once under System Settings > Privacy & Security > Open Anyway.
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - run: npm ci
+      - name: Check the tag matches the app version
+        if: github.event_name == 'push'
+        env:
+          TAG: ${{ github.ref_name }}
+        shell: bash
+        run: node scripts/version.mjs check "$TAG"
+      - run: npm test
+
+      # Same tag and draft release as the Windows job; tauri-action adds the
+      # .dmg to it, whichever job gets there first creates the draft.
+      - name: Build the disk image and add it to the draft release
+        if: github.event_name == 'push'
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Huetype ${{ github.ref_name }}
+          releaseBody: |
+            **Windows 10 and 11.** Download the `.exe` (installs for your user, no admin needed) or the `.msi` (installs for all users). The installer is not code-signed yet, so Windows SmartScreen may say "Windows protected your PC". Choose **More info**, then **Run anyway**.
+
+            **macOS 11 or later, Apple silicon.** Download the `.dmg` and drag Huetype to Applications. The app is not notarized yet, so the first launch is blocked: open **System Settings > Privacy & Security**, scroll down and choose **Open Anyway**.
+          releaseDraft: true
+          prerelease: false
+
+      - name: Build the disk image
+        if: github.event_name != 'push'
+        run: npx tauri build --bundles dmg
+      - uses: actions/upload-artifact@v4
+        if: github.event_name != 'push'
+        with:
+          name: huetype-macos
+          path: src-tauri/target/release/bundle/dmg/*.dmg
           if-no-files-found: error
