@@ -4,9 +4,11 @@
 //! that spot. Matching the crop against Google Fonts comes later (3.4).
 //!
 //! The OS parts sit behind [`TextReader`] and [`FontProbe`]; Windows uses
-//! Windows.Media.Ocr and UI Automation (`windows.rs`). Other systems get
-//! stubs that say so, until they have their own implementation.
+//! Windows.Media.Ocr and UI Automation (`windows.rs`), macOS uses Vision for
+//! the text and has no font probe (`macos.rs`). Other systems get stubs.
 
+#[cfg(target_os = "macos")]
+mod macos;
 #[cfg(windows)]
 mod windows;
 
@@ -101,7 +103,11 @@ pub fn text_reader() -> impl TextReader {
     {
         windows::WindowsOcr
     }
-    #[cfg(not(windows))]
+    #[cfg(target_os = "macos")]
+    {
+        macos::VisionOcr
+    }
+    #[cfg(not(any(windows, target_os = "macos")))]
     {
         Unsupported
     }
@@ -122,7 +128,7 @@ pub fn font_probe() -> impl FontProbe {
 #[cfg(not(windows))]
 struct Unsupported;
 
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "macos")))]
 impl TextReader for Unsupported {
     fn read(&self, _: &RgbaImage) -> Result<OcrText, String> {
         Err("Text recognition is only available on Windows for now.".into())
