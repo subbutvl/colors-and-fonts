@@ -18,6 +18,7 @@ pub enum ScreenAccess {
     Granted,
     Denied,
     /// This OS has no such permission (Windows).
+    #[cfg_attr(target_os = "macos", allow(dead_code))]
     NotNeeded,
 }
 
