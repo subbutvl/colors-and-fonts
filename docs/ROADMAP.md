@@ -53,4 +53,5 @@ Each step is one PR. Tick a step when its PR is merged.
 - [x] 6.9 Color pairing: 25 ready-made pairings for each of the seven pairing types
 - [x] 6.8 Palettes: our own top 100 palettes with tag filters and search, open in the generator
 - [x] 6.7 Main window fixed at 1400 x 800 (shrinks to fit smaller screens), vertical scroll only, no maximize
+- [x] 6.11 Curated colors: 108 palettes in 12 collections (new: Botanical, Food and drink, Gemstones, Monochrome)
 - [x] 6.10 Scales: save scales (migration 8), listed on Scales and Saved, in the library export
