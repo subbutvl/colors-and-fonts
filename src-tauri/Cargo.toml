@@ -1,6 +1,6 @@
 [package]
 name = "huetype"
-version = "0.1.0"
+version = "0.3.0"
 description = "Huetype: pick colors and identify fonts from anywhere on your desktop"
 authors = ["subbutvl"]
 edition = "2024"
