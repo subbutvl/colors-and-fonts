@@ -132,7 +132,7 @@ export function SavedPage({ section }: { section: Section }) {
   const shownScales = q ? scales.filter((s) => s.name.toLowerCase().includes(q) || s.steps.some((st) => st.hex.toLowerCase().includes(hexQ))) : scales;
 
   const openScale = (s: SavedScale) => {
-    requestOpenScale(s.base, s.name);
+    requestOpenScale(s);
     window.location.hash = "/scales";
   };
 

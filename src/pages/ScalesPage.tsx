@@ -4,7 +4,7 @@ import { contrast, convert, copyText, FORMAT_LABELS, formatColor, getCopyFormat,
 import { isTauri } from "../lib/env";
 import { onPick, startPick } from "../lib/picker";
 import { onLibraryChanged } from "../lib/library";
-import { deleteScale, listScales, saveScale, takeOpenScale, type SavedScale } from "../lib/scales";
+import { deleteScale, listScales, saveScale, takeOpenScale, type OpenScale, type SavedScale } from "../lib/scales";
 import { exportScale, hueFamily, makeScale, SCALE_EXPORTS, type ScaleExport, type ScaleValue } from "../lib/scale";
 import type { Section } from "../sections";
 
@@ -33,7 +33,14 @@ export function ScalesPage({ section }: { section: Section }) {
 
   const color = useMemo(() => parseColor(input), [input]);
   const conv = useMemo(() => (color ? convert(color) : null), [color]);
-  const scale = useMemo(() => (conv ? makeScale(conv.hex) : null), [conv]);
+  // A reopened saved scale shows its stored steps until the base color changes,
+  // so it looks and exports exactly as saved even if makeScale changes later.
+  const [opened, setOpened] = useState<OpenScale | null>(null);
+  const scale = useMemo(() => {
+    if (!conv) return null;
+    if (opened && opened.base === conv.hex) return opened.steps.map((s) => ({ ...s, base: s.hex === opened.base }));
+    return makeScale(conv.hex);
+  }, [conv, opened]);
   const name = customName ?? (conv ? hueFamily(conv.hex) : "color");
 
   useEffect(() => {
@@ -53,10 +60,11 @@ export function ScalesPage({ section }: { section: Section }) {
     return onLibraryChanged(refresh);
   }, [refresh]);
 
-  // Opened from the Saved page: that scale's base color and name.
+  // Opened from the Saved page: that scale as saved.
   useEffect(() => {
     const req = takeOpenScale();
     if (!req) return;
+    setOpened(req);
     setInput(req.base);
     setCustomName(req.name || null);
   }, []);
@@ -88,6 +96,7 @@ export function ScalesPage({ section }: { section: Section }) {
   };
 
   const open = (s: SavedScale) => {
+    setOpened(s);
     setInput(s.base);
     setCustomName(s.name);
     setStatus(`Opened "${s.name}"`);
