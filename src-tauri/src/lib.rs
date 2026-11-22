@@ -10,6 +10,7 @@ mod db;
 mod fontid;
 mod permissions;
 mod picker;
+mod platform;
 mod shortcuts;
 mod toolbar;
 mod tray;

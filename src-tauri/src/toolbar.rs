@@ -74,6 +74,7 @@ pub fn show(app: &AppHandle) {
     if let Some(w) = window(app) {
         let _ = w.show();
         let _ = w.set_always_on_top(true);
+        crate::platform::raise_toolbar(&w);
     }
 }
 
