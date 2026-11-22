@@ -11,7 +11,10 @@
         { "name": "Desert Road", "colors": ["#F7EEDB", "#E8CFA0", "#CFA26B", "#9C6B3F", "#5C3D24"] },
         { "name": "Olive Grove", "colors": ["#F1F0E4", "#C9C79B", "#8F8B4F", "#5F5C32", "#33321D"] },
         { "name": "Riverstone", "colors": ["#EDEAE4", "#C5BCAE", "#958B7C", "#655D52", "#3B3631"] },
-        { "name": "Spiced Chai", "colors": ["#FAF1E6", "#EBC9A4", "#C98E5B", "#93593A", "#55311F"] }
+        { "name": "Spiced Chai", "colors": ["#FAF1E6", "#EBC9A4", "#C98E5B", "#93593A", "#55311F"] },
+        { "name": "Canyon Walls", "colors": ["#F5E6D3", "#E0B08A", "#C27C52", "#8F4F33", "#4F2B1C"] },
+        { "name": "Lichen", "colors": ["#EEF0E5", "#C9CFAE", "#9AA36F", "#6B7445", "#3B4027"] },
+        { "name": "Mushroom Hunt", "colors": ["#F2ECE4", "#D6C7B4", "#A8927A", "#77624F", "#463A2F"] }
       ]
     },
     {
@@ -24,7 +27,10 @@
         { "name": "Mint Cream", "colors": ["#F0FBF6", "#D5F3E5", "#B5E8D2", "#8FD6BA", "#5FBF9B"] },
         { "name": "Cotton Candy", "colors": ["#FFF0F6", "#FFD3E6", "#F4C1F0", "#D3C4FF", "#BFD9FF"] },
         { "name": "Peach Morning", "colors": ["#FFF4EC", "#FFDCC7", "#FFC1A6", "#F5A38C", "#E3857A"] },
-        { "name": "Baby Blues", "colors": ["#F0F7FF", "#D9EAFE", "#BBD8FA", "#97C0F0", "#6E9FDB"] }
+        { "name": "Baby Blues", "colors": ["#F0F7FF", "#D9EAFE", "#BBD8FA", "#97C0F0", "#6E9FDB"] },
+        { "name": "Lemon Mousse", "colors": ["#FFFCE8", "#FFF3B5", "#FBE38A", "#F2CF63", "#D9AE3A"] },
+        { "name": "Pistachio Cream", "colors": ["#F4FAEE", "#DFF0D2", "#C3E2AE", "#A0CE87", "#74AE5D"] },
+        { "name": "Lilac Haze", "colors": ["#FAF5FF", "#EBDDF8", "#D7BFF0", "#BC9BE2", "#9673C8"] }
       ]
     },
     {
@@ -37,7 +43,10 @@
         { "name": "Synthwave", "colors": ["#1A0B2E", "#F72585", "#B5179E", "#7209B7", "#4CC9F0"] },
         { "name": "Acid Lime", "colors": ["#0E120A", "#C6FF00", "#76FF03", "#00E676", "#1DE9B6"] },
         { "name": "Laser Tag", "colors": ["#08080F", "#FF006E", "#FB5607", "#FFBE0B", "#3A86FF"] },
-        { "name": "Electric Ice", "colors": ["#050A14", "#00F0FF", "#00A3FF", "#5B5BFF", "#C04BFF"] }
+        { "name": "Electric Ice", "colors": ["#050A14", "#00F0FF", "#00A3FF", "#5B5BFF", "#C04BFF"] },
+        { "name": "Hyperpop", "colors": ["#0B0614", "#FF2FB9", "#FFE53B", "#3BFFD8", "#8A5CFF"] },
+        { "name": "Radioactive", "colors": ["#0A0F0A", "#1F3D1A", "#39FF14", "#C6FF00", "#F5FFB0"] },
+        { "name": "Club Lights", "colors": ["#0E0A1F", "#3A0CA3", "#F72585", "#4CC9F0", "#FFD60A"] }
       ]
     },
     {
@@ -50,7 +59,10 @@
         { "name": "Steel and Teal", "colors": ["#F4F6F7", "#C8D1D6", "#0F766E", "#334155", "#F59E0B"] },
         { "name": "Navy Classic", "colors": ["#F7F8FB", "#DDE3EE", "#2B4C7E", "#14213D", "#E63946"] },
         { "name": "Graphite", "colors": ["#FAFAFA", "#E4E4E7", "#71717A", "#27272A", "#6366F1"] },
-        { "name": "Fintech", "colors": ["#F6F9FC", "#E3E8EE", "#635BFF", "#0A2540", "#00D4B4"] }
+        { "name": "Fintech", "colors": ["#F6F9FC", "#E3E8EE", "#635BFF", "#0A2540", "#00D4B4"] },
+        { "name": "Insurance Blue", "colors": ["#F5F8FC", "#D4E1F0", "#5C8BC2", "#1F4E8C", "#0F2847"] },
+        { "name": "Consulting", "colors": ["#F7F7F5", "#E2E1DC", "#8A8F94", "#2E3A46", "#C8102E"] },
+        { "name": "Healthcare", "colors": ["#F4FAFA", "#CDEBEA", "#4FB3AF", "#1D7874", "#0B3B3A"] }
       ]
     },
     {
@@ -63,7 +75,10 @@
         { "name": "Deep Plum", "colors": ["#15111C", "#201A2B", "#3A3049", "#EEE8F5", "#C084FC"] },
         { "name": "Slate Mint", "colors": ["#0F172A", "#1E293B", "#334155", "#E2E8F0", "#34D399"] },
         { "name": "Ink and Coral", "colors": ["#101418", "#1A2026", "#2E363F", "#F1F3F5", "#FF6B6B"] },
-        { "name": "Graphite Blue", "colors": ["#18181B", "#232327", "#3F3F46", "#F4F4F5", "#60A5FA"] }
+        { "name": "Graphite Blue", "colors": ["#18181B", "#232327", "#3F3F46", "#F4F4F5", "#60A5FA"] },
+        { "name": "Forest Console", "colors": ["#0F1512", "#18221D", "#24332B", "#8FB59E", "#E8F0EB"] },
+        { "name": "Rose Terminal", "colors": ["#151013", "#211A1E", "#33272D", "#F28CA8", "#F5E9EE"] },
+        { "name": "Ocean Dashboard", "colors": ["#0B121A", "#132030", "#1E3248", "#5CC8FF", "#E6F2FA"] }
       ]
     },
     {
@@ -76,7 +91,10 @@
         { "name": "Faded Denim", "colors": ["#EEF0F0", "#BCC8CF", "#7F96A6", "#4F6779", "#2E3E4C"] },
         { "name": "Postcard", "colors": ["#F6EEE3", "#E6C3A1", "#D98B73", "#7FA7A1", "#3F5F66"] },
         { "name": "Diner", "colors": ["#FBF3E4", "#F2C14E", "#E2584A", "#5DA9A6", "#2C3E50"] },
-        { "name": "Darkroom", "colors": ["#EDE6DB", "#BFA78A", "#8C6E54", "#4E3B31", "#1F1915"] }
+        { "name": "Darkroom", "colors": ["#EDE6DB", "#BFA78A", "#8C6E54", "#4E3B31", "#1F1915"] },
+        { "name": "Grandma's Kitchen", "colors": ["#F6EEDC", "#E9C46A", "#C66B3D", "#7BA08D", "#3E5641"] },
+        { "name": "Polaroid", "colors": ["#F4EFE6", "#D9C6A5", "#B7826B", "#6F8A91", "#3B3F45"] },
+        { "name": "Jazz Club", "colors": ["#F2E3C6", "#C9A227", "#8C2F39", "#2E4057", "#1A1A1D"] }
       ]
     },
     {
@@ -89,7 +107,10 @@
         { "name": "Sea Glass", "colors": ["#EEF5F1", "#C9E3D6", "#9CCBB8", "#6EA898", "#3F7768"] },
         { "name": "Coral Reef", "colors": ["#FFF1EB", "#FFB4A2", "#FF7F6E", "#2EC4B6", "#11577A"] },
         { "name": "Harbor", "colors": ["#F2F4F5", "#C3CED6", "#6E8CA0", "#2F4F66", "#D9A441"] },
-        { "name": "Tide Pool", "colors": ["#EAF6F6", "#B5DCE0", "#6FB1BC", "#3B7F8E", "#E07A5F"] }
+        { "name": "Tide Pool", "colors": ["#EAF6F6", "#B5DCE0", "#6FB1BC", "#3B7F8E", "#E07A5F"] },
+        { "name": "Kelp Forest", "colors": ["#E6F0E8", "#9BBFA3", "#4E8C68", "#23573F", "#0D2A22"] },
+        { "name": "Shoreline", "colors": ["#FBF6EC", "#EBDDC3", "#9ED2D8", "#4AA3B5", "#1C5D73"] },
+        { "name": "Abyss", "colors": ["#C9DDF0", "#5F8DB8", "#1F4E7A", "#0D2844", "#050F1C"] }
       ]
     },
     {
@@ -102,7 +123,74 @@
         { "name": "Desert Sunset", "colors": ["#FCE7C8", "#F7B267", "#F4845F", "#F25C54", "#7A2E3A"] },
         { "name": "Pink Sky", "colors": ["#FFF0F3", "#FFC2D1", "#FF8FAB", "#FB6F92", "#6D3B6B"] },
         { "name": "Last Light", "colors": ["#FFE8A3", "#FFB55E", "#E86A58", "#A23E6E", "#2E2353"] },
-        { "name": "Ember", "colors": ["#FFE5D4", "#FFAE7A", "#F26B38", "#B8361E", "#4A1A12"] }
+        { "name": "Ember", "colors": ["#FFE5D4", "#FFAE7A", "#F26B38", "#B8361E", "#4A1A12"] },
+        { "name": "Tequila Sunrise", "colors": ["#FFF1C9", "#FFC15E", "#FF8C42", "#E84855", "#7A1E48"] },
+        { "name": "Lavender Dusk", "colors": ["#FCE8E6", "#F4B6B1", "#C98DB5", "#7E6BB2", "#2F2E5F"] },
+        { "name": "Campfire", "colors": ["#FFE8C2", "#F9A03F", "#D9531E", "#8A2A12", "#2B120B"] }
+      ]
+    },
+    {
+      "id": "botanical",
+      "title": "Botanical",
+      "blurb": "Leaves, petals and greenhouse light: fresh greens with flower accents.",
+      "palettes": [
+        { "name": "Greenhouse", "colors": ["#F1F8EC", "#CDE6BC", "#8DC26F", "#4C8C3A", "#24491D"] },
+        { "name": "Fern Gully", "colors": ["#EAF2E3", "#A9C98F", "#6A9A4F", "#3D6B2E", "#1E3A17"] },
+        { "name": "Peony Garden", "colors": ["#FFF1F3", "#F9C5D1", "#EE8AA5", "#B94E73", "#3D6B3A"] },
+        { "name": "Lavender Farm", "colors": ["#F5F2FA", "#D6CBEB", "#A895D2", "#6E5BA6", "#4F6B3A"] },
+        { "name": "Monstera", "colors": ["#EDF5EE", "#A6CFAE", "#4F9A62", "#1F6138", "#0E3320"] },
+        { "name": "Sunflower Field", "colors": ["#FFF8D6", "#FFD84D", "#E6A800", "#6B8E23", "#3B2A14"] },
+        { "name": "Cactus Bloom", "colors": ["#F3F7EC", "#B7CC8F", "#6E944E", "#E86F8E", "#8C2F4D"] },
+        { "name": "Wisteria", "colors": ["#F7F3FB", "#DCCEF0", "#B49ADF", "#7D67B8", "#5B7A4A"] },
+        { "name": "Herb Garden", "colors": ["#F2F5EA", "#CBD9AE", "#93AE6C", "#5E7A43", "#6B4E3D"] }
+      ]
+    },
+    {
+      "id": "food",
+      "title": "Food and drink",
+      "blurb": "Kitchens, cafés and fruit stands: appetizing colors with good contrast.",
+      "palettes": [
+        { "name": "Café Au Lait", "colors": ["#F8F1E7", "#E3CDB0", "#B88C62", "#7A5235", "#3B2618"] },
+        { "name": "Strawberry Shortcake", "colors": ["#FFF6F2", "#FFD6D6", "#FF8A8A", "#D93B4B", "#7A6A4F"] },
+        { "name": "Avocado Toast", "colors": ["#F7F1E3", "#E1D3A8", "#A7BF5A", "#5E7F2A", "#6B4423"] },
+        { "name": "Blueberry Pie", "colors": ["#F2EFF8", "#C9C2E8", "#7F78C9", "#3E3A8C", "#C99A5B"] },
+        { "name": "Mango Lassi", "colors": ["#FFF7E0", "#FFE08A", "#FFB830", "#F08A24", "#A8541B"] },
+        { "name": "Matcha Bar", "colors": ["#F4F6EC", "#D6E2B4", "#9DBB61", "#5E7F32", "#2F3F1A"] },
+        { "name": "Red Wine", "colors": ["#F6E9EB", "#D99AA6", "#9C2F48", "#5E1A2C", "#2A0C14"] },
+        { "name": "Citrus Market", "colors": ["#FFFBE6", "#FFE45C", "#FFAE1A", "#8CC63F", "#2E7D32"] },
+        { "name": "Dark Chocolate", "colors": ["#F1E6DC", "#C9A587", "#8A5A3C", "#4E2F1E", "#24150D"] }
+      ]
+    },
+    {
+      "id": "gems",
+      "title": "Gemstones",
+      "blurb": "Cut stones and minerals: rich, saturated jewel tones with deep shadows.",
+      "palettes": [
+        { "name": "Sapphire", "colors": ["#E8EEFB", "#9DB3EE", "#3F63D4", "#1C3597", "#0B1748"] },
+        { "name": "Emerald", "colors": ["#E6F7EF", "#8EDCB6", "#24A86B", "#0F6B42", "#053A23"] },
+        { "name": "Ruby", "colors": ["#FCE8EC", "#F297A8", "#D21F45", "#8A0E2A", "#430614"] },
+        { "name": "Amethyst", "colors": ["#F4ECFB", "#CDAEEB", "#9A5CD6", "#5E2A99", "#2E1150"] },
+        { "name": "Topaz", "colors": ["#FFF6E0", "#FFD480", "#F5A623", "#B86E0F", "#5C3405"] },
+        { "name": "Opal", "colors": ["#F7F9FC", "#DCEBF5", "#F5D6E6", "#C9E8D6", "#A9C6EA"] },
+        { "name": "Onyx", "colors": ["#E9EAEC", "#9EA2A8", "#50555C", "#24272B", "#0B0C0E"] },
+        { "name": "Garnet", "colors": ["#F8E6E6", "#DC8F8F", "#9E2A2B", "#5C1414", "#2B0707"] },
+        { "name": "Turquoise Stone", "colors": ["#E7F8F6", "#9EE3DA", "#3FBFB0", "#1E7F78", "#0E3F3C"] }
+      ]
+    },
+    {
+      "id": "mono",
+      "title": "Monochrome",
+      "blurb": "One hue from light to dark: calm, consistent sets for UI and branding.",
+      "palettes": [
+        { "name": "Blue Mono", "colors": ["#EEF3FF", "#C7D6FF", "#8FA9F7", "#4D6FE0", "#22398F"] },
+        { "name": "Green Mono", "colors": ["#ECF8EF", "#C2E8CB", "#86CC97", "#45A35E", "#1F5E30"] },
+        { "name": "Red Mono", "colors": ["#FDEDED", "#F7C4C4", "#EC8585", "#D14343", "#7F1D1D"] },
+        { "name": "Purple Mono", "colors": ["#F5F0FE", "#DCCDFB", "#B79CF2", "#8459DB", "#47278A"] },
+        { "name": "Orange Mono", "colors": ["#FFF3EA", "#FFD3B3", "#FFA66B", "#F5761F", "#96410B"] },
+        { "name": "Teal Mono", "colors": ["#EBF8F7", "#BDE9E5", "#7ED0C8", "#36A69C", "#155E58"] },
+        { "name": "Pink Mono", "colors": ["#FDEEF5", "#F9C8DE", "#F08DB8", "#D9468A", "#861F50"] },
+        { "name": "Gray Mono", "colors": ["#F5F6F7", "#D9DCE0", "#A9AFB7", "#6B737E", "#2F343B"] },
+        { "name": "Brown Mono", "colors": ["#F8F1EA", "#E6D0BA", "#C7A07C", "#93694A", "#4E3523"] }
       ]
     }
   ]

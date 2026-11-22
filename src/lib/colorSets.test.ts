@@ -19,6 +19,8 @@ describe("curated colors data", () => {
     }
     const names = COLOR_COLLECTIONS.flatMap((c) => c.palettes.map((p) => p.name));
     expect(new Set(names).size).toBe(names.length);
+    // Subbu asked for at least 100 curated palettes (6.11).
+    expect(names.length).toBeGreaterThanOrEqual(100);
   });
 
   it("searches palettes by name, collection and hex", () => {
