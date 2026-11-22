@@ -13,6 +13,8 @@ import {
 import { onLibraryChanged } from "../lib/library";
 import { deletePalette, listPalettes, savePalette, takeOpenRequest, type SavedPalette } from "../lib/palettes";
 import { takePaletteSeed } from "../lib/colorDetails";
+import { colorSwatchInk } from "../lib/colorInk";
+import { filterTopPalettes, TOP_PALETTE_TAGS, TOP_PALETTES, TOP_PALETTES_NOTE, type TopPalette } from "../lib/topPalettes";
 import type { Section } from "../sections";
 
 interface Slot {
@@ -38,7 +40,7 @@ function isTyping(target: EventTarget | null): boolean {
   return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(target.tagName);
 }
 
-/** Palettes (1): generate, lock, reorder, export and save. */
+/** Palettes (1): generate, lock, reorder, export and save, plus our top 100. */
 export function PalettesPage({ section }: { section: Section }) {
   const [harmony, setHarmony] = useState<Harmony>("analogous");
   const [slots, setSlots] = useState<Slot[]>(() => fresh("analogous", 5));
@@ -47,6 +49,8 @@ export function PalettesPage({ section }: { section: Section }) {
   const [name, setName] = useState("");
   const [saved, setSaved] = useState<SavedPalette[]>([]);
   const [status, setStatus] = useState<string | null>(null);
+  const [topQuery, setTopQuery] = useState("");
+  const [topTag, setTopTag] = useState<string | null>(null);
 
   useEffect(() => {
     getCopyFormat().then(setFormat);
@@ -142,6 +146,15 @@ export function PalettesPage({ section }: { section: Section }) {
     setName(p.name);
     setStatus(`Loaded "${p.name}"`);
   };
+
+  /** A ready-made palette into the generator, unlocked, and back to the top. */
+  const openTop = (p: TopPalette) => {
+    setSlots(p.colors.map((hex) => ({ hex, locked: false })));
+    setName(p.name);
+    setStatus(`Opened "${p.name}": lock the colors you like, then press Space.`);
+    document.querySelector(".content")?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const top = filterTopPalettes(topQuery, topTag);
 
   const drop = async (p: SavedPalette) => {
     try {
@@ -274,6 +287,67 @@ export function PalettesPage({ section }: { section: Section }) {
                   <button type="button" className="link-btn" onClick={() => void drop(p)}>
                     Delete
                   </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="top-pals" aria-labelledby="top-pals-title">
+        <div className="picks-head">
+          <h2 id="top-pals-title">Top {TOP_PALETTES.length} palettes</h2>
+          <input
+            className="text-input"
+            type="search"
+            placeholder="Search names or hex"
+            value={topQuery}
+            onChange={(e) => setTopQuery(e.target.value)}
+            aria-label="Search top palettes"
+          />
+        </div>
+        <div className="font-cats" role="group" aria-label="Filter top palettes">
+          <button type="button" className={`chip-btn${topTag === null ? " on" : ""}`} aria-pressed={topTag === null} onClick={() => setTopTag(null)}>
+            All
+          </button>
+          {TOP_PALETTE_TAGS.map((t) => (
+            <button key={t} type="button" className={`chip-btn${t === topTag ? " on" : ""}`} aria-pressed={t === topTag} onClick={() => setTopTag(t === topTag ? null : t)}>
+              {t}
+            </button>
+          ))}
+        </div>
+        <p className="help">{TOP_PALETTES_NOTE} Click a color to copy it; Open puts the palette in the generator.</p>
+        {top.length === 0 ? (
+          <p className="note">No palette matches.</p>
+        ) : (
+          <ul className="cc-grid top-grid">
+            {top.map((p) => (
+              <li key={p.id} className="cc-card">
+                <div className="cc-strip">
+                  {p.colors.map((hex) => {
+                    const value = formatColor(hex, format);
+                    return (
+                      <div key={hex} className="cc-sw" style={{ background: hex, color: colorSwatchInk(hex) }}>
+                        <button type="button" className="cc-sw-copy" onClick={() => copy(value, value)} title={`Copy ${value}`}>
+                          <span className="mono">{hex.slice(1)}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="cc-foot">
+                  <span>
+                    <strong>{p.name}</strong>
+                    <small>{p.tags.join(" · ")}</small>
+                  </span>
+                  <span className="cc-actions">
+                    <button type="button" className="link-btn" onClick={() => copy(p.colors.join(", "), `${p.name} as a HEX list`)}>
+                      Copy
+                    </button>
+                    <button type="button" className="link-btn" onClick={() => openTop(p)}>
+                      Open
+                    </button>
+                  </span>
                 </div>
               </li>
             ))}

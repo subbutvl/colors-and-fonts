@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { isTauri } from "../lib/env";
 import { startPick } from "../lib/picker";
@@ -15,28 +14,13 @@ const stroke = {
 
 /**
  * The main window has no system frame (`decorations: false`), so this bar is
- * its title bar: drag area (double-click maximizes), the two pick modes, and
- * minimize, maximize and close. Close hides to the tray like before (Rust
- * handles CloseRequested). Outside Tauri only the brand and modes show.
+ * its title bar: drag area, the two pick modes, minimize and close. The
+ * window has a fixed size (1400 x 800), so there is no maximize. Close hides
+ * to the tray (Rust handles CloseRequested). Outside Tauri only the brand and
+ * modes show.
  */
 export function TitleBar({ onError }: { onError: (message: string) => void }) {
   const desktop = isTauri();
-  const [maximized, setMaximized] = useState(false);
-
-  useEffect(() => {
-    if (!desktop) return;
-    const win = getCurrentWindow();
-    let unlisten: (() => void) | undefined;
-    let cancelled = false;
-    const sync = () => win.isMaximized().then((m) => !cancelled && setMaximized(m)).catch(() => {});
-    sync();
-    win.onResized(sync).then((fn) => (cancelled ? fn() : (unlisten = fn)));
-    return () => {
-      cancelled = true;
-      unlisten?.();
-    };
-  }, [desktop]);
-
   const run = (start: () => Promise<void>) => () => {
     start().catch((e) => onError(e instanceof Error ? e.message : String(e)));
   };
@@ -65,24 +49,6 @@ export function TitleBar({ onError }: { onError: (message: string) => void }) {
             <svg {...stroke}>
               <path d="M0 5.5h10" />
             </svg>
-          </button>
-          <button
-            type="button"
-            className="titlebar-btn"
-            onClick={() => void win().toggleMaximize()}
-            aria-label={maximized ? "Restore" : "Maximize"}
-            title={maximized ? "Restore" : "Maximize"}
-          >
-            {maximized ? (
-              <svg {...stroke}>
-                <path d="M2.5 2.5V.5h7v7h-2" />
-                <rect x=".5" y="2.5" width="7" height="7" />
-              </svg>
-            ) : (
-              <svg {...stroke}>
-                <rect x=".5" y=".5" width="9" height="9" />
-              </svg>
-            )}
           </button>
           <button
             type="button"
