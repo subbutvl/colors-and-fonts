@@ -167,7 +167,10 @@ impl XcapSource {
         );
         let k = if XCAP_POINTS { f64::from(scale) } else { 1.0 };
         Ok(MonitorInfo {
-            name: m.friendly_name().or_else(|_| m.name()).unwrap_or_default(),
+            // macOS: friendly_name reads NSScreen, which AppKit wants on the
+            // main thread; captures run on a worker thread, so use the plain name.
+            name: if XCAP_POINTS { m.name() } else { m.friendly_name().or_else(|_| m.name()) }
+                .unwrap_or_default(),
             x: (f64::from(x) * k).round() as i32,
             y: (f64::from(y) * k).round() as i32,
             width: (f64::from(width) * k).round() as u32,
