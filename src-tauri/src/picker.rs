@@ -223,6 +223,7 @@ fn open(app: &AppHandle) -> Result<(), String> {
             }
         };
         let _ = window.set_always_on_top(true);
+        crate::platform::raise_overlay(&window);
     }
     Ok(())
 }
@@ -341,6 +342,7 @@ pub fn overlay_ready(app: AppHandle, window: WebviewWindow, state: State<'_, Pic
     }
     let _ = window.show();
     let _ = window.set_always_on_top(true);
+    crate::platform::raise_overlay(&window);
     let under_cursor = match (app.cursor_position(), monitor) {
         (Ok(p), Some(m)) => m.contains(p.x.floor() as i32, p.y.floor() as i32),
         _ => false,

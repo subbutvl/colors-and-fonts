@@ -142,26 +142,48 @@ pub fn capture_monitor_at(source: &impl ScreenSource, x: i32, y: i32) -> Result<
     Ok(Frame { monitor, image })
 }
 
-/// [`ScreenSource`] backed by the `xcap` crate (GDI on Windows).
+/// [`ScreenSource`] backed by the `xcap` crate (GDI on Windows,
+/// CoreGraphics on macOS).
+///
+/// On Windows xcap works in physical pixels, like the rest of the app. On
+/// macOS it works in points (a Retina display is 1440 points wide but 2880
+/// pixels) while its images are in pixels, so monitors are scaled up to
+/// physical pixels here (the space Tauri uses there too) and regions are
+/// captured on whole points, then cropped to the exact pixels asked for.
 pub struct XcapSource;
 
-impl XcapSource {
-    fn find(x: i32, y: i32) -> Result<xcap::Monitor, String> {
-        xcap::Monitor::from_point(x, y).map_err(|e| format!("No monitor at {x},{y}: {e}"))
-    }
-}
+/// Whether xcap's monitor geometry is in points rather than pixels.
+const XCAP_POINTS: bool = cfg!(target_os = "macos");
 
 impl XcapSource {
     fn info(m: &xcap::Monitor) -> Result<MonitorInfo, String> {
         let err = |e: xcap::XCapError| e.to_string();
+        let scale = m.scale_factor().unwrap_or(1.0);
+        let (x, y, width, height) = (
+            m.x().map_err(err)?,
+            m.y().map_err(err)?,
+            m.width().map_err(err)?,
+            m.height().map_err(err)?,
+        );
+        let k = if XCAP_POINTS { f64::from(scale) } else { 1.0 };
         Ok(MonitorInfo {
             name: m.friendly_name().or_else(|_| m.name()).unwrap_or_default(),
-            x: m.x().map_err(err)?,
-            y: m.y().map_err(err)?,
-            width: m.width().map_err(err)?,
-            height: m.height().map_err(err)?,
-            scale_factor: m.scale_factor().unwrap_or(1.0),
+            x: (f64::from(x) * k).round() as i32,
+            y: (f64::from(y) * k).round() as i32,
+            width: (f64::from(width) * k).round() as u32,
+            height: (f64::from(height) * k).round() as u32,
+            scale_factor: scale,
         })
+    }
+
+    /// The xcap monitor behind `monitor` (found by its origin).
+    fn xcap_monitor(monitor: &MonitorInfo) -> Result<xcap::Monitor, String> {
+        let k = if XCAP_POINTS { f64::from(monitor.scale_factor) } else { 1.0 };
+        let (x, y) = (
+            (f64::from(monitor.x) / k).round() as i32,
+            (f64::from(monitor.y) / k).round() as i32,
+        );
+        xcap::Monitor::from_point(x, y).map_err(|e| format!("No monitor at {x},{y}: {e}"))
     }
 }
 
@@ -175,13 +197,30 @@ impl ScreenSource for XcapSource {
     }
 
     fn monitor_at(&self, x: i32, y: i32) -> Result<MonitorInfo, String> {
-        Self::info(&Self::find(x, y)?)
+        // Compare in our own (physical) space: with points vs pixels and
+        // per-monitor scales, xcap's from_point would need a different point.
+        self.monitors()?
+            .into_iter()
+            .find(|m| m.contains(x, y))
+            .ok_or_else(|| format!("No monitor at {x},{y}"))
     }
 
     fn capture(&self, monitor: &MonitorInfo, region: Region) -> Result<RgbaImage, String> {
-        Self::find(monitor.x, monitor.y)?
-            .capture_region(region.x, region.y, region.width, region.height)
-            .map_err(|e| format!("Screen capture failed: {e}"))
+        let m = Self::xcap_monitor(monitor)?;
+        let fail = |e: xcap::XCapError| format!("Screen capture failed: {e}");
+        if !XCAP_POINTS {
+            return m
+                .capture_region(region.x, region.y, region.width, region.height)
+                .map_err(fail);
+        }
+        let (points_w, points_h) = (m.width().map_err(fail)?, m.height().map_err(fail)?);
+        let pts = sampler::points_covering(region, f64::from(monitor.scale_factor), points_w, points_h)
+            .ok_or_else(|| "Capture region is outside the monitor".to_string())?;
+        let image = m
+            .capture_region(pts.x, pts.y, pts.width, pts.height)
+            .map_err(fail)?;
+        sampler::crop_to_pixels(&image, pts, region, f64::from(monitor.scale_factor))
+            .ok_or_else(|| "Captured image was empty".to_string())
     }
 }
 

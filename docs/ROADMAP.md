@@ -63,7 +63,7 @@ Each step is one PR. Tick a step when its PR is merged.
 Plan and audit: https://claude.ai/artifact/KsycDYGDxjsdGYBKuuD5po. Apple silicon, macOS 11 or later, unsigned (ad-hoc) like Windows.
 - [x] 7.1 Build on macOS: CI job on `macos-latest`, per-platform Tauri config (`tauri.windows.conf.json`, `tauri.macos.conf.json`), `.dmg` from the Release workflow
 - [x] 7.2 Screen Recording permission: check before a pick, explain, Settings row that opens System Settings
-- [ ] 7.3 Pick session on macOS: overlays and toolbar above the menu bar and Dock, on every Space; Retina coordinates
+- [x] 7.3 Pick session on macOS: overlays and toolbar above the menu bar and Dock, on every Space; Retina coordinates
 - [ ] 7.4 Mac look and feel: native window buttons, menu bar template icon, Dock icon only while the window is open, ⌃⌥⇧⌘ labels, wording and font stack
 - [ ] 7.5 Font identify on macOS: Vision OCR (no exact-font probe for now)
 - [ ] 7.6 Release notes and docs for macOS

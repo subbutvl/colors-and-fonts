@@ -2040,6 +2040,7 @@ name = "huetype"
 version = "0.3.0"
 dependencies = [
  "image",
+ "objc2",
  "serde",
  "serde_json",
  "tauri",
