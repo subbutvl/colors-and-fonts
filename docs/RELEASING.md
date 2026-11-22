@@ -20,7 +20,7 @@ Installers are built by GitHub Actions (`.github/workflows/release.yml`): the Wi
    ```
 
 4. The **Release** workflow checks that the tag matches the app version, runs the tests, builds the installers and the `.dmg` and attaches them to a **draft** release named "Huetype v0.2.0".
-5. Open the draft under Releases, add release notes, and publish it.
+5. Open the draft under Releases, add release notes, and publish it. Before publishing a release with Mac changes, run through [MACOS-TESTING.md](MACOS-TESTING.md) on the `.dmg`.
 
 To build installers without releasing, open Actions, pick **Release**, then **Run workflow**. The `.exe` and `.msi` are attached to the run as the `huetype-installers` artifact, the `.dmg` as `huetype-macos`.
 
@@ -30,7 +30,6 @@ To build installers without releasing, open Actions, pick **Release**, then **Ru
 | --- | --- | --- | --- |
 | `Huetype_<version>_x64-setup.exe` (NSIS) | the current user, in `%LOCALAPPDATA%` | no | Recommended. Closes a running Huetype first. |
 | `Huetype_<version>_x64_en-US.msi` (WiX) | all users, in Program Files | yes | For managed installs. |
-
 | `Huetype_<version>_aarch64.dmg` | macOS 11 or later on Apple silicon; drag to Applications | no | Intel Macs are not built yet. |
 
 Both Windows installers download the WebView2 runtime if it is missing (Windows 11 and up-to-date Windows 10 already have it). Uninstalling removes the launch-at-startup entry. The user's data (`huetype.db` in the app config dir) is kept unless they tick the delete-data box in the NSIS uninstaller.
