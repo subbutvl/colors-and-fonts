@@ -42,16 +42,34 @@ fn fit_size(size: (f64, f64), area: (f64, f64)) -> (f64, f64) {
     (size.0.min(area.0), size.1.min(area.1))
 }
 
-/// Shrink the main window when its monitor's work area cannot hold 1400 x 1000.
+/// Move a window (physical position and size) so it lies inside the work
+/// area, e.g. when a position remembered for a shorter window would now put
+/// its bottom edge under the taskbar. Assumes the size already fits.
+fn clamp_into(pos: (i32, i32), size: (i32, i32), area_pos: (i32, i32), area_size: (i32, i32)) -> (i32, i32) {
+    let axis = |p: i32, s: i32, ap: i32, asz: i32| p.min(ap + asz - s).max(ap);
+    (axis(pos.0, size.0, area_pos.0, area_size.0), axis(pos.1, size.1, area_pos.1, area_size.1))
+}
+
+/// Shrink the main window when its monitor's work area cannot hold 1400 x 1000,
+/// and keep it inside the work area.
 fn fit_main_window(app: &tauri::AppHandle) {
     let Some(window) = app.get_webview_window(MAIN_WINDOW) else { return };
     let Ok(Some(monitor)) = window.current_monitor().or_else(|_| window.primary_monitor()) else { return };
     let scale = monitor.scale_factor();
-    let area = monitor.work_area().size;
-    let (w, h) = fit_size(MAIN_SIZE, (area.width as f64 / scale, area.height as f64 / scale));
+    let area = monitor.work_area();
+    let (w, h) = fit_size(MAIN_SIZE, (area.size.width as f64 / scale, area.size.height as f64 / scale));
     if (w, h) != MAIN_SIZE {
         let _ = window.set_size(tauri::LogicalSize::new(w, h));
         let _ = window.center();
+        return;
+    }
+    let (Ok(pos), Ok(size)) = (window.outer_position(), window.outer_size()) else { return };
+    let size = (size.width as i32, size.height as i32);
+    let area_pos = (area.position.x, area.position.y);
+    let area_size = (area.size.width as i32, area.size.height as i32);
+    let fitted = clamp_into((pos.x, pos.y), size, area_pos, area_size);
+    if fitted != (pos.x, pos.y) {
+        let _ = window.set_position(tauri::PhysicalPosition::new(fitted.0, fitted.1));
     }
 }
 
@@ -168,9 +186,20 @@ mod tests {
 
     #[test]
     fn fit_size_shrinks_only_when_needed() {
+        assert_eq!(fit_size(MAIN_SIZE, (2560.0, 1400.0)), (1400.0, 1000.0));
         assert_eq!(fit_size(MAIN_SIZE, (1920.0, 1040.0)), (1400.0, 1000.0));
-        // 1080p at 125% scale: the width fits, the height shrinks.
-        assert_eq!(fit_size(MAIN_SIZE, (1536.0, 824.0)), (1400.0, 824.0));
+        assert_eq!(fit_size(MAIN_SIZE, (1920.0, 912.0)), (1400.0, 912.0));
         assert_eq!(fit_size(MAIN_SIZE, (1366.0, 728.0)), (1366.0, 728.0));
+    }
+
+    #[test]
+    fn clamp_into_keeps_the_window_on_its_work_area() {
+        let area = ((0, 0), (1920, 1040));
+        // Already inside: unchanged.
+        assert_eq!(clamp_into((260, 20), (1400, 1000), area.0, area.1), (260, 20));
+        // A position remembered for the 800 px window: moved up to fit.
+        assert_eq!(clamp_into((260, 120), (1400, 1000), area.0, area.1), (260, 40));
+        // Off the left edge of a monitor with a negative origin.
+        assert_eq!(clamp_into((-2000, 50), (1400, 1000), (-1920, 0), (1920, 1040)), (-1920, 40));
     }
 }
