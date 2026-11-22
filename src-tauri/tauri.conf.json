@@ -15,7 +15,7 @@
         "label": "main",
         "title": "Huetype",
         "width": 1400,
-        "height": 800,
+        "height": 1000,
         "resizable": false,
         "maximizable": false,
         "center": true,

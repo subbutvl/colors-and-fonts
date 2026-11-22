@@ -34,7 +34,7 @@ pub fn show_main_window(app: &tauri::AppHandle) {
 }
 
 /// The main window's fixed size in logical pixels (also in `tauri.conf.json`).
-pub const MAIN_SIZE: (f64, f64) = (1400.0, 800.0);
+pub const MAIN_SIZE: (f64, f64) = (1400.0, 1000.0);
 
 /// The fixed window size, shrunk to fit a work area smaller than it
 /// (a 1366 x 768 laptop, say), so the window is never cut off.
@@ -42,7 +42,7 @@ fn fit_size(size: (f64, f64), area: (f64, f64)) -> (f64, f64) {
     (size.0.min(area.0), size.1.min(area.1))
 }
 
-/// Shrink the main window when its monitor's work area cannot hold 1400 x 800.
+/// Shrink the main window when its monitor's work area cannot hold 1400 x 1000.
 fn fit_main_window(app: &tauri::AppHandle) {
     let Some(window) = app.get_webview_window(MAIN_WINDOW) else { return };
     let Ok(Some(monitor)) = window.current_monitor().or_else(|_| window.primary_monitor()) else { return };
@@ -94,7 +94,7 @@ pub fn run() {
         ))
         .plugin(
             tauri_plugin_window_state::Builder::default()
-                // Position only: the main window has a fixed size (1400 x 800)
+                // Position only: the main window has a fixed size (1400 x 1000)
                 // and visibility is ours to decide at launch.
                 .with_state_flags(tauri_plugin_window_state::StateFlags::POSITION)
                 .build(),
@@ -168,7 +168,9 @@ mod tests {
 
     #[test]
     fn fit_size_shrinks_only_when_needed() {
-        assert_eq!(fit_size(MAIN_SIZE, (1920.0, 1040.0)), (1400.0, 800.0));
+        assert_eq!(fit_size(MAIN_SIZE, (1920.0, 1040.0)), (1400.0, 1000.0));
+        // 1080p at 125% scale: the width fits, the height shrinks.
+        assert_eq!(fit_size(MAIN_SIZE, (1536.0, 824.0)), (1400.0, 824.0));
         assert_eq!(fit_size(MAIN_SIZE, (1366.0, 728.0)), (1366.0, 728.0));
     }
 }
