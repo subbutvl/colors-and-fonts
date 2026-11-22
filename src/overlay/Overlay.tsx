@@ -105,10 +105,17 @@ export function Overlay() {
         c.getContext("2d")?.putImageData(next.image, 0, 0);
       }
       setFrame(next);
-      // Show the window once the frame has been painted.
-      requestAnimationFrame(() => {
+      // Show the window once the frame has been painted. macOS WebKit does
+      // not run animation frames in a hidden window, so a timer backs it up
+      // (otherwise the overlay never appears and the session hangs).
+      let sent = false;
+      const ready = () => {
+        if (sent) return;
+        sent = true;
         if (isTauri()) invoke("overlay_ready").catch(console.error);
-      });
+      };
+      requestAnimationFrame(ready);
+      setTimeout(ready, 50);
     } catch (e) {
       console.error("overlay frame", e);
     }

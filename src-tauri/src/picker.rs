@@ -59,6 +59,10 @@ pub enum Mode {
 /// Time for Windows to repaint after we hide our own windows, so they are
 /// not in the frozen frame.
 const HIDE_SETTLE: Duration = Duration::from_millis(150);
+/// How long the overlays may take to report they have drawn their frame
+/// before we show them anyway, so a session can never hang invisibly (our
+/// windows hidden, nothing on screen, every new pick ignored).
+const READY_TIMEOUT: Duration = Duration::from_millis(1500);
 
 /// Bytes before the RGBA pixels in an `overlay_frame` response:
 /// width u32, height u32, x i32, y i32, scale f32 (all little-endian).
@@ -225,7 +229,38 @@ fn open(app: &AppHandle) -> Result<(), String> {
         let _ = window.set_always_on_top(true);
         crate::platform::raise_overlay(&window);
     }
+    let app = app.clone();
+    std::thread::spawn(move || {
+        std::thread::sleep(READY_TIMEOUT);
+        show_if_stuck(&app);
+    });
     Ok(())
+}
+
+/// Backstop for [`overlay_ready`]: if the session is open but no overlay is
+/// on screen yet, show them all.
+fn show_if_stuck(app: &AppHandle) {
+    if !app.state::<Picker>().0.lock().unwrap().active {
+        return;
+    }
+    let overlays: Vec<_> = app
+        .webview_windows()
+        .into_iter()
+        .filter(|(label, _)| is_overlay(label))
+        .map(|(_, w)| w)
+        .collect();
+    if overlays.iter().any(|w| w.is_visible().unwrap_or(false)) {
+        return;
+    }
+    eprintln!("picker: overlays did not report ready, showing them anyway");
+    for w in overlays {
+        let _ = w.show();
+        let _ = w.set_always_on_top(true);
+        crate::platform::raise_overlay(&w);
+    }
+    if let Some(w) = app.get_webview_window(&overlay_label(0)) {
+        let _ = w.set_focus();
+    }
 }
 
 fn create(app: &AppHandle, label: &str) -> tauri::Result<WebviewWindow> {
