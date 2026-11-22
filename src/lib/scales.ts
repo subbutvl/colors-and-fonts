@@ -103,24 +103,34 @@ export async function renameScale(id: number, name: string): Promise<void> {
   await libraryChanged();
 }
 
-/** Saved page to Scales handoff: a base color and name to open next, read once. */
+/** Saved page to Scales handoff: a saved scale to open next, read once. */
 const OPEN_KEY = "huetype.scales.open";
 
-export function requestOpenScale(base: string, name: string): void {
+/** What the Scales page shows for a saved scale: its base, name and stored steps. */
+export interface OpenScale {
+  base: string;
+  name: string;
+  steps: SavedStep[];
+}
+
+export function requestOpenScale(scale: OpenScale): void {
   try {
-    localStorage.setItem(OPEN_KEY, JSON.stringify({ base, name }));
+    localStorage.setItem(OPEN_KEY, JSON.stringify({ base: scale.base, name: scale.name, steps: scale.steps }));
   } catch {
     // ignore
   }
 }
 
-export function takeOpenScale(): { base: string; name: string } | null {
+export function takeOpenScale(): OpenScale | null {
   try {
     const raw = localStorage.getItem(OPEN_KEY);
     localStorage.removeItem(OPEN_KEY);
     if (!raw) return null;
-    const v = JSON.parse(raw) as { base?: unknown; name?: unknown };
-    return typeof v.base === "string" && HEX.test(v.base.toUpperCase()) ? { base: v.base.toUpperCase(), name: typeof v.name === "string" ? v.name : "" } : null;
+    const v = JSON.parse(raw) as { base?: unknown; name?: unknown; steps?: unknown };
+    if (typeof v.base !== "string" || !HEX.test(v.base.toUpperCase())) return null;
+    const steps = parseSteps(JSON.stringify(v.steps ?? null));
+    if (!steps) return null;
+    return { base: v.base.toUpperCase(), name: typeof v.name === "string" ? v.name : "", steps };
   } catch {
     return null;
   }

@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { makeScale } from "./scale";
-import { cleanScale, listScales, parseSteps, saveScale } from "./scales";
+import { cleanScale, listScales, parseSteps, requestOpenScale, saveScale, takeOpenScale } from "./scales";
 
 describe("saved scales", () => {
   it("cleans names and keeps exactly 50 to 950", () => {
@@ -27,5 +27,24 @@ describe("saved scales", () => {
     expect(list.map((s) => s.name)).toEqual(["Two", "One"]);
     expect(list[1].base).toBe("#5B6CFF");
     expect(list[0].steps).toHaveLength(11);
+  });
+});
+
+describe("open handoff", () => {
+  it("carries the stored steps once, so a reopened scale shows exactly what was saved", () => {
+    const store = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => store.set(k, v),
+      removeItem: (k: string) => store.delete(k),
+    });
+    const steps = makeScale("#3B82F6").map(({ step, hex }) => ({ step, hex }));
+    steps[0] = { step: 50, hex: "#ABCDEF" }; // not what makeScale gives today
+    requestOpenScale({ base: "#3b82f6", name: "Blue", steps });
+    expect(takeOpenScale()).toEqual({ base: "#3B82F6", name: "Blue", steps });
+    expect(takeOpenScale()).toBeNull();
+    store.set("huetype.scales.open", JSON.stringify({ base: "#3B82F6", name: "x", steps: [] }));
+    expect(takeOpenScale()).toBeNull();
+    vi.unstubAllGlobals();
   });
 });
