@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { getVersion } from "@tauri-apps/api/app";
 import { FontCatalogSetting } from "../components/FontCatalogSetting";
+import { ScreenPermissionRow } from "../components/ScreenPermission";
 import { ShortcutRow } from "../components/ShortcutRow";
 import { ThemeSwitch } from "../components/ThemeSwitch";
 import { getShortcutStatus, type ShortcutStatus } from "../lib/shortcuts";
 import { getAutostart, setAutostart } from "../lib/autostart";
-import { isTauri } from "../lib/env";
+import { isMac, isTauri } from "../lib/env";
 import { useSettings } from "../SettingsContext";
 
 export function SettingsPage() {
@@ -56,6 +57,13 @@ export function SettingsPage() {
           <ThemeSwitch className="wide" />
         </div>
       </section>
+
+      {isMac() && (
+        <section className="settings-group" aria-labelledby="set-permissions">
+          <h2 id="set-permissions">Permissions</h2>
+          <ScreenPermissionRow />
+        </section>
+      )}
 
       <section className="settings-group" aria-labelledby="set-startup">
         <h2 id="set-startup">Startup</h2>

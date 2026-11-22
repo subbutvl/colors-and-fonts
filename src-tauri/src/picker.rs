@@ -24,6 +24,7 @@ use tauri::{
 
 use crate::capture::{self, Frame, MonitorInfo, XcapSource};
 use crate::fontid::{self, FontProbe, Rect};
+use crate::permissions;
 use crate::{MAIN_WINDOW, toolbar};
 
 /// Overlay windows are `overlay-<monitor index>`.
@@ -131,6 +132,12 @@ pub fn start_font(app: &AppHandle) {
 }
 
 fn start_mode(app: &AppHandle, mode: Mode) {
+    // macOS: without Screen Recording permission the frozen frame would show
+    // only the wallpaper, so explain instead of opening the overlays.
+    if let Err(message) = permissions::ensure_screen_access() {
+        report_error(app, message);
+        return;
+    }
     let state = app.state::<Picker>();
     {
         let mut s = state.0.lock().unwrap();
@@ -347,6 +354,7 @@ pub fn overlay_ready(app: AppHandle, window: WebviewWindow, state: State<'_, Pic
 /// windows hidden (Image palette's "Grab screen"). Binary, see [`encode_frame`].
 #[tauri::command]
 pub async fn grab_screen(app: AppHandle) -> Result<tauri::ipc::Response, String> {
+    permissions::ensure_screen_access()?;
     let main = app
         .get_webview_window(MAIN_WINDOW)
         .ok_or_else(|| "No main window".to_string())?;
