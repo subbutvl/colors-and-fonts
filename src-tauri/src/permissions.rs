@@ -13,6 +13,8 @@ Allow it in System Settings > Privacy & Security > Screen Recording, then quit a
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub enum ScreenAccess {
+    // Only macOS reports Granted; Windows is NotNeeded.
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     Granted,
     Denied,
     /// This OS has no such permission (Windows).
