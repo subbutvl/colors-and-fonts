@@ -4,6 +4,7 @@ import { isTauri } from "./env";
 import { listMyDesignSystems } from "./designSystems";
 import { gradientCss } from "./gradient";
 import { listGradients } from "./gradients";
+import { listScales } from "./scales";
 import { listPalettes } from "./palettes";
 
 /**
@@ -163,12 +164,13 @@ export async function setFontNote(family: string, note: string): Promise<void> {
 
 /** The whole library as JSON, for backup or for use elsewhere. */
 export async function exportLibrary(): Promise<string> {
-  const [colors, palettes, fonts, gradients, designSystems] = await Promise.all([
+  const [colors, palettes, fonts, gradients, designSystems, scales] = await Promise.all([
     listStarred(),
     listPalettes(),
     listStarredFonts(),
     listGradients(),
     listMyDesignSystems(),
+    listScales(),
   ]);
   return JSON.stringify(
     {
@@ -178,6 +180,7 @@ export async function exportLibrary(): Promise<string> {
       palettes: palettes.map((p) => ({ name: p.name, colors: p.colors, saved: p.createdAt })),
       fonts: fonts.map((f) => ({ family: f.family, note: f.note || undefined, saved: f.createdAt })),
       gradients: gradients.map((g) => ({ name: g.name, css: gradientCss(g.gradient), gradient: g.gradient, saved: g.createdAt })),
+      scales: scales.map((s) => ({ name: s.name, base: s.base, steps: Object.fromEntries(s.steps.map((st) => [st.step, st.hex])), saved: s.createdAt })),
       designSystems: designSystems.map(({ id: _id, createdAt, updatedAt, ...d }) => ({ ...d, saved: createdAt, updated: updatedAt })),
     },
     null,

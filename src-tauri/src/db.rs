@@ -101,6 +101,18 @@ pub fn migrations() -> Vec<Migration> {
               );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 8,
+            description: "create scales table (saved scales)",
+            sql: "CREATE TABLE IF NOT EXISTS scales (
+                id          INTEGER PRIMARY KEY AUTOINCREMENT,
+                name        TEXT NOT NULL,
+                base        TEXT NOT NULL,
+                steps       TEXT NOT NULL,
+                created_at  TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+              );",
+            kind: MigrationKind::Up,
+        },
     ]
 }
 
