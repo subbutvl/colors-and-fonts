@@ -119,9 +119,9 @@ export function slug(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "color";
 }
 
-export function exportScale(scale: ScaleStep[], format: ScaleExport, name: string, value: ScaleValue = "hex"): string {
+export function exportScale(scale: Pick<ScaleStep, "step" | "hex">[], format: ScaleExport, name: string, value: ScaleValue = "hex"): string {
   const s = slug(name);
-  const v = (st: ScaleStep) => formatColor(st.hex, value);
+  const v = (st: Pick<ScaleStep, "hex">) => formatColor(st.hex, value);
   switch (format) {
     case "css":
       return `:root {\n${scale.map((st) => `  --${s}-${st.step}: ${v(st)};`).join("\n")}\n}`;

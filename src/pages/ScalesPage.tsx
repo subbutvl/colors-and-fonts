@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PageHead } from "../components/PageHead";
 import { contrast, convert, copyText, FORMAT_LABELS, formatColor, getCopyFormat, onCopyFormat, parseColor, type ColorFormat } from "../lib/colors";
 import { isTauri } from "../lib/env";
 import { onPick, startPick } from "../lib/picker";
+import { onLibraryChanged } from "../lib/library";
+import { deleteScale, listScales, saveScale, takeOpenScale, type SavedScale } from "../lib/scales";
 import { exportScale, hueFamily, makeScale, SCALE_EXPORTS, type ScaleExport, type ScaleValue } from "../lib/scale";
 import type { Section } from "../sections";
 
@@ -19,7 +21,7 @@ function lastInput(): string {
   }
 }
 
-/** Scales (2): one color in, 50 to 950 out. */
+/** Scales (2): one color in, 50 to 950 out; save and reopen scales. */
 export function ScalesPage({ section }: { section: Section }) {
   const [input, setInput] = useState(lastInput);
   const [customName, setCustomName] = useState<string | null>(null);
@@ -27,6 +29,7 @@ export function ScalesPage({ section }: { section: Section }) {
   const [exportAs, setExportAs] = useState<ScaleExport>("css");
   const [value, setValue] = useState<ScaleValue>("hex");
   const [status, setStatus] = useState<string | null>(null);
+  const [saved, setSaved] = useState<SavedScale[]>([]);
 
   const color = useMemo(() => parseColor(input), [input]);
   const conv = useMemo(() => (color ? convert(color) : null), [color]);
@@ -39,6 +42,24 @@ export function ScalesPage({ section }: { section: Section }) {
   }, []);
 
   useEffect(() => onPick((p) => setInput(p.hex)), []);
+
+  const refresh = useCallback(() => {
+    listScales()
+      .then(setSaved)
+      .catch((e) => setStatus(`Could not load saved scales: ${e}`));
+  }, []);
+  useEffect(() => {
+    refresh();
+    return onLibraryChanged(refresh);
+  }, [refresh]);
+
+  // Opened from the Saved page: that scale's base color and name.
+  useEffect(() => {
+    const req = takeOpenScale();
+    if (!req) return;
+    setInput(req.base);
+    setCustomName(req.name || null);
+  }, []);
 
   useEffect(() => {
     try {
@@ -54,6 +75,33 @@ export function ScalesPage({ section }: { section: Section }) {
       .catch((e) => setStatus(`Copy failed: ${e}`));
 
   const exported = scale ? exportScale(scale, exportAs, name, value) : "";
+
+  const save = async () => {
+    if (!scale || !conv) return;
+    try {
+      await saveScale(name, conv.hex, scale);
+      setStatus(`Saved "${name.trim() || "Untitled scale"}" (find it below and on the Saved page)`);
+      refresh();
+    } catch (e) {
+      setStatus(`Could not save: ${e}`);
+    }
+  };
+
+  const open = (s: SavedScale) => {
+    setInput(s.base);
+    setCustomName(s.name);
+    setStatus(`Opened "${s.name}"`);
+    document.querySelector(".content")?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const drop = async (s: SavedScale) => {
+    try {
+      await deleteScale(s.id);
+      setStatus(`Deleted "${s.name}"`);
+    } catch (e) {
+      setStatus(`Could not delete: ${e}`);
+    }
+  };
 
   return (
     <div className="page">
@@ -91,6 +139,9 @@ export function ScalesPage({ section }: { section: Section }) {
             maxLength={40}
             title="Name used in the export"
           />
+          <button type="button" className="primary-btn" onClick={() => void save()} disabled={!scale}>
+            Save scale
+          </button>
         </div>
         <div className="conv-chips">
           {EXAMPLES.map((c) => (
@@ -170,6 +221,33 @@ export function ScalesPage({ section }: { section: Section }) {
           <pre className="scale-code">{exported}</pre>
         </section>
       )}
+
+      <section className="picks" aria-labelledby="saved-scales">
+        <div className="picks-head">
+          <h2 id="saved-scales">Saved scales</h2>
+          <span className="help">{saved.length || "None yet"}</span>
+        </div>
+        {saved.length > 0 && (
+          <ul className="saved-pals">
+            {saved.map((sc) => (
+              <li key={sc.id} className="saved-pal">
+                <button type="button" className="saved-strip" onClick={() => open(sc)} title="Open this scale">
+                  {sc.steps.map((st) => (
+                    <span key={st.step} style={{ background: st.hex }} />
+                  ))}
+                </button>
+                <div className="saved-meta">
+                  <strong>{sc.name}</strong>
+                  <span className="mono">{sc.base}</span>
+                  <button type="button" className="link-btn" onClick={() => void drop(sc)}>
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
