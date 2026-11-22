@@ -1,0 +1,605 @@
+{
+  "note": "Our own hand-picked palettes, five colors each. A curated set, not a popularity ranking.",
+  "palettes": [
+    {
+      "id": "sunset-boulevard",
+      "name": "Sunset Boulevard",
+      "tags": ["warm", "vibrant"],
+      "colors": ["#FFE3B3", "#FFB563", "#F4845F", "#D1495B", "#6A2E4F"]
+    },
+    {
+      "id": "midnight-harbor",
+      "name": "Midnight Harbor",
+      "tags": ["cool", "dark"],
+      "colors": ["#E0E7F1", "#7E9CC0", "#3D5A80", "#23395B", "#0F1A2E"]
+    },
+    {
+      "id": "sage-morning",
+      "name": "Sage Morning",
+      "tags": ["earthy", "pastel"],
+      "colors": ["#F3F1E7", "#D8DDC4", "#A9B78E", "#6F8057", "#3E4A31"]
+    },
+    {
+      "id": "citrus-pop",
+      "name": "Citrus Pop",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FFF4B8", "#FFD23F", "#FF9F1C", "#F2542D", "#8C1C13"]
+    },
+    {
+      "id": "lavender-fields",
+      "name": "Lavender Fields",
+      "tags": ["pastel", "cool"],
+      "colors": ["#F6F2FB", "#DCD0F0", "#B8A2E0", "#8467C2", "#4B3A7A"]
+    },
+    {
+      "id": "espresso-bar",
+      "name": "Espresso Bar",
+      "tags": ["earthy", "dark"],
+      "colors": ["#EADBC8", "#C29B76", "#8B5E3C", "#5A3A24", "#2B1B12"]
+    },
+    {
+      "id": "arctic-glow",
+      "name": "Arctic Glow",
+      "tags": ["cool", "pastel"],
+      "colors": ["#F2FBFD", "#CDEFF5", "#8FD8E8", "#3FAFC9", "#12708A"]
+    },
+    {
+      "id": "neon-arcade",
+      "name": "Neon Arcade",
+      "tags": ["vibrant", "dark"],
+      "colors": ["#0D0221", "#261447", "#FF3864", "#2DE2E6", "#F9C80E"]
+    },
+    {
+      "id": "rose-quartz",
+      "name": "Rose Quartz",
+      "tags": ["pastel", "warm"],
+      "colors": ["#FFF1F3", "#FAD2D9", "#F2A7B5", "#D9738A", "#9C3D57"]
+    },
+    {
+      "id": "pine-ridge",
+      "name": "Pine Ridge",
+      "tags": ["earthy", "cool"],
+      "colors": ["#E8EFE9", "#A7C4AE", "#5E8B6C", "#335E45", "#18352A"]
+    },
+    {
+      "id": "golden-hour",
+      "name": "Golden Hour",
+      "tags": ["warm"],
+      "colors": ["#FFF6E0", "#FBD38D", "#F6AD55", "#DD6B20", "#7B341E"]
+    },
+    {
+      "id": "deep-ocean",
+      "name": "Deep Ocean",
+      "tags": ["cool", "dark"],
+      "colors": ["#CDE8F6", "#5BA4CF", "#1F6FA3", "#0E4A78", "#06233F"]
+    },
+    {
+      "id": "peach-sorbet",
+      "name": "Peach Sorbet",
+      "tags": ["pastel", "warm"],
+      "colors": ["#FFF4EC", "#FFD9C2", "#FFB89A", "#F48B6E", "#C2574A"]
+    },
+    {
+      "id": "graphite",
+      "name": "Graphite",
+      "tags": ["neutral", "dark"],
+      "colors": ["#F4F4F5", "#C9CACE", "#8E9099", "#4D505A", "#1E2027"]
+    },
+    {
+      "id": "mint-julep",
+      "name": "Mint Julep",
+      "tags": ["pastel", "cool"],
+      "colors": ["#F1FBF6", "#C6EFD9", "#8FDCB4", "#4FBE8A", "#22865B"]
+    },
+    {
+      "id": "retro-diner",
+      "name": "Retro Diner",
+      "tags": ["retro", "vibrant"],
+      "colors": ["#FDF0D5", "#F4A259", "#E15554", "#3BB273", "#2E4057"]
+    },
+    {
+      "id": "autumn-leaves",
+      "name": "Autumn Leaves",
+      "tags": ["warm", "earthy"],
+      "colors": ["#F6E7CB", "#E0A458", "#C46A2F", "#8C3B1F", "#4A1E10"]
+    },
+    {
+      "id": "glacier-lake",
+      "name": "Glacier Lake",
+      "tags": ["cool"],
+      "colors": ["#EAF6F6", "#A8DADC", "#457B9D", "#1D3557", "#0B1A2E"]
+    },
+    {
+      "id": "berry-smoothie",
+      "name": "Berry Smoothie",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FCE4EC", "#F48FB1", "#D81B60", "#880E4F", "#3E0A25"]
+    },
+    {
+      "id": "nordic-home",
+      "name": "Nordic Home",
+      "tags": ["neutral", "cool"],
+      "colors": ["#F7F7F5", "#E3E1DB", "#B9C0C4", "#7A8A94", "#3F4C55"]
+    },
+    {
+      "id": "desert-bloom",
+      "name": "Desert Bloom",
+      "tags": ["warm", "earthy"],
+      "colors": ["#FBEFE3", "#F3C9A6", "#E39B7B", "#B96A59", "#6B3C3A"]
+    },
+    {
+      "id": "electric-blue",
+      "name": "Electric Blue",
+      "tags": ["vibrant", "cool"],
+      "colors": ["#E7F0FF", "#8DB6FF", "#3D7BFF", "#1546D6", "#0A2475"]
+    },
+    {
+      "id": "olive-grove",
+      "name": "Olive Grove",
+      "tags": ["earthy"],
+      "colors": ["#F2F0DE", "#CFCB9A", "#9A9659", "#646235", "#34341C"]
+    },
+    {
+      "id": "cotton-candy",
+      "name": "Cotton Candy",
+      "tags": ["pastel"],
+      "colors": ["#FFF0F7", "#FFC8E3", "#C9E4FF", "#A0C4FF", "#7B9BEA"]
+    },
+    {
+      "id": "charcoal-gold",
+      "name": "Charcoal & Gold",
+      "tags": ["dark", "warm"],
+      "colors": ["#1B1B1F", "#2E2E35", "#6B6B73", "#D4AF37", "#F3E5AB"]
+    },
+    {
+      "id": "tropical-lagoon",
+      "name": "Tropical Lagoon",
+      "tags": ["vibrant", "cool"],
+      "colors": ["#E0FBFC", "#7FE3D9", "#20B2AA", "#05828E", "#FF7F50"]
+    },
+    {
+      "id": "vintage-postcard",
+      "name": "Vintage Postcard",
+      "tags": ["retro"],
+      "colors": ["#F3E9D2", "#C6AC8F", "#EAB464", "#A33B20", "#2F4858"]
+    },
+    {
+      "id": "moss-stone",
+      "name": "Moss & Stone",
+      "tags": ["earthy", "neutral"],
+      "colors": ["#EEEDE8", "#C5C3B5", "#8D9179", "#5B6347", "#2F3426"]
+    },
+    {
+      "id": "plum-velvet",
+      "name": "Plum Velvet",
+      "tags": ["dark", "warm"],
+      "colors": ["#F3E6EE", "#C695B5", "#8E4A7A", "#5B2551", "#2C0F29"]
+    },
+    {
+      "id": "seafoam",
+      "name": "Seafoam",
+      "tags": ["pastel", "cool"],
+      "colors": ["#F0FAF8", "#C8EDE5", "#94D9C9", "#5DBFA9", "#2E8C7A"]
+    },
+    {
+      "id": "fire-opal",
+      "name": "Fire Opal",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FFE8D6", "#FF9E6D", "#FF6B35", "#D8381E", "#7A1F12"]
+    },
+    {
+      "id": "slate-office",
+      "name": "Slate Office",
+      "tags": ["neutral", "cool"],
+      "colors": ["#F5F7FA", "#D9DFE7", "#9AA7B8", "#5A6B80", "#2A3646"]
+    },
+    {
+      "id": "honey-comb",
+      "name": "Honey Comb",
+      "tags": ["warm"],
+      "colors": ["#FFF8E1", "#FFE08A", "#FFC233", "#E09A00", "#8A5A00"]
+    },
+    {
+      "id": "twilight",
+      "name": "Twilight",
+      "tags": ["cool", "dark"],
+      "colors": ["#F1E9FF", "#B9A3E3", "#6C5BA8", "#3B2F6B", "#1A1433"]
+    },
+    {
+      "id": "clay-pot",
+      "name": "Clay Pot",
+      "tags": ["earthy", "warm"],
+      "colors": ["#F7EDE6", "#E2B9A2", "#C98663", "#9C5A3C", "#5A3220"]
+    },
+    {
+      "id": "spring-garden",
+      "name": "Spring Garden",
+      "tags": ["pastel", "vibrant"],
+      "colors": ["#FCFFF0", "#D9F99D", "#A3E635", "#F9A8D4", "#EC4899"]
+    },
+    {
+      "id": "ink-paper",
+      "name": "Ink & Paper",
+      "tags": ["neutral"],
+      "colors": ["#FFFDF8", "#EDE8DD", "#B8B2A6", "#5C5952", "#1D1C1A"]
+    },
+    {
+      "id": "coral-reef",
+      "name": "Coral Reef",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FFF0EB", "#FFB4A2", "#FF6F59", "#43AA8B", "#254441"]
+    },
+    {
+      "id": "blueberry-muffin",
+      "name": "Blueberry Muffin",
+      "tags": ["cool"],
+      "colors": ["#F2F0FA", "#C9C3EB", "#8A80D0", "#4E4A9C", "#26245A"]
+    },
+    {
+      "id": "saffron-spice",
+      "name": "Saffron Spice",
+      "tags": ["warm", "vibrant"],
+      "colors": ["#FFF3D6", "#F9C74F", "#F8961E", "#F3722C", "#90323D"]
+    },
+    {
+      "id": "fog-bank",
+      "name": "Fog Bank",
+      "tags": ["neutral", "pastel"],
+      "colors": ["#F8F9FA", "#E2E6EA", "#C4CBD2", "#98A2AC", "#5F6B76"]
+    },
+    {
+      "id": "jungle-canopy",
+      "name": "Jungle Canopy",
+      "tags": ["earthy", "dark"],
+      "colors": ["#DDE8D2", "#8DB580", "#4E7D48", "#2D5233", "#14291A"]
+    },
+    {
+      "id": "bubblegum",
+      "name": "Bubblegum",
+      "tags": ["vibrant", "pastel"],
+      "colors": ["#FFF0FA", "#FFB3DE", "#FF70C0", "#E0349A", "#9E1468"]
+    },
+    {
+      "id": "copper-kettle",
+      "name": "Copper Kettle",
+      "tags": ["warm", "earthy"],
+      "colors": ["#FBEDE1", "#E7B08A", "#C77745", "#93502A", "#4F2914"]
+    },
+    {
+      "id": "polar-night",
+      "name": "Polar Night",
+      "tags": ["dark", "cool"],
+      "colors": ["#E5E9F0", "#88C0D0", "#5E81AC", "#3B4252", "#2E3440"]
+    },
+    {
+      "id": "wildflower",
+      "name": "Wildflower",
+      "tags": ["pastel", "warm"],
+      "colors": ["#FFF7E8", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#BDB2FF"]
+    },
+    {
+      "id": "burgundy-wine",
+      "name": "Burgundy Wine",
+      "tags": ["dark", "warm"],
+      "colors": ["#F5E3E6", "#C9808D", "#8E2C48", "#5C1A2E", "#2B0B15"]
+    },
+    {
+      "id": "lagoon-teal",
+      "name": "Lagoon Teal",
+      "tags": ["cool"],
+      "colors": ["#E6F7F5", "#9EDDD6", "#3DB5A8", "#1D7F78", "#0B4744"]
+    },
+    {
+      "id": "mustard-navy",
+      "name": "Mustard & Navy",
+      "tags": ["retro"],
+      "colors": ["#FDF6E3", "#F2C14E", "#F78154", "#4D9078", "#1B2F4B"]
+    },
+    {
+      "id": "cherry-blossom",
+      "name": "Cherry Blossom",
+      "tags": ["pastel", "warm"],
+      "colors": ["#FFF5F7", "#FFD7E0", "#FFAFC2", "#E57B95", "#A3445E"]
+    },
+    {
+      "id": "steel-rust",
+      "name": "Steel & Rust",
+      "tags": ["neutral", "warm"],
+      "colors": ["#E9ECEE", "#A3ACB3", "#5D6A73", "#B5562E", "#6E2D15"]
+    },
+    {
+      "id": "amethyst",
+      "name": "Amethyst",
+      "tags": ["cool", "vibrant"],
+      "colors": ["#F4ECFF", "#D2B4FF", "#A56EFF", "#7329E0", "#3E1185"]
+    },
+    {
+      "id": "sandstone",
+      "name": "Sandstone",
+      "tags": ["earthy", "neutral"],
+      "colors": ["#FAF5EE", "#EAD9C2", "#D2B48C", "#A68461", "#6B5038"]
+    },
+    {
+      "id": "matcha-latte",
+      "name": "Matcha Latte",
+      "tags": ["earthy", "pastel"],
+      "colors": ["#F6F7EC", "#DDE5C2", "#B5C68A", "#7F9A52", "#4B5E2D"]
+    },
+    {
+      "id": "highlighter",
+      "name": "Highlighter",
+      "tags": ["vibrant"],
+      "colors": ["#F9FF5C", "#5CFF9D", "#5CE1FF", "#FF5CDB", "#FF8F5C"]
+    },
+    {
+      "id": "storm-cloud",
+      "name": "Storm Cloud",
+      "tags": ["neutral", "dark"],
+      "colors": ["#E4E7EB", "#9AA5B1", "#616E7C", "#3E4C59", "#1F2933"]
+    },
+    {
+      "id": "papaya",
+      "name": "Papaya",
+      "tags": ["warm", "pastel"],
+      "colors": ["#FFF4E6", "#FFD8A8", "#FFA94D", "#F76707", "#A3410A"]
+    },
+    {
+      "id": "emerald-city",
+      "name": "Emerald City",
+      "tags": ["vibrant", "cool"],
+      "colors": ["#E6FCF5", "#96F2D7", "#20C997", "#087F5B", "#04382A"]
+    },
+    {
+      "id": "mid-century",
+      "name": "Mid-Century",
+      "tags": ["retro", "earthy"],
+      "colors": ["#F1E3C8", "#E0A05C", "#C3562D", "#3E7C6E", "#263238"]
+    },
+    {
+      "id": "bluebell",
+      "name": "Bluebell",
+      "tags": ["pastel", "cool"],
+      "colors": ["#F3F6FF", "#D3DEFF", "#A9BCF5", "#7C93E0", "#4C62B3"]
+    },
+    {
+      "id": "volcanic",
+      "name": "Volcanic",
+      "tags": ["dark", "vibrant"],
+      "colors": ["#1A1A1A", "#3D1C12", "#8A2B0F", "#E4572E", "#F9A03F"]
+    },
+    {
+      "id": "linen-closet",
+      "name": "Linen Closet",
+      "tags": ["neutral", "pastel"],
+      "colors": ["#FCFAF6", "#EEE5D8", "#DCCBB5", "#C2AB8E", "#8F7A62"]
+    },
+    {
+      "id": "kiwi",
+      "name": "Kiwi",
+      "tags": ["vibrant"],
+      "colors": ["#F4FCE3", "#C0EB75", "#82C91E", "#5C940D", "#2B4A06"]
+    },
+    {
+      "id": "royal-court",
+      "name": "Royal Court",
+      "tags": ["dark", "cool"],
+      "colors": ["#EDEBFA", "#A39FDB", "#4F46A8", "#2C2770", "#14123A"]
+    },
+    {
+      "id": "apricot-jam",
+      "name": "Apricot Jam",
+      "tags": ["warm"],
+      "colors": ["#FFF1E2", "#FFCC99", "#FF9F59", "#E86A2A", "#9E3D12"]
+    },
+    {
+      "id": "eucalyptus",
+      "name": "Eucalyptus",
+      "tags": ["cool", "earthy"],
+      "colors": ["#EFF5F2", "#C3D9CF", "#8EB4A3", "#5A8775", "#2F574A"]
+    },
+    {
+      "id": "flamingo",
+      "name": "Flamingo",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FFF0F3", "#FFB3C1", "#FF758F", "#E03A5F", "#8F1A3A"]
+    },
+    {
+      "id": "dune",
+      "name": "Dune",
+      "tags": ["earthy", "warm"],
+      "colors": ["#FCF3E3", "#EDD2A5", "#D4A76A", "#A87638", "#5F3F17"]
+    },
+    {
+      "id": "ice-cream-parlor",
+      "name": "Ice Cream Parlor",
+      "tags": ["pastel", "retro"],
+      "colors": ["#FFF8F0", "#FFD1DC", "#FFF3B0", "#B5EAD7", "#9AD0EC"]
+    },
+    {
+      "id": "obsidian-glass",
+      "name": "Obsidian Glass",
+      "tags": ["dark", "cool"],
+      "colors": ["#E3E6EA", "#8A94A6", "#3C4454", "#1E232D", "#0B0E14"]
+    },
+    {
+      "id": "marigold",
+      "name": "Marigold",
+      "tags": ["warm", "vibrant"],
+      "colors": ["#FFF9DB", "#FFE066", "#FCC419", "#F59F00", "#E8590C"]
+    },
+    {
+      "id": "harbor-fog",
+      "name": "Harbor Fog",
+      "tags": ["cool", "neutral"],
+      "colors": ["#F4F7F7", "#D6E1E2", "#A7BCC0", "#6E8B92", "#3B565E"]
+    },
+    {
+      "id": "raspberry-lime",
+      "name": "Raspberry Lime",
+      "tags": ["vibrant"],
+      "colors": ["#F9F7E8", "#C5E063", "#6BAA3A", "#E2365B", "#8C1C3A"]
+    },
+    {
+      "id": "cinnamon-roll",
+      "name": "Cinnamon Roll",
+      "tags": ["warm", "earthy"],
+      "colors": ["#FDF3E7", "#EBC9A4", "#C98D5A", "#8F5530", "#4D2A15"]
+    },
+    {
+      "id": "ultraviolet",
+      "name": "Ultraviolet",
+      "tags": ["dark", "vibrant"],
+      "colors": ["#0E0B1F", "#2A1758", "#5B2BC9", "#A06BFF", "#E2CCFF"]
+    },
+    {
+      "id": "pistachio",
+      "name": "Pistachio",
+      "tags": ["pastel", "earthy"],
+      "colors": ["#F7FAEF", "#E2EDC9", "#C3D9A0", "#93B567", "#5D7A39"]
+    },
+    {
+      "id": "cobalt-cream",
+      "name": "Cobalt & Cream",
+      "tags": ["cool", "retro"],
+      "colors": ["#FBF6EA", "#F0E2C3", "#2E5EAA", "#1E3F7A", "#0E1F3D"]
+    },
+    {
+      "id": "pomegranate",
+      "name": "Pomegranate",
+      "tags": ["warm", "dark"],
+      "colors": ["#FDE7E7", "#F08A8A", "#C92A2A", "#8A1C1C", "#3D0B0B"]
+    },
+    {
+      "id": "morning-mist",
+      "name": "Morning Mist",
+      "tags": ["pastel", "neutral"],
+      "colors": ["#F7F9FB", "#E0E8EF", "#C3D0DC", "#9AACBE", "#677D93"]
+    },
+    {
+      "id": "lemonade-stand",
+      "name": "Lemonade Stand",
+      "tags": ["pastel", "vibrant"],
+      "colors": ["#FFFDE7", "#FFF59D", "#FFEB3B", "#F48FB1", "#EC407A"]
+    },
+    {
+      "id": "tobacco-leaf",
+      "name": "Tobacco Leaf",
+      "tags": ["earthy", "dark"],
+      "colors": ["#EFE5D3", "#BFA57B", "#8C6E3F", "#5C4524", "#2E2211"]
+    },
+    {
+      "id": "pacific-coast",
+      "name": "Pacific Coast",
+      "tags": ["cool", "vibrant"],
+      "colors": ["#EAF8FF", "#9ADCFF", "#36A9E1", "#F4A261", "#E76F51"]
+    },
+    {
+      "id": "smoked-salmon",
+      "name": "Smoked Salmon",
+      "tags": ["warm", "pastel"],
+      "colors": ["#FFF3EF", "#FBD1C4", "#F2A28D", "#D9735B", "#9E4632"]
+    },
+    {
+      "id": "concrete-jungle",
+      "name": "Concrete Jungle",
+      "tags": ["neutral"],
+      "colors": ["#EDEDED", "#CFCFCF", "#A1A1A1", "#6E6E6E", "#3A3A3A"]
+    },
+    {
+      "id": "grape-soda",
+      "name": "Grape Soda",
+      "tags": ["vibrant", "cool"],
+      "colors": ["#F5EBFF", "#D0A8FF", "#9B5DE5", "#6A2CC7", "#F15BB5"]
+    },
+    {
+      "id": "mossy-creek",
+      "name": "Mossy Creek",
+      "tags": ["earthy", "cool"],
+      "colors": ["#EAF0E6", "#B4C9A8", "#789E6E", "#4D7349", "#284227"]
+    },
+    {
+      "id": "tangerine-dream",
+      "name": "Tangerine Dream",
+      "tags": ["vibrant", "warm"],
+      "colors": ["#FFF4E5", "#FFC078", "#FF922B", "#FD7E14", "#6741D9"]
+    },
+    {
+      "id": "silver-screen",
+      "name": "Silver Screen",
+      "tags": ["neutral", "retro"],
+      "colors": ["#F8F8F8", "#DADADA", "#A8A8A8", "#6F6F6F", "#2B2B2B"]
+    },
+    {
+      "id": "aqua-marine",
+      "name": "Aqua Marine",
+      "tags": ["cool", "pastel"],
+      "colors": ["#EFFFFD", "#B8F5EE", "#7AE7DA", "#3CCDBE", "#13998C"]
+    },
+    {
+      "id": "brick-lane",
+      "name": "Brick Lane",
+      "tags": ["warm", "earthy"],
+      "colors": ["#F6E8E1", "#DDA592", "#B5634B", "#84402F", "#45201A"]
+    },
+    {
+      "id": "cosmic-latte",
+      "name": "Cosmic Latte",
+      "tags": ["pastel", "neutral"],
+      "colors": ["#FFF8E7", "#F3E4C6", "#E2CDA8", "#C6AE88", "#8A765B"]
+    },
+    {
+      "id": "paradise-bird",
+      "name": "Paradise Bird",
+      "tags": ["vibrant"],
+      "colors": ["#FFD166", "#EF476F", "#06D6A0", "#118AB2", "#073B4C"]
+    },
+    {
+      "id": "iron-forge",
+      "name": "Iron Forge",
+      "tags": ["dark", "warm"],
+      "colors": ["#2B2D2F", "#43464B", "#7A6C5D", "#C1793D", "#F2B880"]
+    },
+    {
+      "id": "hydrangea",
+      "name": "Hydrangea",
+      "tags": ["pastel", "cool"],
+      "colors": ["#F5F3FF", "#DDD6FE", "#C4B5FD", "#93C5FD", "#60A5FA"]
+    },
+    {
+      "id": "sienna",
+      "name": "Sienna",
+      "tags": ["earthy", "warm"],
+      "colors": ["#FBEEE6", "#E9B796", "#CC7A4E", "#A0522D", "#5C2E19"]
+    },
+    {
+      "id": "night-market",
+      "name": "Night Market",
+      "tags": ["dark", "vibrant"],
+      "colors": ["#101820", "#2C3E50", "#F2AA4C", "#E8505B", "#14B1AB"]
+    },
+    {
+      "id": "snowfall",
+      "name": "Snowfall",
+      "tags": ["neutral", "cool"],
+      "colors": ["#FFFFFF", "#EDF1F6", "#D6DEE8", "#B4C0CF", "#7E8FA6"]
+    },
+    {
+      "id": "saltwater-taffy",
+      "name": "Saltwater Taffy",
+      "tags": ["pastel", "vibrant"],
+      "colors": ["#FFF5E1", "#FFC6D9", "#A0E7E5", "#B4F8C8", "#FBE7C6"]
+    },
+    {
+      "id": "rainforest",
+      "name": "Rainforest",
+      "tags": ["vibrant", "earthy"],
+      "colors": ["#F0F7DA", "#9BC53D", "#3E8E41", "#E55934", "#5A2A27"]
+    },
+    {
+      "id": "velvet-night",
+      "name": "Velvet Night",
+      "tags": ["dark", "cool"],
+      "colors": ["#E8E6F2", "#7D7AA8", "#3F3D6E", "#23214A", "#0F0E24"]
+    }
+  ]
+}

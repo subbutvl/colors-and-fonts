@@ -33,6 +33,28 @@ pub fn show_main_window(app: &tauri::AppHandle) {
     }
 }
 
+/// The main window's fixed size in logical pixels (also in `tauri.conf.json`).
+pub const MAIN_SIZE: (f64, f64) = (1400.0, 800.0);
+
+/// The fixed window size, shrunk to fit a work area smaller than it
+/// (a 1366 x 768 laptop, say), so the window is never cut off.
+fn fit_size(size: (f64, f64), area: (f64, f64)) -> (f64, f64) {
+    (size.0.min(area.0), size.1.min(area.1))
+}
+
+/// Shrink the main window when its monitor's work area cannot hold 1400 x 800.
+fn fit_main_window(app: &tauri::AppHandle) {
+    let Some(window) = app.get_webview_window(MAIN_WINDOW) else { return };
+    let Ok(Some(monitor)) = window.current_monitor().or_else(|_| window.primary_monitor()) else { return };
+    let scale = monitor.scale_factor();
+    let area = monitor.work_area().size;
+    let (w, h) = fit_size(MAIN_SIZE, (area.width as f64 / scale, area.height as f64 / scale));
+    if (w, h) != MAIN_SIZE {
+        let _ = window.set_size(tauri::LogicalSize::new(w, h));
+        let _ = window.center();
+    }
+}
+
 /// Show the main window on a given section, e.g. "settings".
 pub fn open_section(app: &tauri::AppHandle, section: &str) {
     show_main_window(app);
@@ -72,12 +94,9 @@ pub fn run() {
         ))
         .plugin(
             tauri_plugin_window_state::Builder::default()
-                // Position and size only; visibility is ours to decide at launch.
-                .with_state_flags(
-                    tauri_plugin_window_state::StateFlags::POSITION
-                        | tauri_plugin_window_state::StateFlags::SIZE
-                        | tauri_plugin_window_state::StateFlags::MAXIMIZED,
-                )
+                // Position only: the main window has a fixed size (1400 x 800)
+                // and visibility is ours to decide at launch.
+                .with_state_flags(tauri_plugin_window_state::StateFlags::POSITION)
                 .build(),
         )
         .plugin(shortcuts::plugin())
@@ -113,6 +132,7 @@ pub fn run() {
             tray::create(app.handle())?;
             // The window starts hidden (see tauri.conf.json) so a login launch
             // never flashes it; show it unless we were started with --hidden.
+            fit_main_window(app.handle());
             if !std::env::args().any(|a| a == HIDDEN_ARG) {
                 show_main_window(app.handle());
             }
@@ -140,4 +160,15 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while running Huetype");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fit_size_shrinks_only_when_needed() {
+        assert_eq!(fit_size(MAIN_SIZE, (1920.0, 1040.0)), (1400.0, 800.0));
+        assert_eq!(fit_size(MAIN_SIZE, (1366.0, 728.0)), (1366.0, 728.0));
+    }
 }
